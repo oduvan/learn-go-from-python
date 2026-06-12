@@ -1,0 +1,93 @@
+site_name: Learn Go from Python
+site_description: Conspect notes for a Python developer learning Go (1.26.4)
+site_url: https://oduvan.github.io/learn-go-from-python/
+repo_url: https://github.com/oduvan/learn-go-from-python
+repo_name: oduvan/learn-go-from-python
+edit_uri: edit/master/
+
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - content.code.copy
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+  - Home: index.md
+  - Ecosystem and installation:
+      - What is Go: 01-ecosystem-and-installation/01-what-is-go.md
+      - The go command: 01-ecosystem-and-installation/02-go-subcommands.md
+      - go tool trace: 01-ecosystem-and-installation/03-go-tool-trace.md
+      - File types: 01-ecosystem-and-installation/04-go-file-types.md
+      - Special folders: 01-ecosystem-and-installation/05-special-folders.md
+      - Multiple Go versions: 01-ecosystem-and-installation/06-multiple-go-versions.md
+      - Installation: 01-ecosystem-and-installation/07-installation.md
+      - Additional tools: 01-ecosystem-and-installation/08-additional-tools.md
+      - Demo project: 01-ecosystem-and-installation/09-demo-project/README.md
+  - Language basics:
+      - Variables and constants: 02-language-basics/01-variables-and-constants.md
+      - Basic types: 02-language-basics/02-basic-types.md
+      - Type conversions: 02-language-basics/03-type-conversions.md
+      - Operators: 02-language-basics/04-operators.md
+      - Control flow: 02-language-basics/05-control-flow.md
+      - Defer: 02-language-basics/06-defer.md
+      - Custom types: 02-language-basics/07-custom-types.md
+      - Imports: 02-language-basics/08-imports.md
+
+exclude_docs: |
+  01-ecosystem-and-installation/09-demo-project/counter/
+  01-ecosystem-and-installation/09-demo-project/internal/
+  01-ecosystem-and-installation/09-demo-project/go.mod
+  01-ecosystem-and-installation/09-demo-project/main.go
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+plugins:
+  - search
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/oduvan/learn-go-from-python
