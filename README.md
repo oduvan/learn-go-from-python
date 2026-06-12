@@ -1,1 +1,1 @@
-# learn-go
+# learn-go-from-python
