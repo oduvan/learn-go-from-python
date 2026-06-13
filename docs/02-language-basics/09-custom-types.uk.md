@@ -160,13 +160,16 @@ func (c Celsius) Fmt() string { return "..." }   // compile error
 3. Будь-який інший тип — слідуйте ланцюжку визначень, поки не дійдете до одного з вищезгаданих.
 
 ```go
-type A = string         // базовий тип: string
-type B string           // базовий тип: string  (ланцюжок псевдоніму: B → string)
-type C B                // базовий тип: string  (ланцюжок: C → B → string)
-type D struct {         // базовий тип: struct{Name string}  (літерал типу)
-    Name string
-}
+type A = string             // базовий тип: string
+type B string               // базовий тип: string  (ланцюжок псевдоніму: B → string)
+type C B                    // базовий тип: string  (ланцюжок: C → B → string)
+type D func(int) int        // базовий тип: func(int) int  (вже літерал типу)
 ```
+
+Четвертий рядок ілюструє правило 2: `func(int) int` *сам по собі* є
+літералом типу, тож коли ви пишете `type D func(int) int`, базовий
+тип зупиняється просто там — ланцюжка немає. Те саме стосується
+`type T []int`, `type T map[string]int` і так далі.
 
 Перевірити під час виконання можна через `reflect.TypeOf(x).Kind()` — повертається базовий різновид, а не іменований тип.
 

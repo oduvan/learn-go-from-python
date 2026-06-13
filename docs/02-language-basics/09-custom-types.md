@@ -165,13 +165,16 @@ From the spec, paraphrased into a process:
 3. Any other type — follow the chain of definitions until you reach one of the above.
 
 ```go
-type A = string         // underlying type: string
-type B string           // underlying type: string  (alias chain: B → string)
-type C B                // underlying type: string  (chain: C → B → string)
-type D struct {         // underlying type: struct{Name string}  (a type literal)
-    Name string
-}
+type A = string             // underlying type: string
+type B string               // underlying type: string  (alias chain: B → string)
+type C B                    // underlying type: string  (chain: C → B → string)
+type D func(int) int        // underlying type: func(int) int  (already a type literal)
 ```
+
+The fourth line illustrates rule 2: `func(int) int` is *itself* a
+type literal, so when you write `type D func(int) int` the underlying
+type stops right there — there's no chain to walk. The same holds
+for `type T []int`, `type T map[string]int`, and so on.
 
 You can check at runtime with `reflect.TypeOf(x).Kind()` — it returns the underlying kind, not the named type.
 
