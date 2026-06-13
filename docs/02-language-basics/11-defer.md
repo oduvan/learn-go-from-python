@@ -69,6 +69,12 @@ func main() {
 
 ### 3. Runs on every kind of return — including panic
 
+`panic` is Go's "this should never happen" mechanism — it halts the
+function and starts unwinding the stack until either a `recover` catches
+it or the program crashes. The full story is in
+[12-panic-and-recover.md](12-panic-and-recover.md); the relevant detail
+for `defer` is that deferred calls **still run** during the unwinding.
+
 ```go
 func cleanup() {
     defer fmt.Println("running cleanup")
@@ -80,7 +86,8 @@ func cleanup() {
 //   ... stack trace ...
 ```
 
-This is why `defer` is the natural place to put `recover()` calls:
+This is why `defer` is the natural place to put `recover()` calls —
+`recover` only does anything inside a deferred function:
 
 ```go
 func safe() {

@@ -31,9 +31,14 @@ is always obvious.
 - [Type conversions](02-language-basics/03-type-conversions.md)
 - [Operators](02-language-basics/04-operators.md)
 - [Control flow](02-language-basics/05-control-flow.md)
-- [Defer](02-language-basics/06-defer.md)
-- [Custom types](02-language-basics/07-custom-types.md)
-- [Imports](02-language-basics/08-imports.md)
+- [Functions](02-language-basics/06-functions.md)
+- [Errors](02-language-basics/07-errors.md)
+- [Pointers](02-language-basics/08-pointers.md)
+- [Custom types](02-language-basics/09-custom-types.md)
+- [Methods](02-language-basics/10-methods.md)
+- [Defer](02-language-basics/11-defer.md)
+- [Panic and recover](02-language-basics/12-panic-and-recover.md)
+- [Imports](02-language-basics/13-imports.md)
 
 ## Source
 

@@ -149,26 +149,12 @@ If you want methods, use a type definition.
 
 ## Methods — the headline feature of type definitions
 
-A quick preview (methods get their own topic later). You attach methods using a *receiver*:
-
-```go
-type Celsius float64
-
-// Method with a value receiver — operates on a copy.
-func (c Celsius) Fahrenheit() float64 {
-    return float64(c)*9/5 + 32
-}
-
-func main() {
-    var c Celsius = 100
-    fmt.Println(c.Fahrenheit())     // 212
-}
-```
-
-Two rules to know now:
-
-1. The receiver type must be a **defined type** (or pointer to one). You cannot write `func (f float64) ...` — you'd have to define `type MyFloat float64` first.
-2. The receiver type must be **defined in the same package as the method**. You cannot add a method to `time.Duration` from your own package. Workaround: define your own type with `time.Duration` as its underlying type, attach methods there, convert when crossing boundaries.
+Once you've defined a type, you can attach **methods** to it — that's
+the main reason to reach for `type Foo Bar` in the first place. The
+mechanics (value vs. pointer receivers, method sets, embedding) live
+in [10-methods.md](10-methods.md). The one rule worth flagging here:
+methods can only be defined on types from your own package — never
+on `int`, `string`, `time.Duration`, or any other foreign type.
 
 ## "Underlying type" — the precise rule
 
