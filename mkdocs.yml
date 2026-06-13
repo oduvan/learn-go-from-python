@@ -86,6 +86,39 @@ markdown_extensions:
 
 plugins:
   - search
+  - i18n:
+      docs_structure: suffix
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
+      languages:
+        - locale: en
+          name: English
+          default: true
+          build: true
+        - locale: uk
+          name: Українська
+          build: true
+          site_name: Вчимо Go з досвідом Python
+          nav_translations:
+            Home: Головна
+            Ecosystem and installation: Екосистема та встановлення
+            What is Go: Що таке Go
+            The go command: Команда go
+            File types: Типи файлів
+            Special folders: Спеціальні каталоги
+            Multiple Go versions: Декілька версій Go
+            Installation: Встановлення
+            Additional tools: Додаткові інструменти
+            Demo project: Демонстраційний проєкт
+            Language basics: Основи мови
+            Variables and constants: Змінні та константи
+            Basic types: Базові типи
+            Type conversions: Перетворення типів
+            Operators: Оператори
+            Control flow: Керування потоком
+            Custom types: Власні типи
+            Imports: Імпорти
 
 extra:
   social:
