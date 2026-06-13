@@ -1,0 +1,151 @@
+# Forward-reference linter config.
+#
+# Each entry tracks a Go-specific concept that should be introduced in a
+# specific article before it can be used elsewhere. `scripts/check_concepts.go`
+# walks every English doc (`docs/**/*.md`, excluding `*.uk.md`) in reading
+# order and reports any occurrence of `pattern` that appears BEFORE
+# `introduces_in` — unless the occurrence is in a file listed under `ok_in`.
+#
+# Fields:
+#   pattern         regex (Go's RE2 syntax). Case-sensitive. Use \b for word
+#                   boundaries.
+#   introduces_in   path relative to docs/, or "TBD" if the concept is not yet
+#                   introduced in this repo (then every occurrence is flagged).
+#   ok_in           optional list of files where casual mention is allowed
+#                   BEFORE introduction. Use for acknowledged "covered later"
+#                   forward references — typically the article that flagged
+#                   the gap and added a one-line gloss.
+#
+# Paths are relative to docs/. Forward slashes only.
+#
+# `index.md` is on every entry's allow-list — it's the home page TOC and
+# inevitably mentions every concept name.
+
+concepts:
+  # ===== Concepts NOT YET formally introduced =====
+
+  # `struct` deserves a dedicated article. Many existing articles use struct
+  # examples casually because methods, pointers, and "data with fields" are
+  # natural fits. This baseline accepts the current state; when a structs
+  # article lands, set introduces_in and shrink ok_in.
+  - pattern: '\bstruct\b'
+    introduces_in: TBD
+    ok_in:
+      - index.md
+      - 01-ecosystem-and-installation/08-additional-tools.md   # `type Pill int` example
+      - 02-language-basics/01-variables-and-constants.md       # zero-value table
+      - 02-language-basics/02-basic-types.md                   # "what's NOT built-in" callout
+      - 02-language-basics/04-operators.md                     # struct comparability gotcha
+      - 02-language-basics/06-functions.md                     # "options struct" pattern
+      - 02-language-basics/08-pointers.md                      # "avoid copying a large struct"
+      - 02-language-basics/09-custom-types.md                  # type-literal list
+      - 02-language-basics/10-methods.md                       # canonical method receiver examples
+      - 02-language-basics/12-panic-and-recover.md             # panic(struct{Code int}{42})
+
+  # `interface` likewise deserves its own article. Today it appears only as a
+  # casually-glossed forward reference.
+  - pattern: '\binterface\b'
+    introduces_in: TBD
+    ok_in:
+      - index.md
+      - 01-ecosystem-and-installation/01-what-is-go.md         # "SQL interface" in stdlib list
+      - 01-ecosystem-and-installation/08-additional-tools.md   # mockgen for interfaces
+      - 02-language-basics/01-variables-and-constants.md       # zero-value table
+      - 02-language-basics/02-basic-types.md                   # "what's NOT built-in" callout
+      - 02-language-basics/05-control-flow.md                  # type-switch preview
+      - 02-language-basics/07-errors.md                        # error interface definition
+      - 02-language-basics/08-pointers.md                      # "interfaces are reference-like"
+      - 02-language-basics/09-custom-types.md                  # type-literal list
+      - 02-language-basics/10-methods.md                       # method-sets preview
+      - 02-language-basics/12-panic-and-recover.md             # r.(error) gloss
+      - 02-language-basics/13-imports.md                       # io.Reader/Writer mention
+
+  - pattern: '\bgoroutine'
+    introduces_in: TBD
+    ok_in:
+      - index.md
+      - 01-ecosystem-and-installation/01-what-is-go.md         # community/feature mention
+      - 01-ecosystem-and-installation/03-go-tool-trace.md      # trace topic
+      - 01-ecosystem-and-installation/08-additional-tools.md   # delve mentions goroutine
+      - 01-ecosystem-and-installation/09-demo-project/README.md
+      - 02-language-basics/06-functions.md                     # "goroutine stacks" footnote
+      - 02-language-basics/12-panic-and-recover.md             # explicitly glossed
+
+  - pattern: '\bchannel|\bchan\s'
+    introduces_in: TBD
+    ok_in:
+      - index.md
+      - 01-ecosystem-and-installation/01-what-is-go.md
+      - 01-ecosystem-and-installation/03-go-tool-trace.md
+      - 02-language-basics/01-variables-and-constants.md
+      - 02-language-basics/02-basic-types.md                   # "not in basic types" callout
+      - 02-language-basics/05-control-flow.md                  # for-range channel
+      - 02-language-basics/08-pointers.md
+      - 02-language-basics/12-panic-and-recover.md             # "sending to a closed channel"
+
+  - pattern: '\bgenerics?\b'
+    introduces_in: TBD
+    ok_in:
+      - index.md
+      - 02-language-basics/04-operators.md                     # If[T any] gloss
+      - 02-language-basics/06-functions.md                     # "no syntax sugar" mention
+
+  - pattern: '\btype assertion'
+    introduces_in: TBD
+    ok_in:
+      - index.md
+      - 02-language-basics/03-type-conversions.md              # "type assertions use different syntax"
+      - 02-language-basics/05-control-flow.md                  # type-switch preview
+      - 02-language-basics/12-panic-and-recover.md             # explicitly glossed
+
+  # ===== Concepts that ARE introduced — verify nothing leaks earlier =====
+
+  - pattern: '\biota\b'
+    introduces_in: 02-language-basics/01-variables-and-constants.md
+    ok_in:
+      - index.md
+      - 01-ecosystem-and-installation/08-additional-tools.md   # stringer example, glossed
+
+  - pattern: '\bdefer\b'
+    introduces_in: 02-language-basics/11-defer.md
+    ok_in:
+      - index.md
+      - 01-ecosystem-and-installation/03-go-tool-trace.md      # trace.Start/Stop pattern needs defer
+      - 02-language-basics/05-control-flow.md                  # "see also" sources link
+      - 02-language-basics/06-functions.md                     # IIFE section forward-refs defer
+      - 02-language-basics/07-errors.md                        # "see panic/recover"
+      - 02-language-basics/10-methods.md
+
+  - pattern: '\bpanic\b'
+    introduces_in: 02-language-basics/12-panic-and-recover.md
+    ok_in:
+      - index.md
+      - 02-language-basics/04-operators.md                     # "no undefined behavior, no panic"
+      - 02-language-basics/05-control-flow.md                  # "panics" mention
+      - 02-language-basics/07-errors.md                        # contrast with errors
+      - 02-language-basics/08-pointers.md                      # nil-deref panic
+      - 02-language-basics/10-methods.md
+      - 02-language-basics/11-defer.md                         # explicit forward-ref pointer
+
+  - pattern: '\brecover\b'
+    introduces_in: 02-language-basics/12-panic-and-recover.md
+    ok_in:
+      - index.md
+      - 02-language-basics/07-errors.md                        # "what error is not"
+      - 02-language-basics/11-defer.md                         # explicit forward-ref pointer
+
+  - pattern: '\bclosure'
+    introduces_in: 02-language-basics/06-functions.md
+    ok_in:
+      - index.md
+
+  - pattern: '\bvariadic'
+    introduces_in: 02-language-basics/06-functions.md
+    ok_in:
+      - index.md
+
+  - pattern: '\bmethod set\b'
+    introduces_in: 02-language-basics/10-methods.md
+    ok_in:
+      - index.md
+      - 02-language-basics/09-custom-types.md                  # method preview pointer

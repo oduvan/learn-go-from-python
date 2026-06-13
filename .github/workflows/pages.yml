@@ -26,6 +26,13 @@ jobs:
         with:
           python-version: "3.12"
 
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: scripts/go.mod
+
+      - name: Check concept forward-references
+        run: cd scripts && go run .
+
       - name: Install MkDocs Material + i18n plugin
         run: pip install "mkdocs-material>=9,<10" "mkdocs-static-i18n"
 

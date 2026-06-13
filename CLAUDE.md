@@ -63,7 +63,13 @@ learn-go-from-python/
      02-language-basics/01-variables-and-constants.md`),
    - add the topic title and every per-file title to the
      `nav_translations:` block of the `uk` locale in `mkdocs.yml` so
-     the Ukrainian navigation labels are not left in English.
+     the Ukrainian navigation labels are not left in English,
+   - if the new article introduces a Go concept tracked in
+     `docs/.concepts.yml`, update that file: set `introduces_in` to the
+     new article's path, and shrink the concept's `ok_in` list so
+     earlier articles no longer act as a baseline grandfather. Run
+     `cd scripts && go run .` locally to confirm the linter is still
+     green before pushing — CI runs it before the MkDocs build.
 4. **Every English change is followed by a Ukrainian change.** This
    project ships bilingual (English default, Ukrainian via
    mkdocs-static-i18n). Whenever you create or edit a `docs/.../NN-foo.md`
