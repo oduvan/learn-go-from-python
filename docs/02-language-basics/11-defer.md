@@ -114,6 +114,11 @@ defer f.Close()
 
 ### Unlocking a mutex
 
+A `sync.Mutex` is the standard library's mutual-exclusion lock —
+covered properly in the concurrency topic. The pattern below is the
+canonical use of `defer`: take the lock, immediately schedule the
+unlock, then do whatever critical work the lock protects.
+
 ```go
 var mu sync.Mutex
 

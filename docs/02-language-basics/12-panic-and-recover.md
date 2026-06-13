@@ -87,13 +87,16 @@ The `defer func() { ... }()` shape is the universal pattern:
 
 - The deferred call must be a function (you can't `defer recover()`
   directly — well, you can, but it's almost always wrong).
-- `recover()` must be called *directly* from a deferred function.
-  Calling it from a helper that the deferred function calls **does
-  not work** — the panic is no longer active by then.
+- `recover()` must be called from a function that is **itself**
+  directly deferred. If the deferred function calls *another*
+  helper, and the helper calls `recover()`, it won't catch the
+  panic — the panic is no longer active at that depth.
 
 ```go
 func wrong() {
-    defer helper()
+    defer func() {            // this is the deferred function
+        helper()              // helper is called BY the deferred function
+    }()
     panic("boom")
 }
 
@@ -103,6 +106,9 @@ func helper() {
     }
 }
 ```
+
+The fix is simple: call `recover` directly inside the deferred
+function literal, not from a helper.
 
 ## The full unwinding example
 
@@ -210,6 +216,11 @@ Notice:
 
 ## `recover` at a goroutine boundary
 
+(Skip ahead if you haven't seen goroutines yet — they're Go's
+lightweight concurrent tasks, covered in a later topic. The keyword
+`go` launches a function as one: `go work()` runs `work` alongside
+the caller instead of blocking on it.)
+
 A panic only unwinds the **current goroutine**. If a goroutine
 panics and nothing in its stack recovers, the *entire program*
 crashes — even if all the other goroutines were healthy.
@@ -244,7 +255,11 @@ panic(struct{ Code int }{42})
 ```
 
 Convention: if you panic with an error, you can `recover` it and
-return it as one:
+return it as one. The `r.(error)` part is a **type assertion** — read
+"if `r` actually contains an `error`, give it to me as `e`, and set
+`ok` to true; otherwise `ok` is false." Type assertions get their
+own treatment in the interfaces topic; for now treat the form as
+"unwrap an `any` value into a known type, safely."
 
 ```go
 func safeRun(f func()) (err error) {

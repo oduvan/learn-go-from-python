@@ -106,7 +106,11 @@ if n%2 == 0 {
 }
 ```
 
-If you really want a one-liner, write a tiny generic helper:
+If you really want a one-liner, write a tiny generic helper. The
+`[T any]` part is Go's generics syntax — a *type parameter* that
+lets one function work with values of any type. Generics get their
+own treatment later; the example below is just to show what such a
+helper would look like.
 
 ```go
 func If[T any](cond bool, a, b T) T {

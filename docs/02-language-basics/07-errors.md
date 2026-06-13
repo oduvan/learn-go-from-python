@@ -23,7 +23,9 @@ five-line block in any Go program.
 
 ## The `error` type
 
-`error` is a built-in interface with one method:
+`error` is a built-in **interface** with one method. (An interface,
+for now, is a named set of method signatures any type can satisfy by
+implementing them — full treatment in a later article.)
 
 ```go
 type error interface {
@@ -32,7 +34,7 @@ type error interface {
 ```
 
 Anything with an `Error() string` method satisfies it. You don't need
-to know how to define one yet — that's covered after methods and
+to know how to define one yet — that comes after methods and
 interfaces.
 
 The zero value of `error` is `nil`, which means "no error." That's

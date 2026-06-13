@@ -145,8 +145,7 @@ func main() {
 ```
 
 This is how you attach behaviour to slice, map, function, or
-primitive-backed types — a common Go pattern for things like
-`sort.Interface` implementations.
+primitive-backed types.
 
 ## The "same package" restriction
 
@@ -182,9 +181,10 @@ values of that type. The rule:
   `*T` **and** all methods with receiver type `T`.
 
 In practice you rarely think about method sets explicitly — until you
-start implementing interfaces. An interface is satisfied by a type
-whose method set contains the interface's methods. Interfaces get
-their own topic later; remember the rule for then:
+start implementing interfaces. An **interface** (covered properly in
+a later article) is a named set of method signatures; a type
+*satisfies* an interface when its method set contains all those
+methods. Interfaces get their own topic; remember the rule for then:
 
 > If any method has a pointer receiver, only `*T` (not `T`) satisfies
 > interfaces that include that method.
