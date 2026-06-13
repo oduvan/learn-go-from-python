@@ -15,28 +15,36 @@ articles (conspects), and example code.
 ## Repository layout
 
 ```
-learn_go/
+learn-go-from-python/
 ├── CLAUDE.md
-├── README.md
-├── 01-ecosystem-and-installation/   ← topic 1 (covered)
-│   ├── 01-what-is-go.md
-│   ├── 02-go-subcommands.md
-│   ├── ...
-│   └── 09-demo-project/             ← runnable Go module
-├── 02-language-basics/              ← topic 2 (in progress)
-│   └── ...
-└── NN-next-topic/
+├── README.md                        ← short repo intro, points at the site
+├── mkdocs.yml                       ← MkDocs Material config
+├── .github/workflows/pages.yml      ← builds + deploys to GitHub Pages
+└── docs/                            ← MkDocs docs_dir; everything below
+    │                                  is what becomes the published site
+    ├── index.md                     ← home page
+    ├── 01-ecosystem-and-installation/   ← topic 1 (covered)
+    │   ├── 01-what-is-go.md
+    │   ├── 02-go-subcommands.md
+    │   ├── ...
+    │   └── 09-demo-project/             ← runnable Go module
+    ├── 02-language-basics/              ← topic 2 (in progress)
+    │   └── ...
+    └── NN-next-topic/
 ```
 
-- Each topic gets its own folder named `NN-kebab-case-topic/` (two-digit
-  prefix).
+- All conspects and runnable examples live **under `docs/`**. There are
+  no topic folders at the repo root anymore.
+- Each topic gets its own folder named `docs/NN-kebab-case-topic/`
+  (two-digit prefix).
 - Inside each topic folder, every file is numbered `NN-name.ext` —
   conspect `.md` files and example `.go` files share one continuous
   sequence so the intended reading/running order is always clear.
 - Runnable multi-file Go projects live in subfolders inside the topic
   (e.g. `09-demo-project/`). Inside those subfolders Go's own filename
   conventions apply (`go.mod`, `main.go`, `*_test.go`, etc.) — the
-  numeric-prefix rule does not.
+  numeric-prefix rule does not. The demo module still builds and runs
+  in place — Go does not care that the module is nested under `docs/`.
 
 ## Workflow
 
@@ -45,9 +53,14 @@ learn_go/
 2. **Then capture.** When the user is satisfied, they ask Claude to
    "make a note", "create a conspect", or "create an example file".
    Only at that point does Claude write files.
-3. **One topic folder per subject.** Create the `NN-topic/` folder for
-   a new subject up front (so we have a home for notes) without
-   pre-populating content.
+3. **One topic folder per subject.** Create the folder as
+   `docs/NN-topic/` up front (so we have a home for notes) without
+   pre-populating content. When a new topic folder is created, also:
+   - add a `nav:` entry for the topic in `mkdocs.yml`,
+   - add a `nav:` entry for each new conspect file inside that topic
+     as files are created (titles are user-facing — drop the numeric
+     prefix and use Title Case, e.g. `Variables and constants:
+     02-language-basics/01-variables-and-constants.md`).
 
 ## Style of explanations and conspects
 
@@ -84,3 +97,27 @@ learn_go/
 The user opens files in their IDE. Examples should be self-contained
 (compilable as `package main` with `func main()` where possible) so
 they can be pasted into the Go playground or run with `go run`.
+
+## Published site (GitHub Pages)
+
+- Source repo: <https://github.com/oduvan/learn-go-from-python>.
+- Published URL: <https://oduvan.github.io/learn-go-from-python/>.
+- Static-site generator: **MkDocs Material** (`mkdocs-material>=9,<10`),
+  configured in `mkdocs.yml`. Theme = `material`, light/dark toggle,
+  per-topic navigation tabs, copy-button on code blocks.
+- The build runs in `.github/workflows/pages.yml` on every push to
+  `master`. It executes `mkdocs build --strict` (so broken intra-doc
+  links or missing nav entries fail CI), then deploys via
+  `actions/deploy-pages@v4`. The repo's **Settings → Pages → Source**
+  must be set to **"GitHub Actions"** for the deploy step to take.
+- Local preview: a venv lives at `.venv-mkdocs/` (gitignored). Run
+  `.venv-mkdocs/bin/mkdocs serve` for a live-reload preview on
+  http://127.0.0.1:8000. To recreate the venv:
+
+  ```bash
+  python3 -m venv .venv-mkdocs
+  .venv-mkdocs/bin/pip install 'mkdocs-material>=9,<10'
+  ```
+
+- The `site/` directory (the build output) and `.venv-mkdocs/` are
+  both in `.gitignore`. Don't commit them.
