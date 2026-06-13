@@ -60,7 +60,31 @@ learn-go-from-python/
    - add a `nav:` entry for each new conspect file inside that topic
      as files are created (titles are user-facing — drop the numeric
      prefix and use Title Case, e.g. `Variables and constants:
-     02-language-basics/01-variables-and-constants.md`).
+     02-language-basics/01-variables-and-constants.md`),
+   - add the topic title and every per-file title to the
+     `nav_translations:` block of the `uk` locale in `mkdocs.yml` so
+     the Ukrainian navigation labels are not left in English.
+4. **Every English change is followed by a Ukrainian change.** This
+   project ships bilingual (English default, Ukrainian via
+   mkdocs-static-i18n). Whenever you create or edit a `docs/.../NN-foo.md`
+   article, you must create or update its `docs/.../NN-foo.uk.md`
+   companion **in the same commit**. The same applies to `docs/index.md`
+   and to anything inside `09-demo-project/README.md`. Quick rules:
+   - **New article** → write `NN-foo.md` and `NN-foo.uk.md` together.
+   - **Edit to an English article** → port the same edit into the `.uk.md`
+     translation in the same commit. Don't let translations drift.
+   - **Code blocks**: keep snippets, identifiers, and `// output: ...`
+     comments **identical** between languages — only translate the prose
+     around them and any natural-language code comments.
+   - **Nav labels**: any new English nav label in `mkdocs.yml` needs a
+     matching entry in `plugins.i18n.languages[uk].nav_translations`.
+   - **`fallback_to_default: true`** keeps the site shippable while a
+     translation is in flight — but treat that as the safety net, not
+     the workflow. Don't merge an English-only edit without writing
+     the Ukrainian one alongside.
+   - The translation rule applies only to user-facing docs under
+     `docs/`. `CLAUDE.md`, `README.md`, the workflow file, and other
+     repo-meta files stay English-only.
 
 ## Style of explanations and conspects
 
