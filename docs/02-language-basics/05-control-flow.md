@@ -121,14 +121,22 @@ for i := range 5 {
 
 ### Range over a function
 
-Iterator functions enable custom iteration:
+Some standard-library functions return an *iterator function* (technically `iter.Seq[T]` from the `iter` package) that you can `range` directly over. Example: `strings.Lines` yields each line of a string, trailing newline included.
 
 ```go
-// pkg func Lines returns an iter.Seq[string]
-for line := range bufio.NewScanner(r).Lines() {
-    fmt.Println(line)
+import "strings"
+
+s := "alpha\nbeta\ngamma\n"
+for line := range strings.Lines(s) {
+    fmt.Printf("%q\n", line)
 }
+// output:
+// "alpha\n"
+// "beta\n"
+// "gamma\n"
 ```
+
+You can also write your own iterator function — covered in a later topic.
 
 > **From Python:** `for ... range` covers `for x in seq:`, `for i, x in enumerate(seq):`, `for k, v in dict.items():`. The integer form `for i := range 5` matches `for i in range(5):`.
 
@@ -223,7 +231,7 @@ default:
 
 ### Type switch
 
-For interface values — covered properly in a later topic, but worth seeing now:
+For interface values — covered properly in a later topic, but worth seeing now. `any` is a built-in alias for "any type at all" (it's how a function says "I'll take whatever you give me"):
 
 ```go
 func describe(x any) {

@@ -186,7 +186,15 @@ When in doubt, **parenthesize**. Code-reviewers prefer explicit parens over rely
 
 ## Comparison gotchas
 
-- **Floats** compare exactly. `0.1 + 0.2 == 0.3` is `false`. Use an epsilon comparison when needed.
+- **Floats** compare exactly, but with a twist. `0.1 + 0.2 == 0.3` written as bare literals is **`true`** — Go evaluates untyped constant expressions at compile time with arbitrary precision, so no IEEE 754 rounding ever happens. Once the same numbers live in `float64` variables, rounding kicks in and the answer flips:
+
+  ```go
+  fmt.Println(0.1 + 0.2 == 0.3)                                 // true  (untyped constants)
+  var a, b, c float64 = 0.1, 0.2, 0.3
+  fmt.Println(a + b == c)                                        // false (float64 variables)
+  ```
+
+  Use an epsilon comparison whenever you're comparing `float32`/`float64` variables.
 - **Strings** compare byte-by-byte (lexicographic). `"a" < "b"` is `true`.
 - **Slices, maps, functions** are *not* comparable with `==`/`!=` — only against `nil`. Use `reflect.DeepEqual` or a hand-written check.
   ```go

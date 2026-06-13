@@ -28,11 +28,16 @@ var u uint32    = uint32(f)         // float64 → uint32 (truncates toward zero
 var b byte      = byte(i)           // int → uint8 (truncates upper bits)
 ```
 
-Converting float to int discards the fractional part:
+Converting a float to int discards the fractional part. The float must
+be a *variable*, not a bare literal — `int(3.9)` written with a literal
+is a compile error, because Go refuses to silently drop the `.9` from
+an untyped constant. Once the value lives in a `float64`, the
+conversion is fine:
 
 ```go
-fmt.Println(int(3.9))    // 3
-fmt.Println(int(-3.9))   // -3 — toward zero, not toward -infinity
+f := 3.9
+fmt.Println(int(f))     // 3
+fmt.Println(int(-f))    // -3 — toward zero, not toward -infinity
 ```
 
 Converting a larger integer to a smaller one drops the high-order bits — the result wraps:
@@ -106,7 +111,16 @@ s := fmt.Sprintf("%d items, %.2f each", 3, 9.5)
 
 ## Untyped constants are the one exception
 
-An *untyped* constant doesn't need conversion as long as the target type can represent it:
+This is the single biggest gotcha for a Python developer learning Go,
+and it sneaks into several places later in the curriculum, so it's
+worth spending a moment on.
+
+### Untyped constants are typeless until used
+
+A literal like `42`, `3.14`, or `"hi"` written in source code is an
+*untyped constant*. It has no fixed Go type — it carries an *idealised*
+numeric value (arbitrary precision for numerics). It picks up a type
+only when the context demands one.
 
 ```go
 var x float64 = 42        // ok — 42 is an untyped int constant, fits float64
@@ -114,7 +128,26 @@ var y int     = 0.0       // ok — 0.0 is representable as int (no fractional p
 var z int     = 3.14      // compile error: 3.14 (untyped float) truncated to int
 ```
 
-But once a constant has a type, the rule snaps back:
+The third line is the rule that bit you above with `int(3.9)` — Go
+refuses to silently drop the fractional part of a constant.
+
+### Constant arithmetic is also arbitrary-precision
+
+A consequence that surprises Python developers: when you do arithmetic
+on *constants*, Go does it at compile time with arbitrary precision,
+not with IEEE 754 floats. The classic float-equality trap doesn't fire:
+
+```go
+fmt.Println(0.1 + 0.2 == 0.3)                       // true  (constants)
+
+var a, b, c float64 = 0.1, 0.2, 0.3
+fmt.Println(a + b == c)                             // false (float64 variables)
+```
+
+Same numbers, completely different answers, depending on whether the
+expression survives until runtime or gets folded at compile time.
+
+### Once a constant has a type, the rule snaps back
 
 ```go
 const limit int = 10
@@ -122,7 +155,16 @@ var f float64 = limit               // compile error
 var f float64 = float64(limit)      // ok
 ```
 
-This is why most package-level constants are left untyped — they're maximally reusable.
+This is why most package-level constants are left **untyped** — they
+adapt to whatever type their caller needs. Mark them with an explicit
+type only when you want to constrain them.
+
+> **From Python:** Python has no real analog. `42` is always `int`,
+> `3.14` is always `float`, and operations follow runtime semantics.
+> Go's "constant is a value, not a typed thing" model is genuinely
+> different — and it's the source of several of the subtle behaviour
+> differences you'll encounter (literal-vs-variable comparison
+> results, what compiles and what doesn't, default types in `:=`).
 
 ## `T(x)` also works between custom types
 

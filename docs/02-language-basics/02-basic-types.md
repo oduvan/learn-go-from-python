@@ -85,9 +85,11 @@ if n != 0 {             // ok
 
 ```go
 var greeting string = "hello, 世界"
-fmt.Println(len(greeting))         // 16 — number of BYTES, not characters!
+fmt.Println(len(greeting))         // 13 — number of BYTES, not characters!
 fmt.Println(greeting[0])           // 104 — the byte 'h'
 ```
+
+(`"hello, "` is 7 ASCII bytes; `世` and `界` are 3 UTF-8 bytes each.)
 
 Two non-obvious facts:
 

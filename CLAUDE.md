@@ -77,6 +77,15 @@ learn-go-from-python/
 - **Source-verified.** Verify facts against go.dev / pkg.go.dev /
   Go spec before writing. End every article with a `## Sources` section
   listing the URLs consulted as markdown links.
+- **Run the code, don't just claim it.** Doc-reading alone is not
+  enough — every non-trivial snippet must be executed in a throwaway
+  module (`go run .` in `/tmp/<name>/` or similar) to confirm the
+  actual output, error messages, and compile/no-compile behaviour
+  match what the prose says. Past errors in this project (e.g. the
+  claim that `len("hello, 世界")` is 16, that `int(3.9)` truncates as
+  a literal, or that `bufio.Scanner` has a `Lines()` method) all
+  passed a doc-only review and were caught only by running the code.
+  Treat runtime verification as a required step, not polish.
 - **GitHub-flavoured Markdown.** Use fenced code blocks with language
   tags (```go, ```bash), tables, and standard headings.
 

@@ -54,10 +54,10 @@ Inside a function, `:=` declares and assigns in one go. The type is always infer
 
 ```go
 func main() {
-    name := "Ada"          // string
-    count := 0             // int
-    ratio := 0.5           // float64
-    items := []string{"a", "b"}
+    name := "Ada"                  // string
+    count := 0                     // int
+    ratio := 0.5                   // float64
+    items := []string{"a", "b"}    // []string — a slice; covered later
 
     fmt.Println(name, count, ratio, items)
 }

@@ -128,7 +128,7 @@ Go encourages code generation for repetitive patterns (enum-like types, mocks, g
 
 ### `stringer` — generate `String()` methods for enum-like types
 
-Given a `const` block of typed integer values, generates a `String()` method.
+Given a `const` block of typed integer values, generates a `String()` method. (The Go syntax in the example below — defining a custom type `Pill` and using `iota` to auto-number constants — is covered in the language-basics topic; here it's just shown as the kind of code `stringer` consumes.)
 
 ```bash
 go install golang.org/x/tools/cmd/stringer@latest
