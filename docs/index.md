@@ -44,6 +44,10 @@ is always obvious.
 - [Panic and recover](02-language-basics/16-panic-and-recover.md)
 - [Imports](02-language-basics/17-imports.md)
 
+### [Interfaces](03-interfaces/01-interfaces.md)
+
+- [Interfaces](03-interfaces/01-interfaces.md)
+
 ## Source
 
 - Source repository: <https://github.com/oduvan/learn-go-from-python>.

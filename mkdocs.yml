@@ -68,6 +68,8 @@ nav:
       - Defer: 02-language-basics/15-defer.md
       - Panic and recover: 02-language-basics/16-panic-and-recover.md
       - Imports: 02-language-basics/17-imports.md
+  - Interfaces:
+      - Interfaces: 03-interfaces/01-interfaces.md
 
 exclude_docs: |
   01-ecosystem-and-installation/09-demo-project/counter/
@@ -138,6 +140,7 @@ plugins:
             Defer: Defer
             Panic and recover: Panic та recover
             Imports: Імпорти
+            Interfaces: Інтерфейси
 
 extra:
   social:
