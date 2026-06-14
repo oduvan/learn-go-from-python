@@ -24,12 +24,12 @@
 concepts:
   # ===== Concepts NOT YET formally introduced =====
 
-  # `struct` deserves a dedicated article. Many existing articles use struct
-  # examples casually because methods, pointers, and "data with fields" are
-  # natural fits. This baseline accepts the current state; when a structs
-  # article lands, set introduces_in and shrink ok_in.
+  # `struct` is introduced in its own article. Earlier articles that mention
+  # structs casually (zero-value tables, comparability gotchas, the "options
+  # struct" pattern) are grandfathered below; everything from the structs
+  # article onward may use the word freely.
   - pattern: '\bstruct\b'
-    introduces_in: TBD
+    introduces_in: 02-language-basics/10-structs.md
     ok_in:
       - index.md
       - 01-ecosystem-and-installation/08-additional-tools.md   # `type Pill int` example
@@ -39,8 +39,6 @@ concepts:
       - 02-language-basics/06-functions.md                     # "options struct" pattern
       - 02-language-basics/08-pointers.md                      # "avoid copying a large struct"
       - 02-language-basics/09-custom-types.md                  # type-literal list
-      - 02-language-basics/10-methods.md                       # canonical method receiver examples
-      - 02-language-basics/12-panic-and-recover.md             # panic(struct{Code int}{42})
 
   # `interface` likewise deserves its own article. Today it appears only as a
   # casually-glossed forward reference.
@@ -56,9 +54,9 @@ concepts:
       - 02-language-basics/07-errors.md                        # error interface definition
       - 02-language-basics/08-pointers.md                      # "interfaces are reference-like"
       - 02-language-basics/09-custom-types.md                  # type-literal list
-      - 02-language-basics/10-methods.md                       # method-sets preview
-      - 02-language-basics/12-panic-and-recover.md             # r.(error) gloss
-      - 02-language-basics/13-imports.md                       # io.Reader/Writer mention
+      - 02-language-basics/13-methods.md                       # method-sets preview
+      - 02-language-basics/15-panic-and-recover.md             # r.(error) gloss
+      - 02-language-basics/16-imports.md                       # io.Reader/Writer mention
 
   - pattern: '\bgoroutine'
     introduces_in: TBD
@@ -69,7 +67,7 @@ concepts:
       - 01-ecosystem-and-installation/08-additional-tools.md   # delve mentions goroutine
       - 01-ecosystem-and-installation/09-demo-project/README.md
       - 02-language-basics/06-functions.md                     # "goroutine stacks" footnote
-      - 02-language-basics/12-panic-and-recover.md             # explicitly glossed
+      - 02-language-basics/15-panic-and-recover.md             # explicitly glossed
 
   - pattern: '\bchannel|\bchan\s'
     introduces_in: TBD
@@ -81,7 +79,8 @@ concepts:
       - 02-language-basics/02-basic-types.md                   # "not in basic types" callout
       - 02-language-basics/05-control-flow.md                  # for-range channel
       - 02-language-basics/08-pointers.md
-      - 02-language-basics/12-panic-and-recover.md             # "sending to a closed channel"
+      - 02-language-basics/10-structs.md                       # empty-struct signalling note
+      - 02-language-basics/15-panic-and-recover.md             # "sending to a closed channel"
 
   - pattern: '\bgenerics?\b'
     introduces_in: TBD
@@ -96,7 +95,7 @@ concepts:
       - index.md
       - 02-language-basics/03-type-conversions.md              # "type assertions use different syntax"
       - 02-language-basics/05-control-flow.md                  # type-switch preview
-      - 02-language-basics/12-panic-and-recover.md             # explicitly glossed
+      - 02-language-basics/15-panic-and-recover.md             # explicitly glossed
 
   # ===== Concepts that ARE introduced — verify nothing leaks earlier =====
 
@@ -107,32 +106,33 @@ concepts:
       - 01-ecosystem-and-installation/08-additional-tools.md   # stringer example, glossed
 
   - pattern: '\bdefer\b'
-    introduces_in: 02-language-basics/11-defer.md
+    introduces_in: 02-language-basics/14-defer.md
     ok_in:
       - index.md
       - 01-ecosystem-and-installation/03-go-tool-trace.md      # trace.Start/Stop pattern needs defer
       - 02-language-basics/05-control-flow.md                  # "see also" sources link
       - 02-language-basics/06-functions.md                     # IIFE section forward-refs defer
       - 02-language-basics/07-errors.md                        # "see panic/recover"
-      - 02-language-basics/10-methods.md
+      - 02-language-basics/13-methods.md
 
   - pattern: '\bpanic\b'
-    introduces_in: 02-language-basics/12-panic-and-recover.md
+    introduces_in: 02-language-basics/15-panic-and-recover.md
     ok_in:
       - index.md
       - 02-language-basics/04-operators.md                     # "no undefined behavior, no panic"
       - 02-language-basics/05-control-flow.md                  # "panics" mention
       - 02-language-basics/07-errors.md                        # contrast with errors
       - 02-language-basics/08-pointers.md                      # nil-deref panic
-      - 02-language-basics/10-methods.md
-      - 02-language-basics/11-defer.md                         # explicit forward-ref pointer
+      - 02-language-basics/12-maps.md                          # writing to a nil map panics
+      - 02-language-basics/13-methods.md
+      - 02-language-basics/14-defer.md                         # explicit forward-ref pointer
 
   - pattern: '\brecover\b'
-    introduces_in: 02-language-basics/12-panic-and-recover.md
+    introduces_in: 02-language-basics/15-panic-and-recover.md
     ok_in:
       - index.md
       - 02-language-basics/07-errors.md                        # "what error is not"
-      - 02-language-basics/11-defer.md                         # explicit forward-ref pointer
+      - 02-language-basics/14-defer.md                         # explicit forward-ref pointer
 
   - pattern: '\bclosure'
     introduces_in: 02-language-basics/06-functions.md
@@ -145,7 +145,7 @@ concepts:
       - index.md
 
   - pattern: '\bmethod set\b'
-    introduces_in: 02-language-basics/10-methods.md
+    introduces_in: 02-language-basics/13-methods.md
     ok_in:
       - index.md
       - 02-language-basics/09-custom-types.md                  # method preview pointer
