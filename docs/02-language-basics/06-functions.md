@@ -173,7 +173,7 @@ semantics as Python's nested functions.
 
 ### Immediately-invoked function expression
 
-A common pattern with `defer` (covered in [14-defer.md](14-defer.md)):
+A common pattern with `defer` (covered in [15-defer.md](15-defer.md)):
 define a function literal and call it right away with `()`.
 
 ```go

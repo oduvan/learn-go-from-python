@@ -152,7 +152,7 @@ If you want methods, use a type definition.
 Once you've defined a type, you can attach **methods** to it — that's
 the main reason to reach for `type Foo Bar` in the first place. The
 mechanics (value vs. pointer receivers, method sets, embedding) live
-in [13-methods.md](13-methods.md). The one rule worth flagging here:
+in [14-methods.md](14-methods.md). The one rule worth flagging here:
 methods can only be defined on types from your own package — never
 on `int`, `string`, `time.Duration`, or any other foreign type.
 

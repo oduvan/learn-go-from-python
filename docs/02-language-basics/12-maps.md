@@ -25,6 +25,30 @@ m := map[[]int]string{}   // compile error: invalid map key type []int
 
 Value types have no such restriction — `map[string][]int` is fine.
 
+### A struct as the key
+
+Because a comparable struct supports `==`, it works as a key directly —
+handy for a **composite key** (a sparse grid, memoization keyed on several
+values, deduplication by tuple). The lookup compares the key field-by-field,
+so equal structs map to the same entry.
+
+```go
+type Point struct{ X, Y int }
+
+grid := map[Point]string{
+    {0, 0}: "origin",     // inside the literal you can drop the "Point"
+    {1, 2}: "somewhere",
+}
+fmt.Println(grid[Point{X: 1, Y: 2}])   // output: somewhere
+
+v, ok := grid[Point{9, 9}]
+fmt.Println(v, ok)                     // output:  false
+```
+
+If the struct has any non-comparable field (a slice, map, or function),
+the whole type is non-comparable and the map declaration itself is a
+compile error: `invalid map key type`.
+
 ## Creating maps
 
 **Literal**, including the empty literal `map[K]V{}`:

@@ -72,7 +72,7 @@ func main() {
 `panic` is Go's "this should never happen" mechanism — it halts the
 function and starts unwinding the stack until either a `recover` catches
 it or the program crashes. The full story is in
-[15-panic-and-recover.md](15-panic-and-recover.md); the relevant detail
+[16-panic-and-recover.md](16-panic-and-recover.md); the relevant detail
 for `defer` is that deferred calls **still run** during the unwinding.
 
 ```go
