@@ -5,7 +5,7 @@ value. It is Go's primary tool for modelling "a thing with several
 attributes" — a point, a user, an HTTP request. There is no class, no
 inheritance, no constructor keyword: a struct is just data laid out in
 memory, and you build behaviour around it separately (with functions and
-[methods](13-methods.md)).
+[methods](14-methods.md)).
 
 You almost always give a struct a name using the `type` keyword from
 [custom types](09-custom-types.md):
@@ -167,7 +167,7 @@ fmt.Println(c.Point.Y)  // output: 2  — the explicit path still works
 
 Embedding is Go's composition mechanism — it stands in for the data side
 of what other languages do with inheritance. The *method* side of
-embedding (method promotion) is covered in [methods](13-methods.md).
+embedding (method promotion) is covered in [methods](14-methods.md).
 
 ## Anonymous structs
 

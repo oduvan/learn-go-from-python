@@ -38,10 +38,11 @@ is always obvious.
 - [Structs](02-language-basics/10-structs.md)
 - [Arrays and slices](02-language-basics/11-arrays-and-slices.md)
 - [Maps](02-language-basics/12-maps.md)
-- [Methods](02-language-basics/13-methods.md)
-- [Defer](02-language-basics/14-defer.md)
-- [Panic and recover](02-language-basics/15-panic-and-recover.md)
-- [Imports](02-language-basics/16-imports.md)
+- [Choosing a data structure](02-language-basics/13-choosing-a-data-structure.md)
+- [Methods](02-language-basics/14-methods.md)
+- [Defer](02-language-basics/15-defer.md)
+- [Panic and recover](02-language-basics/16-panic-and-recover.md)
+- [Imports](02-language-basics/17-imports.md)
 
 ## Source
 
