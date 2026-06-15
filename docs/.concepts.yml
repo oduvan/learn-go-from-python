@@ -40,11 +40,11 @@ concepts:
       - 02-language-basics/08-pointers.md                      # "avoid copying a large struct"
       - 02-language-basics/09-custom-types.md                  # type-literal list
 
-  # `interface` is introduced in its own topic-3 article. Every earlier
-  # mention across topics 1–2 is grandfathered below; they all precede the
-  # introduction in reading order.
+  # `interface` is introduced in the interfaces article (the capstone of
+  # language basics). Every earlier mention is grandfathered below; they all
+  # precede the introduction in reading order.
   - pattern: '\binterface\b'
-    introduces_in: 03-interfaces/01-interfaces.md
+    introduces_in: 02-language-basics/18-interfaces.md
     ok_in:
       - index.md
       - 01-ecosystem-and-installation/01-what-is-go.md         # "SQL interface" in stdlib list
@@ -92,7 +92,7 @@ concepts:
       - 02-language-basics/06-functions.md                     # "no syntax sugar" mention
 
   - pattern: '\btype assertion'
-    introduces_in: 03-interfaces/01-interfaces.md
+    introduces_in: 02-language-basics/18-interfaces.md
     ok_in:
       - index.md
       - 02-language-basics/03-type-conversions.md              # "type assertions use different syntax"

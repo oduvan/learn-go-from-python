@@ -199,7 +199,7 @@ does best.
 
 > When different *types* need to share behaviour behind one abstraction,
 > none of these is the answer — that's what **interfaces** are for,
-> covered in a later topic.
+> covered in [a later article](18-interfaces.md).
 
 ## Cheat sheet
 

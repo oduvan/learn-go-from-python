@@ -43,10 +43,7 @@ is always obvious.
 - [Defer](02-language-basics/15-defer.md)
 - [Panic and recover](02-language-basics/16-panic-and-recover.md)
 - [Imports](02-language-basics/17-imports.md)
-
-### [Interfaces](03-interfaces/01-interfaces.md)
-
-- [Interfaces](03-interfaces/01-interfaces.md)
+- [Interfaces](02-language-basics/18-interfaces.md)
 
 ## Source
 
