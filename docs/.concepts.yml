@@ -40,11 +40,11 @@ concepts:
       - 02-language-basics/08-pointers.md                      # "avoid copying a large struct"
       - 02-language-basics/09-custom-types.md                  # type-literal list
 
-  # `interface` is introduced in the interfaces article (the capstone of
-  # language basics). Every earlier mention is grandfathered below; they all
-  # precede the introduction in reading order.
+  # `interface` is introduced in the Object-oriented Go topic. Every earlier
+  # mention is grandfathered below; they all precede the introduction in
+  # reading order.
   - pattern: '\binterface\b'
-    introduces_in: 02-language-basics/18-interfaces.md
+    introduces_in: 03-object-oriented-go/02-interfaces.md
     ok_in:
       - index.md
       - 01-ecosystem-and-installation/01-what-is-go.md         # "SQL interface" in stdlib list
@@ -56,9 +56,9 @@ concepts:
       - 02-language-basics/08-pointers.md                      # "interfaces are reference-like"
       - 02-language-basics/09-custom-types.md                  # type-literal list
       - 02-language-basics/13-choosing-a-data-structure.md     # "use interfaces for shared behaviour" pointer
-      - 02-language-basics/14-methods.md                       # method-sets preview
-      - 02-language-basics/16-panic-and-recover.md             # r.(error) gloss
-      - 02-language-basics/17-imports.md                       # io.Reader/Writer mention
+      - 03-object-oriented-go/01-methods.md                       # method-sets preview
+      - 02-language-basics/15-panic-and-recover.md             # r.(error) gloss
+      - 02-language-basics/16-imports.md                       # io.Reader/Writer mention
 
   - pattern: '\bgoroutine'
     introduces_in: TBD
@@ -69,7 +69,7 @@ concepts:
       - 01-ecosystem-and-installation/08-additional-tools.md   # delve mentions goroutine
       - 01-ecosystem-and-installation/09-demo-project/README.md
       - 02-language-basics/06-functions.md                     # "goroutine stacks" footnote
-      - 02-language-basics/16-panic-and-recover.md             # explicitly glossed
+      - 02-language-basics/15-panic-and-recover.md             # explicitly glossed
 
   - pattern: '\bchannel|\bchan\s'
     introduces_in: TBD
@@ -82,22 +82,23 @@ concepts:
       - 02-language-basics/05-control-flow.md                  # for-range channel
       - 02-language-basics/08-pointers.md
       - 02-language-basics/10-structs.md                       # empty-struct signalling note
-      - 02-language-basics/16-panic-and-recover.md             # "sending to a closed channel"
+      - 02-language-basics/15-panic-and-recover.md             # "sending to a closed channel"
 
   - pattern: '\bgenerics?\b'
-    introduces_in: TBD
+    introduces_in: 03-object-oriented-go/04-generics.md
     ok_in:
       - index.md
       - 02-language-basics/04-operators.md                     # If[T any] gloss
       - 02-language-basics/06-functions.md                     # "no syntax sugar" mention
 
   - pattern: '\btype assertion'
-    introduces_in: 02-language-basics/18-interfaces.md
+    introduces_in: 03-object-oriented-go/03-type-assertions-and-type-switches.md
     ok_in:
       - index.md
       - 02-language-basics/03-type-conversions.md              # "type assertions use different syntax"
       - 02-language-basics/05-control-flow.md                  # type-switch preview
-      - 02-language-basics/16-panic-and-recover.md             # explicitly glossed
+      - 02-language-basics/15-panic-and-recover.md             # explicitly glossed
+      - 03-object-oriented-go/02-interfaces.md                 # forward pointer to the next article
 
   # ===== Concepts that ARE introduced — verify nothing leaks earlier =====
 
@@ -108,17 +109,17 @@ concepts:
       - 01-ecosystem-and-installation/08-additional-tools.md   # stringer example, glossed
 
   - pattern: '\bdefer\b'
-    introduces_in: 02-language-basics/15-defer.md
+    introduces_in: 02-language-basics/14-defer.md
     ok_in:
       - index.md
       - 01-ecosystem-and-installation/03-go-tool-trace.md      # trace.Start/Stop pattern needs defer
       - 02-language-basics/05-control-flow.md                  # "see also" sources link
       - 02-language-basics/06-functions.md                     # IIFE section forward-refs defer
       - 02-language-basics/07-errors.md                        # "see panic/recover"
-      - 02-language-basics/14-methods.md
+      - 03-object-oriented-go/01-methods.md
 
   - pattern: '\bpanic\b'
-    introduces_in: 02-language-basics/16-panic-and-recover.md
+    introduces_in: 02-language-basics/15-panic-and-recover.md
     ok_in:
       - index.md
       - 02-language-basics/04-operators.md                     # "no undefined behavior, no panic"
@@ -126,15 +127,15 @@ concepts:
       - 02-language-basics/07-errors.md                        # contrast with errors
       - 02-language-basics/08-pointers.md                      # nil-deref panic
       - 02-language-basics/12-maps.md                          # writing to a nil map panics
-      - 02-language-basics/14-methods.md
-      - 02-language-basics/15-defer.md                         # explicit forward-ref pointer
+      - 03-object-oriented-go/01-methods.md
+      - 02-language-basics/14-defer.md                         # explicit forward-ref pointer
 
   - pattern: '\brecover\b'
-    introduces_in: 02-language-basics/16-panic-and-recover.md
+    introduces_in: 02-language-basics/15-panic-and-recover.md
     ok_in:
       - index.md
       - 02-language-basics/07-errors.md                        # "what error is not"
-      - 02-language-basics/15-defer.md                         # explicit forward-ref pointer
+      - 02-language-basics/14-defer.md                         # explicit forward-ref pointer
 
   - pattern: '\bclosure'
     introduces_in: 02-language-basics/06-functions.md
@@ -147,7 +148,7 @@ concepts:
       - index.md
 
   - pattern: '\bmethod set\b'
-    introduces_in: 02-language-basics/14-methods.md
+    introduces_in: 03-object-oriented-go/01-methods.md
     ok_in:
       - index.md
       - 02-language-basics/09-custom-types.md                  # method preview pointer

@@ -64,11 +64,15 @@ nav:
       - Arrays and slices: 02-language-basics/11-arrays-and-slices.md
       - Maps: 02-language-basics/12-maps.md
       - Choosing a data structure: 02-language-basics/13-choosing-a-data-structure.md
-      - Methods: 02-language-basics/14-methods.md
-      - Defer: 02-language-basics/15-defer.md
-      - Panic and recover: 02-language-basics/16-panic-and-recover.md
-      - Imports: 02-language-basics/17-imports.md
-      - Interfaces: 02-language-basics/18-interfaces.md
+      - Defer: 02-language-basics/14-defer.md
+      - Panic and recover: 02-language-basics/15-panic-and-recover.md
+      - Imports: 02-language-basics/16-imports.md
+  - Object-oriented Go:
+      - Methods: 03-object-oriented-go/01-methods.md
+      - Interfaces: 03-object-oriented-go/02-interfaces.md
+      - Type assertions and type switches: 03-object-oriented-go/03-type-assertions-and-type-switches.md
+      - Generics: 03-object-oriented-go/04-generics.md
+      - OOP patterns: 03-object-oriented-go/05-oop-patterns.md
 
 exclude_docs: |
   01-ecosystem-and-installation/09-demo-project/counter/
@@ -139,7 +143,11 @@ plugins:
             Defer: Defer
             Panic and recover: Panic та recover
             Imports: Імпорти
+            Object-oriented Go: Об'єктноорієнтований Go
             Interfaces: Інтерфейси
+            Type assertions and type switches: Твердження типу та перемикачі типів
+            Generics: Generics
+            OOP patterns: Патерни ООП
 
 extra:
   social:

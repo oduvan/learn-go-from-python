@@ -199,7 +199,7 @@ does best.
 
 > When different *types* need to share behaviour behind one abstraction,
 > none of these is the answer — that's what **interfaces** are for,
-> covered in [a later article](18-interfaces.md).
+> covered in [a later article](../03-object-oriented-go/02-interfaces.md).
 
 ## Cheat sheet
 

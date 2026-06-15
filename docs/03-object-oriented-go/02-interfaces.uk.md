@@ -115,54 +115,12 @@ fmt.Println(x)   // output: hello
 
 `any` — це засіб останньої надії: ви втрачаєте всю інформацію про тип на
 етапі компіляції. Щоб дістати конкретне значення назад, ви використовуєте
-твердження типу або перемикач типів.
+**твердження типу** або **перемикач типів** — це розглядається в
+[наступній статті](03-type-assertions-and-type-switches.md).
 
 > **З погляду Python:** `any` — це найближче до звичайного посилання на
 > `object`: воно може тримати будь-що, і перед конкретним використанням
 > треба перевірити тип.
-
-## Твердження типу: дістаємо конкретне значення назад
-
-**Твердження типу** `x.(T)` витягає конкретне значення типу `T` з
-інтерфейсу. Форма з одним результатом **панікує**, якщо тип не збігається;
-форма **comma-ok** натомість повідомляє про успіх.
-
-```go
-var x any = "hello"
-
-s := x.(string)        // ок — x справді тримає string
-fmt.Println(s)         // output: hello
-
-n, ok := x.(int)       // безпечна форма — без паніки
-fmt.Println(n, ok)     // output: 0 false
-```
-
-Завжди надавайте перевагу формі comma-ok, якщо ви не впевнені в типі.
-
-## Перемикач типів: розгалуження за динамічним типом
-
-**Перемикач типів** (type switch) перевіряє інтерфейсне значення проти
-кількох типів одразу. Форма `v := x.(type)` прив'язує `v` до конкретного
-значення в кожному випадку.
-
-```go
-func describe(x any) string {
-    switch v := x.(type) {
-    case int:
-        return fmt.Sprintf("int: %d", v)
-    case string:
-        return fmt.Sprintf("string of len %d", len(v))
-    default:
-        return "unknown"
-    }
-}
-
-fmt.Println(describe(42))      // output: int: 42
-fmt.Println(describe("hi"))    // output: string of len 2
-```
-
-> **З погляду Python:** перемикач типів — це ідіоматична заміна ланцюжка
-> перевірок `isinstance(x, T)`.
 
 ## Пастка типізованого nil
 
@@ -218,16 +176,14 @@ fmt.Println(Color{255, 165, 0})   // output: #FFA500
 | оголосити інтерфейс | `type Reader interface { Read(p []byte) (int, error) }` |
 | задовольнити його | просто визначте методи — без ключового слова |
 | порожній інтерфейс | `any` (= `interface{}`), тримає будь-яке значення |
-| твердження типу (панікує) | `s := x.(string)` |
-| твердження типу (безпечне) | `s, ok := x.(string)` |
-| перемикач типів | `switch v := x.(type) { ... }` |
 | nil-інтерфейс | і тип, і значення є nil |
+
+Витягання конкретного значення назад з інтерфейсу розглядається далі — у
+[твердженнях типу та перемикачах типів](03-type-assertions-and-type-switches.md).
 
 ## Джерела
 
 - [Interface types — go.dev/ref/spec#Interface_types](https://go.dev/ref/spec#Interface_types)
-- [Type assertions — go.dev/ref/spec#Type_assertions](https://go.dev/ref/spec#Type_assertions)
-- [Type switches — go.dev/ref/spec#Type_switches](https://go.dev/ref/spec#Type_switches)
 - [Method sets — go.dev/ref/spec#Method_sets](https://go.dev/ref/spec#Method_sets)
 - [Effective Go: interfaces — go.dev/doc/effective_go#interfaces](https://go.dev/doc/effective_go#interfaces)
 - [Go blog: errors are values / typed nil — go.dev/doc/faq#nil_error](https://go.dev/doc/faq#nil_error)
