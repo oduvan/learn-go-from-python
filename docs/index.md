@@ -39,14 +39,17 @@ is always obvious.
 - [Arrays and slices](02-language-basics/11-arrays-and-slices.md)
 - [Maps](02-language-basics/12-maps.md)
 - [Choosing a data structure](02-language-basics/13-choosing-a-data-structure.md)
-- [Methods](02-language-basics/14-methods.md)
-- [Defer](02-language-basics/15-defer.md)
-- [Panic and recover](02-language-basics/16-panic-and-recover.md)
-- [Imports](02-language-basics/17-imports.md)
+- [Defer](02-language-basics/14-defer.md)
+- [Panic and recover](02-language-basics/15-panic-and-recover.md)
+- [Imports](02-language-basics/16-imports.md)
 
-### [Interfaces](03-interfaces/01-interfaces.md)
+### [Object-oriented Go](03-object-oriented-go/01-methods.md)
 
-- [Interfaces](03-interfaces/01-interfaces.md)
+- [Methods](03-object-oriented-go/01-methods.md)
+- [Interfaces](03-object-oriented-go/02-interfaces.md)
+- [Type assertions and type switches](03-object-oriented-go/03-type-assertions-and-type-switches.md)
+- [Generics](03-object-oriented-go/04-generics.md)
+- [OOP patterns](03-object-oriented-go/05-oop-patterns.md)
 
 ## Source
 

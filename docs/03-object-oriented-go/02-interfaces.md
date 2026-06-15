@@ -112,54 +112,13 @@ fmt.Println(x)   // output: hello
 ```
 
 `any` is a tool of last resort — you lose all compile-time type
-information. To get the concrete value back out, you use a type assertion
-or type switch.
+information. To get the concrete value back out, you use a **type
+assertion** or **type switch** — covered in the
+[next article](03-type-assertions-and-type-switches.md).
 
 > **From Python:** `any` is the closest thing to a plain `object`
 > reference — it can hold anything, and you must check the type before
 > using it specifically.
-
-## Type assertions: getting the concrete value back
-
-A **type assertion** `x.(T)` extracts the concrete value of type `T` from
-an interface. The single-result form **panics** if the type doesn't match;
-the **comma-ok** form reports success instead.
-
-```go
-var x any = "hello"
-
-s := x.(string)        // ok — x really holds a string
-fmt.Println(s)         // output: hello
-
-n, ok := x.(int)       // safe form — no panic
-fmt.Println(n, ok)     // output: 0 false
-```
-
-Always prefer the comma-ok form unless you are certain of the type.
-
-## Type switches: branch on the dynamic type
-
-A **type switch** tests an interface value against several types at once.
-The `v := x.(type)` form binds `v` to the concrete value in each case.
-
-```go
-func describe(x any) string {
-    switch v := x.(type) {
-    case int:
-        return fmt.Sprintf("int: %d", v)
-    case string:
-        return fmt.Sprintf("string of len %d", len(v))
-    default:
-        return "unknown"
-    }
-}
-
-fmt.Println(describe(42))      // output: int: 42
-fmt.Println(describe("hi"))    // output: string of len 2
-```
-
-> **From Python:** a type switch is the idiomatic stand-in for a chain of
-> `isinstance(x, T)` checks.
 
 ## The typed-nil gotcha
 
@@ -214,16 +173,14 @@ the specific struct so callers keep full information.
 | declare an interface | `type Reader interface { Read(p []byte) (int, error) }` |
 | satisfy it | just define the methods — no keyword |
 | empty interface | `any` (= `interface{}`), holds any value |
-| type assertion (panicking) | `s := x.(string)` |
-| type assertion (safe) | `s, ok := x.(string)` |
-| type switch | `switch v := x.(type) { ... }` |
 | nil interface | both type and value nil |
+
+Extracting the concrete value back out of an interface is covered next, in
+[type assertions and type switches](03-type-assertions-and-type-switches.md).
 
 ## Sources
 
 - [Interface types — go.dev/ref/spec#Interface_types](https://go.dev/ref/spec#Interface_types)
-- [Type assertions — go.dev/ref/spec#Type_assertions](https://go.dev/ref/spec#Type_assertions)
-- [Type switches — go.dev/ref/spec#Type_switches](https://go.dev/ref/spec#Type_switches)
 - [Method sets — go.dev/ref/spec#Method_sets](https://go.dev/ref/spec#Method_sets)
 - [Effective Go: interfaces — go.dev/doc/effective_go#interfaces](https://go.dev/doc/effective_go#interfaces)
 - [Go blog: errors are values / typed nil — go.dev/doc/faq#nil_error](https://go.dev/doc/faq#nil_error)

@@ -152,7 +152,7 @@ func (i int) Double() int { ... }       // compile error
 
 Не можна прикріпити методи до `int`, `time.Time` або чогось іншого з іншого
 пакету. Рішення таке саме, як у
-[09-custom-types.md](09-custom-types.md): визначте власний тип з чужим типом як
+[09-custom-types.md](../02-language-basics/09-custom-types.md): визначте власний тип з чужим типом як
 базовим типом і прикріпіть метод до нього.
 
 ```go
