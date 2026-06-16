@@ -26,30 +26,30 @@ is always obvious.
 
 ### [Language basics](02-language-basics/01-variables-and-constants.md)
 
-- [Variables and constants](02-language-basics/01-variables-and-constants.md)
-- [Basic types](02-language-basics/02-basic-types.md)
-- [Type conversions](02-language-basics/03-type-conversions.md)
-- [Operators](02-language-basics/04-operators.md)
-- [Control flow](02-language-basics/05-control-flow.md)
-- [Functions](02-language-basics/06-functions.md)
-- [Errors](02-language-basics/07-errors.md)
-- [Pointers](02-language-basics/08-pointers.md)
-- [Custom types](02-language-basics/09-custom-types.md)
-- [Structs](02-language-basics/10-structs.md)
-- [Arrays and slices](02-language-basics/11-arrays-and-slices.md)
-- [Maps](02-language-basics/12-maps.md)
-- [Choosing a data structure](02-language-basics/13-choosing-a-data-structure.md)
-- [Defer](02-language-basics/14-defer.md)
-- [Panic and recover](02-language-basics/15-panic-and-recover.md)
-- [Imports](02-language-basics/16-imports.md)
+- [Variables and constants](02-language-basics/01-variables-and-constants.md) — `var`, `:=`, `const`, and `iota`.
+- [Basic types](02-language-basics/02-basic-types.md) — integers, floats, strings, booleans; no truthiness.
+- [Type conversions](02-language-basics/03-type-conversions.md) — explicit `T(x)`, `strconv`, no implicit coercion.
+- [Operators](02-language-basics/04-operators.md) — arithmetic, overflow, integer division; no ternary.
+- [Control flow](02-language-basics/05-control-flow.md) — `if`, `for` (the only loop), `switch`.
+- [Functions](02-language-basics/06-functions.md) — multiple returns, named results, variadics, first-class values.
+- [Errors](02-language-basics/07-errors.md) — the `error` value, wrapping with `%w`, `errors.Is`/`As`.
+- [Pointers](02-language-basics/08-pointers.md) — `&`/`*`, `nil`, `new`, no pointer arithmetic.
+- [Custom types](02-language-basics/09-custom-types.md) — `type` definitions vs aliases, underlying types.
+- [Structs](02-language-basics/10-structs.md) — fields, literals, zero value, embedding, tags.
+- [Arrays and slices](02-language-basics/11-arrays-and-slices.md) — len/cap, `append`, and the shared-backing gotcha.
+- [Maps](02-language-basics/12-maps.md) — keyed lookup, comma-ok, the nil-map trap, sets.
+- [Choosing a data structure](02-language-basics/13-choosing-a-data-structure.md) — slice vs map vs struct vs custom type.
+- [Defer](02-language-basics/14-defer.md) — deferred calls, LIFO order, cleanup patterns.
+- [Panic and recover](02-language-basics/15-panic-and-recover.md) — when to panic, recovering in deferred calls.
+- [Imports](02-language-basics/16-imports.md) — import paths, aliases, blank and dot imports.
 
 ### [Object-oriented Go](03-object-oriented-go/01-methods.md)
 
-- [Methods](03-object-oriented-go/01-methods.md)
-- [Interfaces](03-object-oriented-go/02-interfaces.md)
-- [Type assertions and type switches](03-object-oriented-go/03-type-assertions-and-type-switches.md)
-- [Generics](03-object-oriented-go/04-generics.md)
-- [OOP patterns](03-object-oriented-go/05-oop-patterns.md)
+- [Methods](03-object-oriented-go/01-methods.md) — value vs pointer receivers, method sets, promotion.
+- [Interfaces](03-object-oriented-go/02-interfaces.md) — implicit satisfaction, polymorphism, the empty interface / `any`.
+- [Type assertions and type switches](03-object-oriented-go/03-type-assertions-and-type-switches.md) — recovering the concrete type at runtime.
+- [Generics](03-object-oriented-go/04-generics.md) — type parameters and constraints.
+- [OOP patterns](03-object-oriented-go/05-oop-patterns.md) — encapsulation, composition over inheritance, polymorphism.
 
 ## Source
 
