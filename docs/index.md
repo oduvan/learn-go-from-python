@@ -51,6 +51,12 @@ is always obvious.
 - [Generics](03-object-oriented-go/04-generics.md) — type parameters and constraints.
 - [OOP patterns](03-object-oriented-go/05-oop-patterns.md) — encapsulation, composition over inheritance, polymorphism.
 
+### [Packages and modules](04-packages-and-modules/01-packages-and-visibility.md)
+
+- [Packages and visibility](04-packages-and-modules/01-packages-and-visibility.md) — package rules, exported vs unexported, `init`.
+- [Creating and publishing a module](04-packages-and-modules/02-creating-and-publishing-a-module.md) — `go.mod`, versioning, `replace`, publishing.
+- [Project layout and workspaces](04-packages-and-modules/03-project-layout-and-workspaces.md) — `internal/`, `cmd/`, `go.work`.
+
 ## Source
 
 - Source repository: <https://github.com/oduvan/learn-go-from-python>.

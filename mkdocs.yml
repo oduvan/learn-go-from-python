@@ -73,6 +73,10 @@ nav:
       - Type assertions and type switches: 03-object-oriented-go/03-type-assertions-and-type-switches.md
       - Generics: 03-object-oriented-go/04-generics.md
       - OOP patterns: 03-object-oriented-go/05-oop-patterns.md
+  - Packages and modules:
+      - Packages and visibility: 04-packages-and-modules/01-packages-and-visibility.md
+      - Creating and publishing a module: 04-packages-and-modules/02-creating-and-publishing-a-module.md
+      - Project layout and workspaces: 04-packages-and-modules/03-project-layout-and-workspaces.md
 
 exclude_docs: |
   01-ecosystem-and-installation/09-demo-project/counter/
@@ -148,6 +152,10 @@ plugins:
             Type assertions and type switches: Твердження типу та перемикачі типів
             Generics: Generics
             OOP patterns: Патерни ООП
+            Packages and modules: Пакети та модулі
+            Packages and visibility: Пакети та видимість
+            Creating and publishing a module: Створення та публікація модуля
+            Project layout and workspaces: Структура проєкту та робочі простори
 
 extra:
   social:
