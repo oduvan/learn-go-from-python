@@ -37,7 +37,7 @@ go run .
 Очікуваний вивід (числа приблизні):
 
 ```
-Processed 400 jobs across 2 unique files; total words: 42000
+Processed 400 jobs across 2 unique files; total words: 377
 ```
 
 Також записує `trace.out`.

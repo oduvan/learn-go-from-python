@@ -189,7 +189,7 @@ fmt.Println(errors.Is(both, err2))   // true
   independent — by convention, if `err != nil`, ignore the other
   value; if `err == nil`, trust it.
 - Not the right tool for "the program reached an impossible state."
-  That's what `panic` is for ([16-panic-and-recover.md](15-panic-and-recover.md)).
+  That's what `panic` is for ([15-panic-and-recover.md](15-panic-and-recover.md)).
 
 ## Sources
 

@@ -37,7 +37,7 @@ go run .
 Expected output (numbers approximate):
 
 ```
-Processed 400 jobs across 2 unique files; total words: 42000
+Processed 400 jobs across 2 unique files; total words: 377
 ```
 
 This also writes `trace.out`.
