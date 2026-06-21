@@ -61,7 +61,7 @@ concepts:
       - 02-language-basics/16-imports.md                       # io.Reader/Writer mention
 
   - pattern: '\bgoroutine'
-    introduces_in: TBD
+    introduces_in: 05-concurrency/01-goroutines.md
     ok_in:
       - index.md
       - 01-ecosystem-and-installation/01-what-is-go.md         # community/feature mention
@@ -72,7 +72,7 @@ concepts:
       - 02-language-basics/15-panic-and-recover.md             # explicitly glossed
 
   - pattern: '\bchannel|\bchan\s'
-    introduces_in: TBD
+    introduces_in: 05-concurrency/02-channels.md
     ok_in:
       - index.md
       - 01-ecosystem-and-installation/01-what-is-go.md
@@ -83,6 +83,7 @@ concepts:
       - 02-language-basics/08-pointers.md
       - 02-language-basics/10-structs.md                       # empty-struct signalling note
       - 02-language-basics/15-panic-and-recover.md             # "sending to a closed channel"
+      - 05-concurrency/01-goroutines.md                        # "channels ... covered next" pointer
 
   - pattern: '\bgenerics?\b'
     introduces_in: 03-object-oriented-go/04-generics.md

@@ -77,6 +77,9 @@ nav:
       - Packages and visibility: 04-packages-and-modules/01-packages-and-visibility.md
       - Creating and publishing a module: 04-packages-and-modules/02-creating-and-publishing-a-module.md
       - Project layout and workspaces: 04-packages-and-modules/03-project-layout-and-workspaces.md
+  - Concurrency:
+      - Goroutines: 05-concurrency/01-goroutines.md
+      - Channels: 05-concurrency/02-channels.md
 
 exclude_docs: |
   01-ecosystem-and-installation/09-demo-project/counter/
@@ -156,6 +159,9 @@ plugins:
             Packages and visibility: Пакети та видимість
             Creating and publishing a module: Створення та публікація модуля
             Project layout and workspaces: Структура проєкту та робочі простори
+            Concurrency: Конкурентність
+            Goroutines: Горутини
+            Channels: Канали
 
 extra:
   social:

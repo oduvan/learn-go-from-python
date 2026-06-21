@@ -57,6 +57,11 @@ is always obvious.
 - [Creating and publishing a module](04-packages-and-modules/02-creating-and-publishing-a-module.md) — `go.mod`, versioning, `replace`, publishing.
 - [Project layout and workspaces](04-packages-and-modules/03-project-layout-and-workspaces.md) — `internal/`, `cmd/`, `go.work`.
 
+### [Concurrency](05-concurrency/01-goroutines.md)
+
+- [Goroutines](05-concurrency/01-goroutines.md) — `go`, scheduling, `WaitGroup`, the main-exits trap.
+- [Channels](05-concurrency/02-channels.md) — send/receive, buffering, `close`, `range`, deadlocks.
+
 ## Source
 
 - Source repository: <https://github.com/oduvan/learn-go-from-python>.
