@@ -187,7 +187,7 @@ fmt.Println(errors.Is(both, err2))   // true
   за угодою, якщо `err != nil`, ігноруйте інше значення; якщо `err == nil`,
   довіряйте йому.
 - Не правильним інструментом для «програма досягла неможливого стану».
-  Для цього є `panic` ([16-panic-and-recover.md](15-panic-and-recover.md)).
+  Для цього є `panic` ([panic та recover](15-panic-and-recover.md)).
 
 ## Джерела
 

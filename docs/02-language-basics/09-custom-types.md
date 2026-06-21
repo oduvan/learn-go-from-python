@@ -35,7 +35,7 @@ sum := c + f          // compile error: mismatched types Celsius and Fahrenheit
 
 `Celsius` and `Fahrenheit` are *different types*. Both happen to be laid out in memory exactly like a `float64` — that shared layout is their **underlying type** — but the compiler treats them as distinct because they have different names.
 
-You can convert between them with the usual `T(x)` syntax (covered in [03-type-conversions.md](03-type-conversions.md)):
+You can convert between them with the usual `T(x)` syntax (covered in [type conversions](03-type-conversions.md)):
 
 ```go
 c2 := Celsius((f - 32) * 5 / 9)   // ok — explicit conversion
@@ -152,7 +152,7 @@ If you want methods, use a type definition.
 Once you've defined a type, you can attach **methods** to it — that's
 the main reason to reach for `type Foo Bar` in the first place. The
 mechanics (value vs. pointer receivers, method sets, embedding) live
-in [14-methods.md](../03-object-oriented-go/01-methods.md). The one rule worth flagging here:
+in [methods](../03-object-oriented-go/01-methods.md). The one rule worth flagging here:
 methods can only be defined on types from your own package — never
 on `int`, `string`, `time.Duration`, or any other foreign type.
 

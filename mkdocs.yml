@@ -73,6 +73,17 @@ nav:
       - Type assertions and type switches: 03-object-oriented-go/03-type-assertions-and-type-switches.md
       - Generics: 03-object-oriented-go/04-generics.md
       - OOP patterns: 03-object-oriented-go/05-oop-patterns.md
+  - Packages and modules:
+      - Packages and visibility: 04-packages-and-modules/01-packages-and-visibility.md
+      - Creating and publishing a module: 04-packages-and-modules/02-creating-and-publishing-a-module.md
+      - Project layout and workspaces: 04-packages-and-modules/03-project-layout-and-workspaces.md
+  - Concurrency:
+      - Goroutines: 05-concurrency/01-goroutines.md
+      - Channels: 05-concurrency/02-channels.md
+      - select: 05-concurrency/03-select.md
+      - Synchronization: 05-concurrency/04-synchronization.md
+      - Context: 05-concurrency/05-context.md
+      - Concurrency patterns: 05-concurrency/06-concurrency-patterns.md
 
 exclude_docs: |
   01-ecosystem-and-installation/09-demo-project/counter/
@@ -148,6 +159,17 @@ plugins:
             Type assertions and type switches: Твердження типу та перемикачі типів
             Generics: Generics
             OOP patterns: Патерни ООП
+            Packages and modules: Пакети та модулі
+            Packages and visibility: Пакети та видимість
+            Creating and publishing a module: Створення та публікація модуля
+            Project layout and workspaces: Структура проєкту та робочі простори
+            Concurrency: Конкурентність
+            Goroutines: Горутини
+            Channels: Канали
+            select: select
+            Synchronization: Синхронізація
+            Context: Context
+            Concurrency patterns: Патерни конкурентності
 
 extra:
   social:

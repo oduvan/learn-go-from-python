@@ -160,7 +160,7 @@ func (i int) Double() int { ... }       // compile error
 
 You cannot bolt methods onto `int`, `time.Time`, or anything else
 from another package. The workaround is the same one from
-[09-custom-types.md](../02-language-basics/09-custom-types.md): define your own type with
+[custom types](../02-language-basics/09-custom-types.md): define your own type with
 the foreign type as its underlying type, and attach the method there.
 
 ```go

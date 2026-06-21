@@ -16,7 +16,7 @@ if x > 0 {
 }
 ```
 
-The condition **must be a `bool`** — no truthy/falsy. See [02-basic-types.md](02-basic-types.md).
+The condition **must be a `bool`** — no truthy/falsy. See [basic types](02-basic-types.md).
 
 ### `if` with init statement
 

@@ -1,6 +1,6 @@
 # Panic and recover
 
-[07-errors.md](07-errors.md) covers Go's primary failure mechanism —
+[errors](07-errors.md) covers Go's primary failure mechanism —
 returning an `error`. This article covers the **other** one: `panic`
 and `recover`, which exist for the small set of cases where a normal
 error return doesn't apply.
@@ -285,7 +285,7 @@ func safeRun(f func()) (err error) {
 | Catch a panic at a boundary | `defer func() { if r := recover(); r != nil { ... } }()` |
 | Convert a panic to an error | recover into a named return: `defer func() { if r := recover(); r != nil { err = ... } }()` |
 | Protect a background goroutine | wrap its body with `defer recover()` and log the value |
-| Just return an error instead | always your first choice — see [07-errors.md](07-errors.md) |
+| Just return an error instead | always your first choice — see [errors](07-errors.md) |
 
 ## Sources
 

@@ -34,13 +34,17 @@
 go run .
 ```
 
-Очікуваний вивід (числа приблизні):
+Очікуваний вивід:
 
 ```
-Processed 400 jobs across 2 unique files; total words: 42000
+Counted 377 words across 2 files (workload amplified to 400 jobs over 4 workers so the trace shows visible parallelism)
 ```
 
-Також записує `trace.out`.
+Реальної роботи мало — два текстові файли в `counter/testdata/`, разом 377
+слів. Програма навмисно повторює це крихітне навантаження 200× (→ 400
+завдань) і розподіляє його на 4 горутини-робітники з єдиної причини: щоб у
+записаному трейсі було достатньо конкурентної активності, аби його варто
+було розглядати в `go tool trace`. Також записує `trace.out`.
 
 ## Запуск тестів
 
