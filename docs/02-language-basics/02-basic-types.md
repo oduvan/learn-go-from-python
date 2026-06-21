@@ -26,7 +26,7 @@ var u uint       // same as int, but unsigned
 var p uintptr    // big enough to hold a raw pointer value
 ```
 
-`int` is **not** an alias for `int64`. Even on a 64-bit machine where they happen to have the same size, they are *distinct types* — see [03-type-conversions.md](03-type-conversions.md).
+`int` is **not** an alias for `int64`. Even on a 64-bit machine where they happen to have the same size, they are *distinct types* — see [type conversions](03-type-conversions.md).
 
 ### Aliases
 

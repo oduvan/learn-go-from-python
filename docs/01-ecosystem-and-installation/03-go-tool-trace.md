@@ -19,7 +19,8 @@ Per the `runtime/trace` package documentation:
 - Syscall enter / exit / block events
 - GC events
 - Heap size changes
-- Processor (P) start/stop events
+- Processor (P) start/stop events — a "P" is the Go scheduler's logical
+  processor, the slot that runs goroutines on an OS thread
 - CPU profiling samples (when active)
 - Optional user annotations:
   - **Tasks** — logical operations that span multiple goroutines
@@ -58,6 +59,11 @@ func main() {
     // ... workload to trace ...
 }
 ```
+
+Don't worry about the `defer`, `if err != nil`, and `log.Fatal` syntax
+yet — error handling and `defer` are covered in the language-basics topic.
+For now, just note the shape: open a file, start the trace, and `defer`
+stopping it so it always runs.
 
 ### B. From tests
 

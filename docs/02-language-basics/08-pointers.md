@@ -2,7 +2,7 @@
 
 A pointer holds the **memory address** of a variable. You've already
 seen `&` and `*` mentioned briefly in
-[04-operators.md](04-operators.md); this article explains what they
+[operators](04-operators.md); this article explains what they
 actually do.
 
 ## Two operators, one type prefix

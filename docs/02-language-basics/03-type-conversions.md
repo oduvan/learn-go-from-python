@@ -170,7 +170,7 @@ type only when you want to constrain them.
 
 The same `T(x)` syntax works for any two types that share an underlying
 type — not just predeclared numerics. See
-[09-custom-types.md](09-custom-types.md) for the full story; in short:
+[custom types](09-custom-types.md) for the full story; in short:
 
 ```go
 type Celsius float64

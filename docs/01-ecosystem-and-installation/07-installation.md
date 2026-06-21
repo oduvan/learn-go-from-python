@@ -137,7 +137,7 @@ go1.22.3 env GOROOT
 
 Uninstall a side-by-side version by removing its `GOROOT` directory and the `goX.Y.Z` binary from `$GOBIN`.
 
-See [06-multiple-go-versions.md](06-multiple-go-versions.md) for the bigger picture — `GOTOOLCHAIN=auto` handles the per-project version selection automatically once you have any Go installed.
+See [multiple Go versions](06-multiple-go-versions.md) for the bigger picture — `GOTOOLCHAIN=auto` handles the per-project version selection automatically once you have any Go installed.
 
 ## Uninstalling Go
 

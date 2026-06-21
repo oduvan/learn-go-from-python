@@ -53,6 +53,6 @@ func main() {
 	for _, n := range results {
 		total += n
 	}
-	fmt.Printf("Processed %d jobs across %d unique files; total words: %d\n",
-		len(big), len(results), total)
+	fmt.Printf("Counted %d words across %d files (workload amplified to %d jobs over %d workers so the trace shows visible parallelism)\n",
+		total, len(results), len(big), numWorkers)
 }

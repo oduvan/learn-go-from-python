@@ -69,7 +69,7 @@ func parseAge(s string) (int, error) {
 }
 ```
 
-The `error` type is covered in its own article ([07-errors.md](07-errors.md));
+The `error` type is covered in its own article ([errors](07-errors.md));
 for now, treat it as "Go's standard way to signal something went wrong."
 
 > **From Python:** Python supports multiple returns through tuple
@@ -173,7 +173,7 @@ semantics as Python's nested functions.
 
 ### Immediately-invoked function expression
 
-A common pattern with `defer` (covered in [14-defer.md](14-defer.md)):
+A common pattern with `defer` (covered in [defer](14-defer.md)):
 define a function literal and call it right away with `()`.
 
 ```go

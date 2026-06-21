@@ -34,13 +34,17 @@ From this directory:
 go run .
 ```
 
-Expected output (numbers approximate):
+Expected output:
 
 ```
-Processed 400 jobs across 2 unique files; total words: 377
+Counted 377 words across 2 files (workload amplified to 400 jobs over 4 workers so the trace shows visible parallelism)
 ```
 
-This also writes `trace.out`.
+The real work is small — two text files in `counter/testdata/`, 377 words
+total. The program deliberately repeats that tiny workload 200× (→ 400
+jobs) and spreads it over 4 worker goroutines for one reason only: so the
+recorded trace has enough concurrent activity to be worth looking at in
+`go tool trace`. It also writes `trace.out`.
 
 ## Running the tests
 
