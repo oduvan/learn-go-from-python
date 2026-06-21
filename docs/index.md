@@ -61,6 +61,10 @@ is always obvious.
 
 - [Goroutines](05-concurrency/01-goroutines.md) — `go`, scheduling, `WaitGroup`, the main-exits trap.
 - [Channels](05-concurrency/02-channels.md) — send/receive, buffering, `close`, `range`, deadlocks.
+- [select](05-concurrency/03-select.md) — multiplexing, `default`, timeouts, done-channels.
+- [Synchronization](05-concurrency/04-synchronization.md) — `Mutex`, `Once`, atomics, the race detector.
+- [Context](05-concurrency/05-context.md) — cancellation, deadlines, propagation.
+- [Concurrency patterns](05-concurrency/06-concurrency-patterns.md) — worker pools, fan-out/fan-in, pipelines.
 
 ## Source
 
