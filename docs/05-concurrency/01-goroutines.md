@@ -104,6 +104,36 @@ A panic in a goroutine that isn't recovered **inside that same goroutine**
 takes down the whole process — you can't recover it from the parent. Each
 goroutine is responsible for its own `recover` (see panic and recover).
 
+```go
+func main() {
+    var wg sync.WaitGroup
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        panic("boom")     // not recovered here
+    }()
+    wg.Wait()
+}
+// panic: boom
+// (the whole program crashes — the deferred wg.Done runs during unwinding,
+//  but nothing in main can catch this)
+```
+
+The fix is to `recover` **in the goroutine itself**:
+
+```go
+go func() {
+    defer wg.Done()
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println("recovered:", r)   // output: recovered: boom
+        }
+    }()
+    panic("boom")
+}()
+// main keeps running
+```
+
 ## Quick reference
 
 | Construct | Meaning |

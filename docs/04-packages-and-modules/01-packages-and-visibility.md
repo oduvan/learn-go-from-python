@@ -53,7 +53,16 @@ func reset(i *Item) { i.price = 0 }       // unexported
 
 The privacy boundary is the **package**, not the type or the file. Files
 in the same package see each other's unexported names freely; another
-package sees only the exported ones.
+package sees only the exported ones. From a *different* package the
+compiler enforces it:
+
+```go
+// in package main, importing the store package above
+i := store.New()
+fmt.Println(i.Name)    // ok — Name is exported
+fmt.Println(i.price)   // compile error: i.price undefined
+                       // (cannot refer to unexported field price)
+```
 
 > **From Python:** there's no `_private` convention that's merely
 > advisory, and no `__name` mangling — visibility is enforced by the

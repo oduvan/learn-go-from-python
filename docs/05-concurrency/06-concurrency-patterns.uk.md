@@ -72,6 +72,18 @@ func merge(cs ...<-chan int) <-chan int {
 }
 ```
 
+Як це запустити — два джерела, злиті в один потік (результати надходять у
+будь-якому порядку, тож сортуємо перед друком для сталого результату):
+
+```go
+var got []int
+for v := range merge(gen(1, 2), gen(3, 4)) {
+    got = append(got, v)
+}
+sort.Ints(got)
+fmt.Println(got)   // output: [1 2 3 4]
+```
+
 ## Конвеєр
 
 Конвеєр (pipeline) — це ланцюг стадій, кожна з яких є функцією, що **бере
@@ -121,6 +133,33 @@ for v := range sq(gen(2, 3, 4)) {
 Дайте кожній спосіб вийти: закрийте її вхідний канал або передайте
 `context.Context` і робіть `select` на `ctx.Done()`. Горутина, яку не можна
 зупинити, — це баг.
+
+```go
+func worker(ctx context.Context, jobs <-chan int, done chan<- struct{}) {
+    for {
+        select {
+        case <-ctx.Done():       // скасування перемагає
+            fmt.Println("stopped")
+            close(done)
+            return
+        case j := <-jobs:
+            fmt.Println("did", j)
+        }
+    }
+}
+
+ctx, cancel := context.WithCancel(context.Background())
+jobs := make(chan int)
+done := make(chan struct{})
+go worker(ctx, jobs, done)
+
+jobs <- 1                        // робітник обробляє одне завдання
+cancel()                         // потім ми кажемо йому зупинитися
+<-done                           // і чекаємо, доки він справді вийде
+// output:
+// did 1
+// stopped
+```
 
 ## Емпіричні правила
 

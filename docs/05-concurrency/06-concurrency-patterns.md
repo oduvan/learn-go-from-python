@@ -70,6 +70,18 @@ func merge(cs ...<-chan int) <-chan int {
 }
 ```
 
+Driving it — two sources merged into one stream (results arrive in any
+order, so sort before printing for a stable result):
+
+```go
+var got []int
+for v := range merge(gen(1, 2), gen(3, 4)) {
+    got = append(got, v)
+}
+sort.Ints(got)
+fmt.Println(got)   // output: [1 2 3 4]
+```
+
 ## Pipeline
 
 A pipeline is a chain of stages, each a function that **takes a
@@ -118,6 +130,33 @@ Every long-lived goroutine needs an exit path, or it **leaks** — it lives
 until the program ends, holding memory and possibly blocking forever. Give
 each one a way out: close its input channel, or pass a `context.Context`
 and `select` on `ctx.Done()`. A goroutine you can't stop is a bug.
+
+```go
+func worker(ctx context.Context, jobs <-chan int, done chan<- struct{}) {
+    for {
+        select {
+        case <-ctx.Done():       // cancellation wins
+            fmt.Println("stopped")
+            close(done)
+            return
+        case j := <-jobs:
+            fmt.Println("did", j)
+        }
+    }
+}
+
+ctx, cancel := context.WithCancel(context.Background())
+jobs := make(chan int)
+done := make(chan struct{})
+go worker(ctx, jobs, done)
+
+jobs <- 1                        // worker handles one job
+cancel()                         // then we tell it to stop
+<-done                           // and wait for it to actually exit
+// output:
+// did 1
+// stopped
+```
 
 ## Rules of thumb
 

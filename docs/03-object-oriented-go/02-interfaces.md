@@ -69,7 +69,20 @@ fmt.Println(s == nil)   // output: true
 ```
 
 Calling a method on a `nil` interface panics, because there's no concrete
-method to dispatch to.
+method to dispatch to:
+
+```go
+var s Shape
+s.Area()   // panic: runtime error: invalid memory address or nil pointer dereference
+```
+
+Once it holds a value, the interface remembers that value's **dynamic
+type** — you can see it with `%T`:
+
+```go
+var s Shape = Circle{2}
+fmt.Printf("%T %v\n", s, s)   // output: main.Circle {2}
+```
 
 ## Pointer vs value receivers decide satisfaction
 

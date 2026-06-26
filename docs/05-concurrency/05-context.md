@@ -102,6 +102,21 @@ passing optional function arguments. Overusing it hides dependencies, so
 prefer explicit parameters and reach for values only for cross-cutting
 data.
 
+Use an **unexported custom key type**, not a bare string, so keys from
+different packages can't collide:
+
+```go
+type ctxKey string
+
+ctx := context.WithValue(context.Background(), ctxKey("reqID"), "abc123")
+
+fmt.Println(ctx.Value(ctxKey("reqID")))   // output: abc123
+fmt.Println(ctx.Value(ctxKey("missing"))) // output: <nil>
+```
+
+`Value` returns `any`, so it's `nil` for an absent key and you usually
+type-assert the result back to its concrete type before using it.
+
 ## Quick reference
 
 | Call | Meaning |

@@ -141,7 +141,21 @@ type ReadWriter interface {
 ```
 
 Тип задовольняє `ReadWriter` автоматично, щойно має і `Read`, і `Write` —
-оголошення не потрібне.
+оголошення не потрібне:
+
+```go
+type Buf struct{ data string }
+
+func (b *Buf) Read() string   { return b.data }
+func (b *Buf) Write(s string) { b.data = s }
+
+var rw ReadWriter = &Buf{}    // *Buf має Read + Write, тож підходить
+rw.Write("hi")
+fmt.Println(rw.Read())        // output: hi
+```
+
+`*Buf` ніде не згадує ні `ReadWriter`, ні `Reader`, ні `Writer` — досить
+мати ці два методи.
 
 ## Чому немає успадкування?
 

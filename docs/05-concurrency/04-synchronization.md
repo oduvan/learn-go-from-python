@@ -58,10 +58,39 @@ exclusive access.
 
 ```go
 var mu sync.RWMutex
-mu.RLock()           // multiple readers can hold this simultaneously
-_ = sharedValue
-mu.RUnlock()
+balance := 0
+var wg sync.WaitGroup
+
+// one writer
+wg.Add(1)
+go func() {
+    defer wg.Done()
+    for i := 0; i < 100; i++ {
+        mu.Lock()           // exclusive
+        balance++
+        mu.Unlock()
+    }
+}()
+
+// three concurrent readers
+for r := 0; r < 3; r++ {
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        for i := 0; i < 100; i++ {
+            mu.RLock()      // shared — readers don't block each other
+            _ = balance
+            mu.RUnlock()
+        }
+    }()
+}
+
+wg.Wait()
+fmt.Println(balance)        // output: 100
 ```
+
+The readers run in parallel with each other; only the writer's `Lock`
+forces everyone else to wait. Run it with `go run -race` and it's clean.
 
 ## `sync.Once`: run exactly once
 
