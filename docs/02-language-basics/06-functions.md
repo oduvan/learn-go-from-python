@@ -186,13 +186,80 @@ func() {
 ## Functions don't have generic syntax sugar
 
 Go doesn't have keyword arguments, optional positional arguments, or
-default values. If you want any of those ergonomics, the idiomatic
-options are:
+default values. If you want any of those ergonomics, there are three
+idiomatic patterns — each shown below.
 
-- Multiple functions with descriptive names (`NewReader` /
-  `NewReaderSize`).
-- A struct parameter (`func Open(opts Options)`).
-- The "functional options" pattern (`func Open(opts ...Option)`).
+**1. Multiple constructors with descriptive names.** When there are just a
+couple of variants, write a function per variant. The name documents the
+difference.
+
+```go
+type Reader struct {
+    data    string
+    bufSize int
+}
+
+func NewReader(data string) *Reader            { return &Reader{data: data, bufSize: 4096} }
+func NewReaderSize(data string, n int) *Reader { return &Reader{data: data, bufSize: n} }
+
+fmt.Println(NewReader("hi").bufSize)         // output: 4096
+fmt.Println(NewReaderSize("hi", 64).bufSize) // output: 64
+```
+
+**2. An options struct.** Pass a struct of settings. The **zero value of
+each field is its default**, and a keyed struct literal reads almost like
+keyword arguments — you set only what you need, in any order.
+
+```go
+type Options struct {
+    Timeout int
+    Retries int
+    Debug   bool
+}
+
+func Connect(addr string, opts Options) string {
+    if opts.Timeout == 0 {
+        opts.Timeout = 30 // default when the caller omits it
+    }
+    return fmt.Sprintf("%s timeout=%d retries=%d debug=%v",
+        addr, opts.Timeout, opts.Retries, opts.Debug)
+}
+
+fmt.Println(Connect("db:5432", Options{Retries: 3, Debug: true}))
+// output: db:5432 timeout=30 retries=3 debug=true
+```
+
+**3. The functional options pattern.** Each option is a function that
+mutates the value being built. The constructor takes a variadic list of
+them, applying each over sensible defaults. This is what big libraries use
+when there are many optional settings.
+
+```go
+type Server struct {
+    host string
+    port int
+}
+
+type Option func(*Server)
+
+func WithHost(h string) Option { return func(s *Server) { s.host = h } }
+func WithPort(p int) Option    { return func(s *Server) { s.port = p } }
+
+func NewServer(opts ...Option) *Server {
+    s := &Server{host: "localhost", port: 8080} // defaults
+    for _, opt := range opts {
+        opt(s)
+    }
+    return s
+}
+
+s := NewServer(WithPort(9090))
+fmt.Println(s.host, s.port)   // output: localhost 9090
+```
+
+Rule of thumb: a couple of variants → separate constructors; a fixed set
+of settings → an options struct; an open-ended, growing set → functional
+options.
 
 > **From Python:** no `def f(x=42, *, debug=False)`. Idiomatic Go
 > favours an extra constructor or an options struct over keyword
