@@ -101,6 +101,21 @@ func init() {
 }
 ```
 
+Порядок — спершу змінні рівня пакета, потім `init`, потім `main` — можна
+спостерігати:
+
+```go
+var x = setup()
+
+func setup() int { fmt.Println("var init"); return 1 }
+func init()      { fmt.Println("init func") }
+func main()      { fmt.Println("main") }
+// output:
+// var init
+// init func
+// main
+```
+
 Користуйтеся `init` помірно — для налаштування, яке справді неможливо
 виразити звичайним ініціалізатором змінної. Кілька `init` (навіть у різних
 файлах) виконуються в порядку, у якому файли подано компілятору.

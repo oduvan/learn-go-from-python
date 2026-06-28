@@ -190,14 +190,20 @@ default:
 **No implicit fallthrough.** Each `case` ends with an implicit `break`. If you actually want C-style fallthrough, write it:
 
 ```go
+x := 1
 switch x {
 case 1:
     fmt.Println("one")
-    fallthrough
+    fallthrough        // fall into the next case unconditionally
 case 2:
     fmt.Println("one or two")
 }
+// output:
+// one
+// one or two
 ```
+
+`fallthrough` runs the next case's body even though `x` isn't 2.
 
 ### "Tagless" switch — replaces `if/else if` chains
 
@@ -251,6 +257,22 @@ func describe(x any) {
 ## `goto`
 
 Exists, has the usual restrictions (can't jump over variable declarations, can't jump into a block). Almost never used outside generated code or very specific state-machine implementations. Don't reach for it casually.
+
+```go
+i := 0
+loop:
+if i < 3 {
+    fmt.Println(i)
+    i++
+    goto loop
+}
+// output:
+// 0
+// 1
+// 2
+```
+
+(That's just a `for` loop written the hard way — which is exactly why you rarely want `goto`.)
 
 ## What's missing from Python
 

@@ -26,6 +26,15 @@ example.com/shop/
 
 Усе інше щодо структури — це домовленість, а не правило.
 
+Правило `internal/` забезпечує компілятор — імпорт ззовні батьківського
+піддерева не вдасться:
+
+```go
+// з іншого модуля, що імпортує example.com/shop/internal/auth
+import _ "example.com/shop/internal/auth"
+// compile error: use of internal package example.com/shop/internal/auth not allowed
+```
+
 ## `cmd/` та поширена структура
 
 Широко вживана (але необов'язкова) форма відокремлює точки входу від коду

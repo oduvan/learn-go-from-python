@@ -107,8 +107,21 @@ default:
 ```
 
 For *wrapped* errors, the standard library's `errors.As` is preferred over
-a bare assertion because it unwraps the chain — but the mechanism
-underneath is the same idea.
+a bare assertion because it unwraps the chain. It takes a pointer to a
+variable of the target type and fills it in if any error in the chain
+matches:
+
+```go
+_, err := os.Open("/nope/nope")
+
+var pe *os.PathError
+if errors.As(err, &pe) {
+    fmt.Println("path:", pe.Path)   // output: path: /nope/nope
+}
+```
+
+The mechanism underneath is the same idea as a type assertion — `errors.As`
+just walks the wrapped chain for you.
 
 > **From Python:** a type switch is the idiomatic stand-in for an
 > `isinstance(x, T)` ladder, and comma-ok assertions play the role of a

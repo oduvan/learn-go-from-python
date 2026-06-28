@@ -139,10 +139,23 @@ go run -race .
 go test -race ./...
 ```
 
-On a real race it prints a `WARNING: DATA RACE` with both stacks. It only
-catches races that actually occur during the run, so use it with tests that
-exercise concurrency. It's one of the most valuable tools in Go — make a
-habit of running tests with `-race` in CI.
+Running the racy `count++` loop from the top of this article with `-race`
+reports it:
+
+```text
+$ go run -race .
+==================
+WARNING: DATA RACE
+Read at 0x00c0000a0068 by goroutine 8:
+  main.main.func1()
+Previous write at 0x00c0000a0068 by goroutine 9:
+  main.main.func1()
+==================
+```
+
+It only catches races that actually occur during the run, so use it with
+tests that exercise concurrency. It's one of the most valuable tools in
+Go — make a habit of running tests with `-race` in CI.
 
 > **From Python:** there's no GIL serialising bytecode, so Go code really
 > does race. The flip side: real parallelism, plus a first-class detector

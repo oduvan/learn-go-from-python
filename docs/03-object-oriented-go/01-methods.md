@@ -145,7 +145,21 @@ func main() {
 ```
 
 This is how you attach behaviour to slice, map, function, or
-primitive-backed types.
+primitive-backed types. The function-backed case is the surprising one — a
+*function type* can have methods:
+
+```go
+type Handler func(string) string
+
+func (h Handler) Twice(s string) string { return h(h(s)) }
+
+var exclaim Handler = func(s string) string { return s + "!" }
+fmt.Println(exclaim.Twice("go"))   // output: go!!
+```
+
+`exclaim` is a function value, yet `.Twice` calls it twice — the receiver
+`h` *is* the function. (This is exactly how `http.HandlerFunc` adapts a
+plain function into an interface.)
 
 ## The "same package" restriction
 

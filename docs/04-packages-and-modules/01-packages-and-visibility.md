@@ -102,6 +102,21 @@ func init() {
 }
 ```
 
+The ordering — package-level variables first, then `init`, then `main` — is
+observable:
+
+```go
+var x = setup()
+
+func setup() int { fmt.Println("var init"); return 1 }
+func init()      { fmt.Println("init func") }
+func main()      { fmt.Println("main") }
+// output:
+// var init
+// init func
+// main
+```
+
 Use `init` sparingly — for setup that genuinely can't be expressed as a
 plain variable initialiser. Multiple `init`s (even across files) run in
 the order the files are presented to the compiler.

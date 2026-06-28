@@ -148,6 +148,7 @@ const (
 
 perms := Readable | Writable | Executable   // 0b111
 perms = perms &^ Writable                   // 0b101 — write bit cleared
+fmt.Printf("%03b\n", perms)                 // output: 101
 ```
 
 ## String concatenation

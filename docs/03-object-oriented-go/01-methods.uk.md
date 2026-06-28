@@ -138,7 +138,21 @@ func main() {
 ```
 
 Саме так до типів зрізу, мапи, функції або примітивних типів прикріплюється
-поведінка.
+поведінка. Випадок із функцією — найнесподіваніший: *функціональний тип*
+може мати методи:
+
+```go
+type Handler func(string) string
+
+func (h Handler) Twice(s string) string { return h(h(s)) }
+
+var exclaim Handler = func(s string) string { return s + "!" }
+fmt.Println(exclaim.Twice("go"))   // output: go!!
+```
+
+`exclaim` — це значення-функція, та `.Twice` викликає її двічі: отримувач
+`h` *і є* цією функцією. (Саме так `http.HandlerFunc` перетворює звичайну
+функцію на інтерфейс.)
 
 ## Обмеження «той самий пакет»
 
