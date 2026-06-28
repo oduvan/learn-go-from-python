@@ -100,6 +100,26 @@ func safe() {
 }
 ```
 
+### 4. A deferred closure can change a named return value
+
+A deferred function runs *after* the `return` statement has set the result
+but *before* the caller receives it. If the results are **named**, a
+deferred closure can read and modify them — the mechanism behind the
+panic-to-error pattern.
+
+```go
+func double(x int) (result int) {
+    defer func() { result *= 2 }()
+    result = x + 1
+    return result            // sets result = 5, then the defer doubles it
+}
+
+fmt.Println(double(4))       // output: 10
+```
+
+`return result` stores 5 in `result`; the deferred closure then runs and
+doubles it to 10 — and 10 is what the caller sees.
+
 ## Idiomatic uses
 
 ### Closing a file

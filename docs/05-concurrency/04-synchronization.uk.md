@@ -59,10 +59,39 @@ fmt.Println(count)   // output: 1000
 
 ```go
 var mu sync.RWMutex
-mu.RLock()           // кілька читачів можуть тримати це одночасно
-_ = sharedValue
-mu.RUnlock()
+balance := 0
+var wg sync.WaitGroup
+
+// один письменник
+wg.Add(1)
+go func() {
+    defer wg.Done()
+    for i := 0; i < 100; i++ {
+        mu.Lock()           // винятково
+        balance++
+        mu.Unlock()
+    }
+}()
+
+// три конкурентні читачі
+for r := 0; r < 3; r++ {
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        for i := 0; i < 100; i++ {
+            mu.RLock()      // спільно — читачі не блокують одне одного
+            _ = balance
+            mu.RUnlock()
+        }
+    }()
+}
+
+wg.Wait()
+fmt.Println(balance)        // output: 100
 ```
+
+Читачі виконуються паралельно один з одним; лише `Lock` письменника
+змушує всіх інших чекати. Запустіть із `go run -race` — і це чисто.
 
 ## `sync.Once`: виконати рівно раз
 
@@ -111,8 +140,21 @@ go run -race .
 go test -race ./...
 ```
 
-На справжній гонитві він друкує `WARNING: DATA RACE` з обома стеками. Він
-ловить лише ті гонитви, що насправді трапилися під час запуску, тож
+Запуск гонитвового циклу `count++` з початку цієї статті з `-race`
+повідомляє про неї:
+
+```text
+$ go run -race .
+==================
+WARNING: DATA RACE
+Read at 0x00c0000a0068 by goroutine 8:
+  main.main.func1()
+Previous write at 0x00c0000a0068 by goroutine 9:
+  main.main.func1()
+==================
+```
+
+Він ловить лише ті гонитви, що насправді трапилися під час запуску, тож
 використовуйте його з тестами, що навантажують конкурентність. Це один із
 найцінніших інструментів Go — заведіть звичку запускати тести з `-race` у
 CI.

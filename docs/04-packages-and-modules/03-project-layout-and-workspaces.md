@@ -26,6 +26,15 @@ example.com/shop/
 
 Everything else about layout is convention, not rule.
 
+The `internal/` rule is compiler-enforced — an import from outside the
+parent subtree fails:
+
+```go
+// from a different module, importing example.com/shop/internal/auth
+import _ "example.com/shop/internal/auth"
+// compile error: use of internal package example.com/shop/internal/auth not allowed
+```
+
 ## `cmd/` and the common layout
 
 A widely used (but optional) shape separates entry points from library

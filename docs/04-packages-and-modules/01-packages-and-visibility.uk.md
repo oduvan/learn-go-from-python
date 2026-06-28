@@ -53,7 +53,15 @@ func reset(i *Item) { i.price = 0 }       // неекспортована
 
 Межа приватності — це **пакет**, а не тип чи файл. Файли в одному пакеті
 вільно бачать неекспортовані імена одне одного; інший пакет бачить лише
-експортовані.
+експортовані. З *іншого* пакета компілятор це забезпечує:
+
+```go
+// у пакеті main, що імпортує пакет store вище
+i := store.New()
+fmt.Println(i.Name)    // ок — Name експортоване
+fmt.Println(i.price)   // compile error: i.price undefined
+                       // (cannot refer to unexported field price)
+```
 
 > **З погляду Python:** немає ні суто рекомендаційної домовленості
 > `_private`, ні спотворення імен `__name` — видимість забезпечує
@@ -91,6 +99,21 @@ var settings map[string]string
 func init() {
     settings = map[string]string{"env": "dev"}
 }
+```
+
+Порядок — спершу змінні рівня пакета, потім `init`, потім `main` — можна
+спостерігати:
+
+```go
+var x = setup()
+
+func setup() int { fmt.Println("var init"); return 1 }
+func init()      { fmt.Println("init func") }
+func main()      { fmt.Println("main") }
+// output:
+// var init
+// init func
+// main
 ```
 
 Користуйтеся `init` помірно — для налаштування, яке справді неможливо

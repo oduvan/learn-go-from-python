@@ -119,8 +119,15 @@ case <-time.After(time.Millisecond):
 ## An empty `select` blocks forever
 
 `select {}` with no cases blocks the goroutine permanently — occasionally
-used to park `main` while background goroutines run, but in `main` it
-triggers the deadlock detector if nothing else is runnable.
+used to park `main` while background goroutines run, but in `main` with
+nothing else runnable it triggers the deadlock detector:
+
+```go
+func main() {
+    select {}   // no cases — block forever
+}
+// fatal error: all goroutines are asleep - deadlock!
+```
 
 ## Quick reference
 

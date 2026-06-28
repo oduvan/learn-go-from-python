@@ -144,6 +144,7 @@ const (
 
 perms := Readable | Writable | Executable   // 0b111
 perms = perms &^ Writable                   // 0b101 — біт запису скинуто
+fmt.Printf("%03b\n", perms)                 // output: 101
 ```
 
 ## Конкатенація рядків

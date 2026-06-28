@@ -145,7 +145,21 @@ func main() {
 ```
 
 This is how you attach behaviour to slice, map, function, or
-primitive-backed types.
+primitive-backed types. The function-backed case is the surprising one — a
+*function type* can have methods:
+
+```go
+type Handler func(string) string
+
+func (h Handler) Twice(s string) string { return h(h(s)) }
+
+var exclaim Handler = func(s string) string { return s + "!" }
+fmt.Println(exclaim.Twice("go"))   // output: go!!
+```
+
+`exclaim` is a function value, yet `.Twice` calls it twice — the receiver
+`h` *is* the function. (This is exactly how `http.HandlerFunc` adapts a
+plain function into an interface.)
 
 ## The "same package" restriction
 
@@ -188,6 +202,29 @@ methods. Interfaces get their own topic; remember the rule for then:
 
 > If any method has a pointer receiver, only `*T` (not `T`) satisfies
 > interfaces that include that method.
+
+```go
+type Counter int
+func (c Counter) Get() int { return int(c) }   // value receiver
+func (c *Counter) Inc()    { *c++ }             // pointer receiver
+
+type Incrementer interface{ Inc() }
+
+var c Counter = 5
+c.Inc()                  // ok: c is addressable, so Go takes &c for you
+fmt.Println(c.Get())     // output: 6
+
+var i Incrementer = &c   // only *Counter satisfies Incrementer
+i.Inc()
+fmt.Println(c.Get())     // output: 7
+
+// var bad Incrementer = c   // compile error: Counter does not implement
+//                           // Incrementer (method Inc has pointer receiver)
+```
+
+Calling `c.Inc()` directly works because `c` is an addressable variable —
+Go silently rewrites it to `(&c).Inc()`. But storing a *value* in the
+interface doesn't get that help, so only `&c` satisfies `Incrementer`.
 
 ## Method values and method expressions
 

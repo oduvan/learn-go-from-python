@@ -86,7 +86,19 @@ fmt.Println(Sum([]Celsius{1.5, 2.5}))       // output: 4
 ```
 
 Без `~` `Sum[Celsius]` було б відхилено — `Celsius` не є буквально
-`float64`, лише *заснований* на ньому.
+`float64`, лише *заснований* на ньому:
+
+```go
+type StrictFloat interface{ float64 }   // без ~
+
+func StrictSum[T StrictFloat](xs []T) T { /* ... */ }
+
+StrictSum([]Celsius{1, 2})
+// compile error: Celsius does not satisfy StrictFloat
+//   (possibly missing ~ for float64 in StrictFloat)
+```
+
+Компілятор навіть підказує виправлення. Додайте `~` — і `Celsius` підходить.
 
 ## Узагальнені типи
 

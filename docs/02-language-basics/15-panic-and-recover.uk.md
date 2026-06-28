@@ -256,7 +256,16 @@ func safeRun(f func()) (err error) {
     f()
     return nil
 }
+
+err := safeRun(func() { panic("disk full") })
+fmt.Println(err)   // output: panic: disk full
+
+err = safeRun(func() { /* без паніки */ })
+fmt.Println(err)   // output: <nil>
 ```
+
+Паніку перехоплено й перетворено на звичайну `error`, яку викликач може
+перевірити, — програма продовжує працювати.
 
 ## Короткий довідник
 

@@ -139,7 +139,21 @@ type ReadWriter interface {
 ```
 
 A type satisfies `ReadWriter` automatically once it has both `Read` and
-`Write` — no declaration needed.
+`Write` — no declaration needed:
+
+```go
+type Buf struct{ data string }
+
+func (b *Buf) Read() string   { return b.data }
+func (b *Buf) Write(s string) { b.data = s }
+
+var rw ReadWriter = &Buf{}    // *Buf has Read + Write, so it qualifies
+rw.Write("hi")
+fmt.Println(rw.Read())        // output: hi
+```
+
+`*Buf` never mentions `ReadWriter`, `Reader`, or `Writer` — having the two
+methods is enough.
 
 ## Why no inheritance?
 

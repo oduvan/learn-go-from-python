@@ -84,7 +84,19 @@ fmt.Println(Sum([]Celsius{1.5, 2.5}))       // output: 4
 ```
 
 Without the `~`, `Sum[Celsius]` would be rejected — `Celsius` is not
-literally `float64`, only *based on* it.
+literally `float64`, only *based on* it:
+
+```go
+type StrictFloat interface{ float64 }   // no ~
+
+func StrictSum[T StrictFloat](xs []T) T { /* ... */ }
+
+StrictSum([]Celsius{1, 2})
+// compile error: Celsius does not satisfy StrictFloat
+//   (possibly missing ~ for float64 in StrictFloat)
+```
+
+The compiler even suggests the fix. Add the `~` and `Celsius` qualifies.
 
 ## Generic types
 

@@ -184,12 +184,81 @@ func() {
 ## Функції не мають синтаксичного цукру для необов'язкових параметрів
 
 Go не підтримує іменовані аргументи, необов'язкові позиційні аргументи
-або значення за замовчуванням. Якщо вам потрібна така зручність,
-ідіоматичні варіанти:
+або значення за замовчуванням. Якщо вам потрібна така зручність, є три
+ідіоматичні патерни — кожен показано нижче.
 
-- Кілька функцій з описовими іменами (`NewReader` / `NewReaderSize`).
-- Параметр-структура (`func Open(opts Options)`).
-- Патерн «функціональних опцій» (`func Open(opts ...Option)`).
+**1. Кілька конструкторів з описовими іменами.** Коли варіантів лише
+кілька, пишіть функцію на кожен варіант. Ім'я документує різницю.
+
+```go
+type Reader struct {
+    data    string
+    bufSize int
+}
+
+func NewReader(data string) *Reader            { return &Reader{data: data, bufSize: 4096} }
+func NewReaderSize(data string, n int) *Reader { return &Reader{data: data, bufSize: n} }
+
+fmt.Println(NewReader("hi").bufSize)         // output: 4096
+fmt.Println(NewReaderSize("hi", 64).bufSize) // output: 64
+```
+
+**2. Структура опцій.** Передавайте структуру налаштувань. **Нульове
+значення кожного поля — це його значення за замовчуванням**, а літерал
+структури з ключами читається майже як іменовані аргументи — ви задаєте
+лише те, що потрібно, у будь-якому порядку.
+
+```go
+type Options struct {
+    Timeout int
+    Retries int
+    Debug   bool
+}
+
+func Connect(addr string, opts Options) string {
+    if opts.Timeout == 0 {
+        opts.Timeout = 30 // значення за замовчуванням, коли викликач його пропускає
+    }
+    return fmt.Sprintf("%s timeout=%d retries=%d debug=%v",
+        addr, opts.Timeout, opts.Retries, opts.Debug)
+}
+
+fmt.Println(Connect("db:5432", Options{Retries: 3, Debug: true}))
+// output: db:5432 timeout=30 retries=3 debug=true
+```
+
+**3. Патерн функціональних опцій.** Кожна опція — це функція, що змінює
+значення, яке будується. Конструктор приймає варіативний список таких
+функцій, застосовуючи кожну поверх розумних значень за замовчуванням. Саме
+це використовують великі бібліотеки, коли необов'язкових налаштувань
+багато.
+
+```go
+type Server struct {
+    host string
+    port int
+}
+
+type Option func(*Server)
+
+func WithHost(h string) Option { return func(s *Server) { s.host = h } }
+func WithPort(p int) Option    { return func(s *Server) { s.port = p } }
+
+func NewServer(opts ...Option) *Server {
+    s := &Server{host: "localhost", port: 8080} // значення за замовчуванням
+    for _, opt := range opts {
+        opt(s)
+    }
+    return s
+}
+
+s := NewServer(WithPort(9090))
+fmt.Println(s.host, s.port)   // output: localhost 9090
+```
+
+Емпіричне правило: кілька варіантів → окремі конструктори; фіксований
+набір налаштувань → структура опцій; відкритий, зростаючий набір →
+функціональні опції.
 
 > **З досвіду Python:** немає `def f(x=42, *, debug=False)`. Ідіоматичний
 > Go надає перевагу додатковому конструктору або структурі опцій замість
