@@ -9,21 +9,22 @@ lock-free counters.
 
 When two goroutines touch the same variable and at least one writes,
 without synchronisation, the result is a **data race** — undefined
-behaviour. This loop *looks* like it counts to 1000 but doesn't reliably:
+behaviour. Imagine a page-hit counter bumped by 1000 concurrent requests —
+this *looks* like it reaches 1000, but doesn't reliably:
 
 ```go
-count := 0
+hits := 0
 var wg sync.WaitGroup
 for i := 0; i < 1000; i++ {
     wg.Add(1)
-    go func() { defer wg.Done(); count++ }()   // RACE: concurrent writes
+    go func() { defer wg.Done(); hits++ }()   // RACE: concurrent writes
 }
 wg.Wait()
-fmt.Println(count)   // unpredictable: often < 1000
+fmt.Println(hits)   // unpredictable: often < 1000
 ```
 
-`count++` is read-modify-write — three steps that can interleave and lose
-updates.
+`hits++` is read-modify-write — three steps that can interleave and lose
+updates, so some requests get "counted" on top of each other.
 
 ## `sync.Mutex`: mutual exclusion
 
@@ -32,7 +33,7 @@ before touching the shared state, `Unlock` after (usually via `defer`).
 
 ```go
 var mu sync.Mutex
-count := 0
+hits := 0
 var wg sync.WaitGroup
 
 for i := 0; i < 1000; i++ {
@@ -40,15 +41,15 @@ for i := 0; i < 1000; i++ {
     go func() {
         defer wg.Done()
         mu.Lock()
-        count++
+        hits++          // one request counted at a time
         mu.Unlock()
     }()
 }
 wg.Wait()
-fmt.Println(count)   // output: 1000
+fmt.Println(hits)   // output: 1000
 ```
 
-Now the increments are serialised, so the result is always 1000.
+Now the increments are serialised, so every request is counted — always 1000.
 
 ## `sync.RWMutex`: many readers or one writer
 
@@ -115,15 +116,15 @@ The typed atomics (`atomic.Int64`, `atomic.Bool`, …) carry their own
 synchronisation:
 
 ```go
-var count atomic.Int64
+var hits atomic.Int64
 var wg sync.WaitGroup
 
 for i := 0; i < 1000; i++ {
     wg.Add(1)
-    go func() { defer wg.Done(); count.Add(1) }()
+    go func() { defer wg.Done(); hits.Add(1) }()
 }
 wg.Wait()
-fmt.Println(count.Load())   // output: 1000
+fmt.Println(hits.Load())   // output: 1000
 ```
 
 Reach for atomics for simple counters and flags; reach for a mutex when you
