@@ -44,47 +44,72 @@ each goroutine calls `Done()` when finished (via `defer`), and `Wait()`
 blocks until the count hits zero.
 
 ```go
-var wg sync.WaitGroup
-results := make([]int, 3)
-
-for i := 0; i < 3; i++ {
-    wg.Add(1)
-    go func() {
-        defer wg.Done()
-        results[i] = i * i      // each goroutine writes its own index — no clash
-    }()
+// checkHealth pings one service. The sleep stands in for real network latency.
+func checkHealth(name string) string {
+    time.Sleep(100 * time.Millisecond)
+    return name + ": ok"
 }
 
-wg.Wait()                        // block until all three call Done
-fmt.Println(results)             // output: [0 1 4]
+func main() {
+    services := []string{"api", "db", "cache"}
+    statuses := make([]string, len(services))
+
+    var wg sync.WaitGroup
+    for i, name := range services {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            statuses[i] = checkHealth(name)   // each goroutine writes its own slot
+        }()
+    }
+    wg.Wait()                                 // block until all three checks finish
+
+    for _, s := range statuses {
+        fmt.Println(s)
+    }
+}
+// output:
+// api: ok
+// db: ok
+// cache: ok
 ```
 
-Two things make this correct and deterministic:
+This is *why* goroutines exist: **overlapping independent, slow work.** Each
+`checkHealth` takes 100 ms. Run one after another that's ~300 ms; launched as
+goroutines they all wait at the same time, so the whole batch finishes in
+~100 ms. Swap the sleep for a real HTTP request or DB query and it's a
+genuine concurrent health-checker.
 
-- `Wait()` guarantees all goroutines finished before we read `results`.
-- Each goroutine writes a **different** slice element, so there's no
-  concurrent write to the same memory (no data race).
+Two things keep it correct:
+
+- `Wait()` guarantees every check finished before we read `statuses`.
+- Each goroutine writes a **different** slice slot, so there's no concurrent
+  write to the same memory (no data race — confirm with `go run -race`).
 
 ## The loop variable is per-iteration
 
-In the loop above, each iteration has its **own** `i`, so the goroutine's
-closure captures the right value. This is the modern Go behaviour — every
-iteration of a `for` loop gets a fresh copy of the loop variable.
+The loop above captured both `i` and `name` inside each goroutine, and every
+iteration gets its **own** copy — so the goroutine for `"db"` really sees
+`name == "db"`, not whatever value the loop finished on. This is the modern
+Go behaviour: each iteration of a `for` loop has a fresh loop variable.
+
+In older Go this was a notorious bug — the single shared variable was
+usually the loop's *last* value by the time the goroutines ran, so every
+goroutine would have used `"cache"`. People worked around it by passing the
+value in as an argument:
 
 ```go
-for _, s := range []string{"a", "b", "c"} {
+for i, name := range services {
     wg.Add(1)
-    go func() {
+    go func(i int, name string) {   // old workaround: pass copies as arguments
         defer wg.Done()
-        _ = s            // each goroutine sees its own s — "a", "b", "c"
-    }()
+        statuses[i] = checkHealth(name)
+    }(i, name)
 }
 ```
 
-In older Go this was a classic bug: the single shared `i` would often be
-the loop's final value by the time the goroutines ran, so people passed it
-as an argument (`go func(i int){...}(i)`). That workaround still works and
-you'll see it in older code, but it's no longer necessary.
+That still works and you'll see it in older code, but it's no longer
+necessary.
 
 ## Goroutines run in parallel
 

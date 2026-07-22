@@ -73,31 +73,31 @@ case <-time.After(10 * time.Millisecond):
 слухачам.
 
 ```go
-nums := make(chan int)
-done := make(chan struct{})
+logs := make(chan string)
+shutdown := make(chan struct{})
 finished := make(chan struct{})
 
-go func() {
+go func() {                          // фоновий логер
     for {
         select {
-        case n := <-nums:
-            fmt.Println("got", n)
-        case <-done:
-            fmt.Println("stopping")
+        case line := <-logs:
+            fmt.Println("LOG:", line)
+        case <-shutdown:
+            fmt.Println("logger stopped")
             close(finished)
             return
         }
     }
 }()
 
-nums <- 1
-nums <- 2
-close(done)              // сигнал горутині зупинитися
-<-finished               // чекати, доки вона справді завершиться
+logs <- "server started"
+logs <- "request handled"
+close(shutdown)          // сказати логеру зупинитися
+<-finished               // чекати, доки він справді вийде
 // output:
-// got 1
-// got 2
-// stopping
+// LOG: server started
+// LOG: request handled
+// logger stopped
 ```
 
 ## Вимкнення випадку через nil-канал

@@ -12,11 +12,19 @@
 Створіть канал через `make`, надсилайте через `ch <- v`, отримуйте через
 `v := <-ch`:
 
+Поширене застосування — **повернення результату з горутини**: канал і
+доставляє значення, і синхронізує, тож спільна змінна не потрібна:
+
 ```go
-ch := make(chan string)
-go func() { ch <- "ping" }()   // надсилання
-msg := <-ch                     // отримання
-fmt.Println(msg)                // output: ping
+total := make(chan int)
+go func() {
+    sum := 0
+    for _, n := range []int{1, 2, 3, 4, 5} {
+        sum += n
+    }
+    total <- sum        // надіслати результат назад у main
+}()
+fmt.Println(<-total)    // output: 15
 ```
 
 ## Небуферизовані канали синхронізують
@@ -49,11 +57,11 @@ fmt.Println("finished")
 розчіплює відправника й отримувача під час сплесків.
 
 ```go
-ch := make(chan int, 2)
-ch <- 1          // не блокує — у буфері є місце
-ch <- 2          // не блокує — тепер повний
-fmt.Println(len(ch), cap(ch))   // output: 2 2
-fmt.Println(<-ch, <-ch)          // output: 1 2
+jobs := make(chan string, 2)   // невелика черга завдань
+jobs <- "email #1"             // не блокує — у буфері є місце
+jobs <- "email #2"             // не блокує — тепер повний
+fmt.Println(len(jobs), cap(jobs))   // output: 2 2
+fmt.Println(<-jobs, <-jobs)          // output: email #1 email #2
 ```
 
 `len` — це скільки значень буферизовано просто зараз; `cap` — розмір
@@ -88,19 +96,22 @@ fmt.Println(v, ok)   // output: 0 false   — закрито й вичерпан
 вичерпано**, а тоді завершує цикл. Це чистий спосіб споживати потік:
 
 ```go
-ch := make(chan int, 3)
-ch <- 1
-ch <- 2
-ch <- 3
-close(ch)                // без цього range блокувався б назавжди
+greetings := make(chan string)
 
-for v := range ch {
-    fmt.Println(v)
+go func() {                          // виробник
+    for _, name := range []string{"alice", "bob", "carol"} {
+        greetings <- "hello, " + name
+    }
+    close(greetings)                 // більше значень немає; без цього range блокується назавжди
+}()
+
+for g := range greetings {           // споживач — завершується, коли канал закрито
+    fmt.Println(g)
 }
 // output:
-// 1
-// 2
-// 3
+// hello, alice
+// hello, bob
+// hello, carol
 ```
 
 ## Напрям каналу в сигнатурах

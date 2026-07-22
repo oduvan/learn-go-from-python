@@ -11,11 +11,19 @@ between goroutines.
 
 Create one with `make`, send with `ch <- v`, receive with `v := <-ch`:
 
+A common use is **returning a result from a goroutine** — the channel both
+delivers the value and synchronises, so no shared variable is needed:
+
 ```go
-ch := make(chan string)
-go func() { ch <- "ping" }()   // send
-msg := <-ch                     // receive
-fmt.Println(msg)                // output: ping
+total := make(chan int)
+go func() {
+    sum := 0
+    for _, n := range []int{1, 2, 3, 4, 5} {
+        sum += n
+    }
+    total <- sum        // send the result back to main
+}()
+fmt.Println(<-total)    // output: 15
 ```
 
 ## Unbuffered channels synchronise
@@ -48,11 +56,11 @@ the buffer is **full**; receives block only when it's **empty**. This
 decouples sender and receiver in bursts.
 
 ```go
-ch := make(chan int, 2)
-ch <- 1          // doesn't block — buffer has room
-ch <- 2          // doesn't block — now full
-fmt.Println(len(ch), cap(ch))   // output: 2 2
-fmt.Println(<-ch, <-ch)          // output: 1 2
+jobs := make(chan string, 2)   // a small job queue
+jobs <- "email #1"             // doesn't block — buffer has room
+jobs <- "email #2"             // doesn't block — now full
+fmt.Println(len(jobs), cap(jobs))   // output: 2 2
+fmt.Println(<-jobs, <-jobs)          // output: email #1 email #2
 ```
 
 `len` is how many values are buffered right now; `cap` is the buffer size.
@@ -86,19 +94,22 @@ broadcast — every receiver sees it.
 drained**, then ends the loop. It's the clean way to consume a stream:
 
 ```go
-ch := make(chan int, 3)
-ch <- 1
-ch <- 2
-ch <- 3
-close(ch)                // without this, range would block forever
+greetings := make(chan string)
 
-for v := range ch {
-    fmt.Println(v)
+go func() {                          // producer
+    for _, name := range []string{"alice", "bob", "carol"} {
+        greetings <- "hello, " + name
+    }
+    close(greetings)                 // no more values; without this, range blocks forever
+}()
+
+for g := range greetings {           // consumer — ends when the channel closes
+    fmt.Println(g)
 }
 // output:
-// 1
-// 2
-// 3
+// hello, alice
+// hello, bob
+// hello, carol
 ```
 
 ## Channel direction in signatures
