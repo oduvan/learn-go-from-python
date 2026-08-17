@@ -85,6 +85,40 @@ Use a pointer receiver when:
   give them **all** pointer receivers so the type's method set is
   consistent.
 
+## A nil receiver is a normal case
+
+Calling a pointer-receiver method on a `nil` pointer is **not** an error.
+The call itself is fine — only *dereferencing* the nil pointer faults. So a
+method can check for `nil` and treat it as a meaningful state, which is how
+recursive structures avoid nil-guards at every call site.
+
+```go
+type Tree struct {
+    Val         int
+    Left, Right *Tree
+}
+
+func (t *Tree) Sum() int {
+    if t == nil {        // the receiver being nil is a normal case, not a bug
+        return 0
+    }
+    return t.Val + t.Left.Sum() + t.Right.Sum()
+}
+
+t := &Tree{Val: 1, Left: &Tree{Val: 2}}
+fmt.Println(t.Sum())     // output: 3
+
+var empty *Tree
+fmt.Println(empty.Sum()) // output: 0
+```
+
+`t.Left.Sum()` works even when `Left` is nil — that's what makes the
+recursion terminate without checking every branch before descending.
+
+> **From Python:** calling a method on `None` is always an
+> `AttributeError`. In Go the receiver is just an argument, so a nil
+> pointer arrives at the method perfectly intact; you decide what it means.
+
 ## Auto-addressing and auto-dereferencing
 
 You don't write `(&n).Inc()` or `(*p).Inc()`. Go inserts the `&` or
@@ -119,6 +153,35 @@ m["x"].Inc()                    // compile error: cannot call pointer method Inc
 
 The fix: read into a local, mutate, write back; or change the map to
 hold `*Counter` values.
+
+### The range-loop trap
+
+The same addressability rule causes the single most common silent bug with
+pointer receivers. `for _, x := range s` binds `x` to a **copy** of each
+element, so mutating it changes nothing — and it compiles cleanly:
+
+```go
+type Counter struct{ n int }
+func (c *Counter) Inc() { c.n++ }
+
+cs := []Counter{{}, {}}
+
+for _, c := range cs {
+    c.Inc()          // c is a copy — compiles, mutates nothing
+}
+fmt.Println(cs)      // output: [{0} {0}]
+
+for i := range cs {
+    cs[i].Inc()      // cs[i] is addressable — mutates the slice
+}
+fmt.Println(cs)      // output: [{1} {1}]
+```
+
+Index through the slice (or make it `[]*Counter`) when you need the
+mutation to stick.
+
+> **From Python:** `for x in lst` hands you the object itself, so
+> `x.inc()` sticks. Go hands you a copy, and nothing warns you.
 
 ## Methods on non-struct types
 
@@ -243,6 +306,32 @@ fmt.Println(f())                        // 212
 
 `f` has type `func() float64`. The receiver `c` is closed over.
 
+**The receiver is evaluated when the method value is created, not when it's
+called.** With a value receiver that means you capture a *copy*, frozen at
+that instant; with a pointer receiver you capture the address, so later
+changes are visible.
+
+```go
+type Counter struct{ n int }
+func (c Counter) Get() int { return c.n }   // value receiver
+func (c *Counter) Inc()    { c.n++ }         // pointer receiver
+
+c := Counter{}
+get := c.Get      // copies c right now
+inc := c.Inc      // captures &c
+
+inc()
+inc()
+fmt.Println(get(), c.Get())   // output: 0 2
+```
+
+`get()` still reports 0 — it's reading the copy taken before the
+increments. This is the classic bug when method values are stashed in a
+callback or a `defer`.
+
+> **From Python:** `obj.method` is a bound method that always sees current
+> state. A Go method value with a value receiver does not.
+
 ### Method expression — receiver is the first parameter
 
 ```go
@@ -252,6 +341,21 @@ fmt.Println(g(Celsius(100)))            // 212
 
 `g` has type `func(Celsius) float64`. The receiver becomes an explicit
 first parameter at the call site.
+
+For a **pointer-receiver** method you must name the pointer type — and the
+compiler tells you so:
+
+```go
+inc := (*Counter).Inc     // type: func(*Counter)
+c := Counter{}
+inc(&c)
+inc(&c)
+fmt.Println(c.n)          // output: 2
+
+// f := Counter.Inc
+// compile error: invalid method expression Counter.Inc
+//   (needs pointer receiver (*Counter).Inc)
+```
 
 Method values are far more common in real code; expressions show up
 in plumbing libraries and tests.
@@ -280,6 +384,61 @@ func main() {
 `s.Log(...)` is shorthand for `s.Logger.Log(...)`. The method has been
 **promoted** to `Server`. Compose behaviour by embedding; Go has no
 inheritance.
+
+### What promotion puts in the method set
+
+Promotion follows the same pointer/value split as ordinary methods, one
+level deeper. Embedding a **value** `T` promotes `T`'s value-receiver
+methods to both `S` and `*S` — but `T`'s **pointer**-receiver methods land
+only in `*S`:
+
+```go
+type Logger struct{ n int }
+func (l *Logger) Log() { l.n++ }      // pointer receiver
+
+type Server struct{ Logger }          // embeds the value
+
+type Loggable interface{ Log() }
+
+var _ Loggable = &Server{}   // ok
+var _ Loggable = Server{}
+// compile error: Server does not implement Loggable (method Log has pointer receiver)
+```
+
+The error is confusing the first time, because `Log` isn't even declared on
+`Server` — it's promoted. The fix is to use `*Server`.
+
+### When two embedded types collide
+
+Embedding two types that provide the same method name is legal to
+*declare*. The error only fires where you actually select it:
+
+```go
+type Reader struct{}
+func (Reader) Close() string { return "reader" }
+
+type Writer struct{}
+func (Writer) Close() string { return "writer" }
+
+type File struct {
+    Reader
+    Writer
+}
+
+var f File
+fmt.Println(f.Close())
+// compile error: ambiguous selector f.Close
+```
+
+Shallower depth wins, so declaring `Close` directly on `File` resolves it —
+and that is exactly how "overriding" works in Go. The inner ones stay
+reachable by name:
+
+```go
+func (File) Close() string { return "file" }
+
+fmt.Println(f.Close(), f.Reader.Close())   // output: file reader
+```
 
 ## Quick reference
 

@@ -9,7 +9,7 @@
 | `foo_linux.go` | Implicit build constraint: only compiled when `GOOS=linux`. |
 | `foo_amd64.go` | Only compiled when `GOARCH=amd64`. |
 | `foo_linux_amd64.go` | Only compiled when both apply. |
-| `foo_test_linux.go` | A test file restricted to linux. |
+| `foo_linux_test.go` | A test file restricted to linux — `_test` must come **last**. |
 | `_foo.go`, `.foo.go` | **Ignored entirely** by the go tool. The leading `_` or `.` is the off-switch. |
 | `doc.go` | Convention only: a file holding the package-level doc comment. |
 | `go.mod` | Module manifest. |

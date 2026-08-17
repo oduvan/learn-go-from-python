@@ -12,7 +12,8 @@ package store
 Two rules anchor everything else:
 
 - **One directory = one package.** All `.go` files in a directory must
-  declare the same package name; together they form that package.
+  declare the same package name; together they form that package. (There
+  is exactly one exception — the external test package — see below.)
 - **`package main` is special** — it's the entry point of an executable,
   and it must contain a `func main()`. Every other package is a library,
   imported by others.
@@ -82,6 +83,47 @@ func New() *Item { return &Item{price: basePrice} }
 // price.go
 package store
 const basePrice = 100      // visible to item.go without any import
+```
+
+## The one exception: `foo` and `foo_test`
+
+A directory may hold a second package, and only one: `<name>_test`. Test
+files declaring `package store_test` live beside `package store` and are
+compiled separately — they can only use the **exported** API, exactly like
+any other caller.
+
+```go
+// store/store.go
+package store
+
+func New() *Item { return &Item{price: basePrice} }
+
+// store/internal_test.go — same package: sees unexported names
+package store
+
+func TestBasePrice(t *testing.T) { _ = basePrice }
+
+// store/store_test.go — external: only the exported API
+package store_test
+
+import "example.com/shop/store"
+
+func TestNew(t *testing.T) { _ = store.New() }
+```
+
+`go list` shows the three groups the toolchain tracks:
+
+```bash
+$ go list -f '{{.GoFiles}} {{.TestGoFiles}} {{.XTestGoFiles}}' ./store
+[store.go] [internal_test.go] [store_test.go]
+```
+
+Writing tests in `package foo_test` is how you dogfood your own public
+API — if the test is awkward to write, the API is awkward to use. Two
+*ordinary* packages in one directory remain an error:
+
+```bash
+found packages alpha (x.go) and beta (y.go) in /tmp/a1/bad
 ```
 
 ## `init` functions
