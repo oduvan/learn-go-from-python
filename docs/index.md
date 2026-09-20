@@ -50,6 +50,7 @@ is always obvious.
 - [Type assertions and type switches](03-object-oriented-go/03-type-assertions-and-type-switches.md) — recovering the concrete type at runtime.
 - [Generics](03-object-oriented-go/04-generics.md) — type parameters and constraints.
 - [OOP patterns](03-object-oriented-go/05-oop-patterns.md) — encapsulation, composition over inheritance, polymorphism.
+- [Custom error types](03-object-oriented-go/06-custom-error-types.md) — your own `error` types, `Unwrap`, `errors.As`, custom `Is`.
 
 ### [Packages and modules](04-packages-and-modules/01-packages-and-visibility.md)
 
@@ -65,6 +66,8 @@ is always obvious.
 - [Synchronization](05-concurrency/04-synchronization.md) — `Mutex`, `Once`, atomics, the race detector.
 - [Context](05-concurrency/05-context.md) — cancellation, deadlines, propagation.
 - [Concurrency patterns](05-concurrency/06-concurrency-patterns.md) — worker pools, fan-out/fan-in, pipelines.
+- [Bounded concurrency](05-concurrency/07-bounded-concurrency.md) — channel semaphores, collecting results, `sync.Map`.
+- [Long-running goroutines](05-concurrency/08-long-running-goroutines.md) — per-goroutine `recover`, tickers, draining on shutdown.
 
 ## Source
 

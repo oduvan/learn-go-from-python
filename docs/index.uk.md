@@ -51,6 +51,7 @@ Go. Мета — пояснювати Go **його власними катег�
 - [Твердження типу та перемикачі типів](03-object-oriented-go/03-type-assertions-and-type-switches.md) — повернення конкретного типу під час виконання.
 - [Generics](03-object-oriented-go/04-generics.md) — параметри типу та обмеження.
 - [Патерни ООП](03-object-oriented-go/05-oop-patterns.md) — інкапсуляція, композиція замість успадкування, поліморфізм.
+- [Власні типи помилок](03-object-oriented-go/06-custom-error-types.md) — власні типи `error`, `Unwrap`, `errors.As`, власний `Is`.
 
 ### [Пакети та модулі](04-packages-and-modules/01-packages-and-visibility.md)
 
@@ -66,6 +67,8 @@ Go. Мета — пояснювати Go **його власними катег�
 - [Синхронізація](05-concurrency/04-synchronization.md) — `Mutex`, `Once`, атоміки, детектор гонитв.
 - [Context](05-concurrency/05-context.md) — скасування, дедлайни, поширення.
 - [Патерни конкурентності](05-concurrency/06-concurrency-patterns.md) — пули робітників, fan-out/fan-in, конвеєри.
+- [Обмежена конкурентність](05-concurrency/07-bounded-concurrency.md) — семафори на каналах, збирання результатів, `sync.Map`.
+- [Довгоживучі горутини](05-concurrency/08-long-running-goroutines.md) — `recover` у кожній горутині, тікери, дренаж під час зупинки.
 
 ## Джерела
 

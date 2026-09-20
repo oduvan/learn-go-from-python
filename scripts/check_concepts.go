@@ -122,6 +122,10 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("docs/.concepts.yml: all tracked concepts are introduced before use ✓")
+
+	if checkStdlibOnly(repoRoot) > 0 {
+		os.Exit(1)
+	}
 }
 
 func loadConfig(path string) (*Config, error) {

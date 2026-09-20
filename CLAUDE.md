@@ -70,6 +70,7 @@ learn-go-from-python/
      earlier articles no longer act as a baseline grandfather. Run
      `cd scripts && go run .` locally to confirm the linter is still
      green before pushing — CI runs it before the MkDocs build.
+
 4. **Every English change is followed by a Ukrainian change.** This
    project ships bilingual (English default, Ukrainian via
    mkdocs-static-i18n). Whenever you create or edit a `docs/.../NN-foo.md`
@@ -91,6 +92,35 @@ learn-go-from-python/
    - The translation rule applies only to user-facing docs under
      `docs/`. `CLAUDE.md`, `README.md`, the workflow file, and other
      repo-meta files stay English-only.
+
+## Core topics vs third-party libraries
+
+The book is split in two, and the split is enforced by
+`scripts/check_stdlib_only.go` (run by the same `cd scripts && go run .`
+command as the concepts linter).
+
+- **Topics 01-12 teach the language and the standard library only.** If a
+  snippet would need a line in `go.mod`, it does not belong there — not
+  `golang.org/x/...`, not testify, not a one-liner helper. The same goes
+  for the configuration of third-party tooling.
+- **Topic 13 is the one place external libraries live.** Each article
+  names the module path, says what problem the library solves, and links
+  back to the core article whose standard-library foundation it builds on
+  (Fiber back to `net/http`, testify back to `testing`, GORM back to
+  `database/sql`).
+
+Why: the core of the book stays true no matter what stack anyone builds
+on top of it, and a reader can always tell what is Go from what is one
+team's choice.
+
+The subtle failures are single lines rather than whole articles — for
+example listing `gorm:` or `yaml:` beside `json:` in the struct-tags
+section of language basics. Teach the language mechanic with the
+standard-library example, and let each third-party article introduce its
+own tag namespace. The checker catches imports; this one is on you.
+
+Genuine exceptions go in `stdlibOnlyExceptions` in that script, each with
+a written reason, so the seam stays visible.
 
 ## Style of explanations and conspects
 
@@ -127,7 +157,7 @@ learn-go-from-python/
   in Go 1.Y" — write everything as a present-tense fact. The exception
   is the version-management article itself, which is intrinsically
   about version mechanics.
-- Always work in the main repo at `/Users/oduvan/www/learn_go`.
+- Always work in the main repo checkout, not a copy of it.
   **Never** use git worktrees for this project, even if the harness
   spawns one by default.
 

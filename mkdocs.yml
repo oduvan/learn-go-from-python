@@ -73,6 +73,7 @@ nav:
       - Type assertions and type switches: 03-object-oriented-go/03-type-assertions-and-type-switches.md
       - Generics: 03-object-oriented-go/04-generics.md
       - OOP patterns: 03-object-oriented-go/05-oop-patterns.md
+      - Custom error types: 03-object-oriented-go/06-custom-error-types.md
   - Packages and modules:
       - Packages and visibility: 04-packages-and-modules/01-packages-and-visibility.md
       - Creating and publishing a module: 04-packages-and-modules/02-creating-and-publishing-a-module.md
@@ -84,6 +85,8 @@ nav:
       - Synchronization: 05-concurrency/04-synchronization.md
       - Context: 05-concurrency/05-context.md
       - Concurrency patterns: 05-concurrency/06-concurrency-patterns.md
+      - Bounded concurrency: 05-concurrency/07-bounded-concurrency.md
+      - Long-running goroutines: 05-concurrency/08-long-running-goroutines.md
 
 exclude_docs: |
   01-ecosystem-and-installation/09-demo-project/counter/
@@ -159,6 +162,7 @@ plugins:
             Type assertions and type switches: Твердження типу та перемикачі типів
             Generics: Generics
             OOP patterns: Патерни ООП
+            Custom error types: Власні типи помилок
             Packages and modules: Пакети та модулі
             Packages and visibility: Пакети та видимість
             Creating and publishing a module: Створення та публікація модуля
@@ -170,6 +174,8 @@ plugins:
             Synchronization: Синхронізація
             Context: Context
             Concurrency patterns: Патерни конкурентності
+            Bounded concurrency: Обмежена конкурентність
+            Long-running goroutines: Довгоживучі горутини
 
 extra:
   social:

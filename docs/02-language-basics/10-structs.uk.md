@@ -272,6 +272,80 @@ fmt.Println(string(b))   // output: {"name":"Ada"}
 Go. Теги за домовленістю — це пари `key:"value"` в зворотних лапках;
 кілька ключів розділяються пробілами.
 
+### Тег — це просто рядок
+
+Для компілятора в тезі немає нічого особливого. Це один рядок, що
+зберігається поряд із полем, і будь-який пакет може запитати в нього
+ключ:
+
+```go
+type Item struct {
+    Name string `json:"name" xml:"item-name"`
+}
+
+f, _ := reflect.TypeOf(Item{}).FieldByName("Name")
+fmt.Printf("%q %q %q\n", f.Tag.Get("json"), f.Tag.Get("xml"), f.Tag.Get("nope"))
+// output: "name" "item-name" ""
+```
+
+Невідомий ключ повертається порожнім, тож дві бібліотеки можуть читати те
+саме поле, нічого не знаючи одна про одну. `encoding/json` читає `json:`,
+`encoding/xml` читає `xml:`, і жодна з них не помічає іншу:
+
+```go
+j, _ := json.Marshal(Item{Name: "bolt"})
+fmt.Println(string(j))   // output: {"name":"bolt"}
+
+x, _ := xml.Marshal(Item{Name: "bolt"})
+fmt.Println(string(x))   // output: <Item><item-name>bolt</item-name></Item>
+```
+
+Зворотний бік у тому, що описка в тезі мовчазна. `jsom:"name"` спокійно
+компілюється, і `encoding/json` просто відкочується до імені поля:
+
+```go
+type Typo struct {
+    Name string `jsom:"name"`
+}
+
+b, _ := json.Marshal(Typo{Name: "bolt"})
+fmt.Println(string(b))   // output: {"Name":"bolt"}
+```
+
+### `-` пропускає поле, а теги переживають вбудовування
+
+Значення тегу `-` каже бібліотеці, що читає, взагалі відкинути поле. Це
+відрізняється від `omitempty`, яка відкидає поле лише тоді, коли воно має
+своє нульове значення. Неекспортовані поля ніколи не серіалізуються
+взагалі, з тегом чи без нього. А коли структуру вбудовано, її поля
+підвищуються *разом зі своїми тегами*:
+
+```go
+type Point struct {
+    X int `json:"x"`
+    Y int `json:"y"`
+}
+
+type Shape struct {
+    Point                     // X та Y підвищуються разом з тегами
+    Label  string `json:"label"`
+    secret string             // неекспортоване: ніколи не серіалізується
+    Cache  []byte `json:"-"`  // експортоване, але явно пропущене
+}
+
+s := Shape{Point: Point{X: 1, Y: 2}, Label: "corner"}
+b, _ := json.Marshal(s)
+fmt.Println(string(b))   // output: {"x":1,"y":2,"label":"corner"}
+```
+
+`x` та `y` опиняються на верхньому рівні виводу, а не вкладеними під ключ
+`Point` — підвищення тут таке саме пласке, як і для доступу до полів.
+
+> **З погляду Python:** тут не працює жоден декоратор. Тег — це інертні
+> дані, і саме бібліотека, якій ви передаєте структуру, надає їм сенсу —
+> тому одна структура може одночасно описувати і свою JSON-форму, і свою
+> XML-форму.
+
 ## Порожня структура `struct{}`
 
 Структура без полів займає **нуль байтів**. Вона не несе жодних даних —
@@ -310,5 +384,6 @@ fmt.Println(ok)          // output: true
 - [Comparison operators — go.dev/ref/spec#Comparison_operators](https://go.dev/ref/spec#Comparison_operators)
 - [Struct tags — pkg.go.dev/reflect#StructTag](https://pkg.go.dev/reflect#StructTag)
 - [encoding/json#Marshal — pkg.go.dev/encoding/json#Marshal](https://pkg.go.dev/encoding/json#Marshal)
+- [encoding/xml#Marshal — pkg.go.dev/encoding/xml#Marshal](https://pkg.go.dev/encoding/xml#Marshal)
 - [Effective Go: embedding — go.dev/doc/effective_go#embedding](https://go.dev/doc/effective_go#embedding)
 - [Selectors — go.dev/ref/spec#Selectors](https://go.dev/ref/spec#Selectors)

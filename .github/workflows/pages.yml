@@ -30,7 +30,7 @@ jobs:
         with:
           go-version-file: scripts/go.mod
 
-      - name: Check concept forward-references
+      - name: Check concept order and the core/third-party split
         run: cd scripts && go run .
 
       - name: Install MkDocs Material + i18n plugin

@@ -269,6 +269,78 @@ value. Without tags the keys would be `"Name"` and `"Email"` — the Go
 field names. Tags are conventionally backtick-quoted `key:"value"` pairs;
 multiple keys are space-separated.
 
+### A tag is just a string
+
+Nothing about a tag is special to the compiler. It is one string stored
+alongside the field, and any package can ask it for a key:
+
+```go
+type Item struct {
+    Name string `json:"name" xml:"item-name"`
+}
+
+f, _ := reflect.TypeOf(Item{}).FieldByName("Name")
+fmt.Printf("%q %q %q\n", f.Tag.Get("json"), f.Tag.Get("xml"), f.Tag.Get("nope"))
+// output: "name" "item-name" ""
+```
+
+An unknown key comes back empty, so two libraries can read the same field
+without knowing about each other. `encoding/json` reads `json:`,
+`encoding/xml` reads `xml:`, and neither notices the other:
+
+```go
+j, _ := json.Marshal(Item{Name: "bolt"})
+fmt.Println(string(j))   // output: {"name":"bolt"}
+
+x, _ := xml.Marshal(Item{Name: "bolt"})
+fmt.Println(string(x))   // output: <Item><item-name>bolt</item-name></Item>
+```
+
+The flip side is that a misspelled tag is silent. `jsom:"name"` compiles
+happily, and `encoding/json` just falls back to the field name:
+
+```go
+type Typo struct {
+    Name string `jsom:"name"`
+}
+
+b, _ := json.Marshal(Typo{Name: "bolt"})
+fmt.Println(string(b))   // output: {"Name":"bolt"}
+```
+
+### `-` skips a field, and tags survive embedding
+
+A tag value of `-` tells the reading library to leave the field out
+altogether. That is different from `omitempty`, which drops the field only
+when it holds its zero value. Unexported fields are never marshalled at
+all, tag or no tag. And when a struct is embedded, its fields are promoted
+*with their tags attached*:
+
+```go
+type Point struct {
+    X int `json:"x"`
+    Y int `json:"y"`
+}
+
+type Shape struct {
+    Point                     // X and Y are promoted, tags and all
+    Label  string `json:"label"`
+    secret string             // unexported: never marshalled
+    Cache  []byte `json:"-"`  // exported, but explicitly skipped
+}
+
+s := Shape{Point: Point{X: 1, Y: 2}, Label: "corner"}
+b, _ := json.Marshal(s)
+fmt.Println(string(b))   // output: {"x":1,"y":2,"label":"corner"}
+```
+
+`x` and `y` land at the top level of the output rather than nested under a
+`Point` key — promotion is as flat here as it is for field access.
+
+> **From Python:** no decorator is doing this. A tag is inert data, and
+> the library you hand the struct to is what gives it meaning — which is
+> why one struct can describe its JSON shape and its XML shape at once.
+
 ## The empty struct `struct{}`
 
 A struct with no fields occupies **zero bytes**. It carries no data — it
@@ -307,5 +379,6 @@ fmt.Println(ok)          // output: true
 - [Comparison operators — go.dev/ref/spec#Comparison_operators](https://go.dev/ref/spec#Comparison_operators)
 - [Struct tags — pkg.go.dev/reflect#StructTag](https://pkg.go.dev/reflect#StructTag)
 - [encoding/json#Marshal — pkg.go.dev/encoding/json#Marshal](https://pkg.go.dev/encoding/json#Marshal)
+- [encoding/xml#Marshal — pkg.go.dev/encoding/xml#Marshal](https://pkg.go.dev/encoding/xml#Marshal)
 - [Effective Go: embedding — go.dev/doc/effective_go#embedding](https://go.dev/doc/effective_go#embedding)
 - [Selectors — go.dev/ref/spec#Selectors](https://go.dev/ref/spec#Selectors)
