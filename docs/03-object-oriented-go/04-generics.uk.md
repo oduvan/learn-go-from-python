@@ -39,6 +39,22 @@ fmt.Println(Max(3, 7))         // виведено: T = int
 fmt.Println(Max[float64](3, 7)) // явно: T = float64 → друкує 7
 ```
 
+Виведення не обмежується викликами. Скрізь, де узагальнену функцію
+**присвоюють змінній відповідного функційного типу** — або перетворюють
+до нього, — компілятор з'ясовує аргументи типів саме з цього типу:
+
+```go
+func Map[T, U any](s []T, f func(T) U) []U { /* ... */ }
+
+var g func([]int, func(int) string) []string = Map   // виводить T=int, U=string
+fmt.Println(g([]int{1, 2}, func(i int) string { return fmt.Sprint(i * 10) }))
+// output: [10 20]
+```
+
+Тобто узагальнену функцію можна передати просто так усюди, де очікують
+конкретний функційний тип — у поле структури, у параметр-колбек, у map
+обробників — не виписуючи `Map[int, string]`.
+
 ## Обмеження — це інтерфейси
 
 Обмеження — це просто **інтерфейс**, ужитий у позиції параметра типу. Два
@@ -149,6 +165,87 @@ s.Add("go")
 fmt.Println(s.Has("go"), s.Has("py"))   // output: true false
 ```
 
+## Узагальнені методи
+
+Метод може оголошувати **власні параметри типів**, окремі від тих, що
+несе отримувач. Це важить щоразу, коли операція мусить *змінити* тип
+елемента: множина ID користувачів перетворюється на множину імен, кеш із
+одним ключем перекладається на інший. `T` отримувача зафіксовано тим
+значенням, на якому ви кличете метод, тож новому типові потрібен власний
+параметр.
+
+```go
+type Set[T comparable] map[T]struct{}
+
+func (s Set[T]) Add(v T)      { s[v] = struct{}{} }
+func (s Set[T]) Has(v T) bool { _, ok := s[v]; return ok }
+
+// MapTo оголошує U для себе — T надходить від отримувача.
+func (s Set[T]) MapTo[U comparable](f func(T) U) Set[U] {
+    out := Set[U]{}
+    for v := range s {
+        out.Add(f(v))
+    }
+    return out
+}
+```
+
+Виклик виводить `U` із переданої функції — так само, як для узагальненої
+функції:
+
+```go
+ids := Set[int]{}
+ids.Add(1)
+ids.Add(2)
+
+names := ids.MapTo(func(id int) string { return fmt.Sprintf("user-%d", id) })
+fmt.Println(names.Has("user-1"), names.Has("user-9"))   // output: true false
+```
+
+Метод можна інстанціювати явно, коли виведення не зарадить; це заразом
+дає багаторазове значення методу:
+
+```go
+toString := ids.MapTo[string]
+fmt.Println(toString(func(id int) string { return fmt.Sprint(id) }).Has("2"))
+// output: true
+```
+
+Виграш — у просторі імен. Без власного параметра типу такий метод
+довелося б робити функцією рівня пакета — `MapSet`, `MapStack`,
+`MapList` — по одній на контейнер, і всі змагалися б за імена в пакеті.
+Як метод він живе на тому типі, якому належить.
+
+### Інтерфейси лишаються неузагальненими
+
+Єдине тверде обмеження: **метод інтерфейсу не може оголошувати параметри
+типів**, а узагальнений метод не може реалізувати неузагальнений.
+
+```go
+type Doer interface {
+    Do[T any](T) T   // compile error: interface method must have no type parameters
+}
+```
+
+Узагальнений метод не має єдиної сталої сигнатури, тож він не задовольняє
+метод, який інтерфейс зафіксував:
+
+```go
+type Doer interface{ Do(int) int }
+
+type T struct{}
+func (T) Do[U any](u U) U { return u }
+
+var _ Doer = T{}
+// compile error: T does not implement Doer (wrong type for method Do)
+//   have Do[U any](U) U
+//   want Do(int) int
+```
+
+Динамічній диспетчеризації потрібна одна конкретна сигнатура на метод, а
+узагальнений метод — це ціла їх родина. Тримайте методи інтерфейсів
+конкретними, а узагальнену роботу кладіть на тип, що їх реалізує.
+
 ## Коли не варто вдаватися до узагальнень
 
 Узагальнення сяють для **контейнерів та алгоритмів**, що однакові для
@@ -173,6 +270,8 @@ fmt.Println(s.Has("go"), s.Has("py"))   // output: true false
 | `interface{ ~int \| ~float64 }` | обмеження-набір типів; `~` = базовий тип |
 | `type Box[T any] struct{ v T }` | узагальнений тип |
 | `func (b Box[T]) Get() T` | метод узагальненого типу |
+| `func (b Box[T]) To[U any](...)` | узагальнений метод — власний параметр типу |
+| `var f func(int) string = G` | виведення з присвоєння функційному типу |
 | `var zero T` | нульове значення параметра типу |
 
 ## Джерела
@@ -183,3 +282,5 @@ fmt.Println(s.Has("go"), s.Has("py"))   // output: true false
 - [cmp.Ordered — pkg.go.dev/cmp#Ordered](https://pkg.go.dev/cmp#Ordered)
 - [Go blog: an introduction to generics — go.dev/blog/intro-generics](https://go.dev/blog/intro-generics)
 - [Tutorial: getting started with generics — go.dev/doc/tutorial/generics](https://go.dev/doc/tutorial/generics)
+- [Method declarations — go.dev/ref/spec#Method_declarations](https://go.dev/ref/spec#Method_declarations)
+- [Type inference — go.dev/ref/spec#Type_inference](https://go.dev/ref/spec#Type_inference)

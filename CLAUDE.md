@@ -121,8 +121,8 @@ learn-go-from-python/
 
 ## Tooling
 
-- Go is installed via Homebrew. The materials target **Go 1.26.4**.
-- All content should be written as if 1.26.4 is the only version that
+- Go is installed via Homebrew. The materials target **Go 1.27.1**.
+- All content should be written as if 1.27.1 is the only version that
   exists. Do **not** annotate features with "Go 1.X+" or "introduced
   in Go 1.Y" — write everything as a present-tense fact. The exception
   is the version-management article itself, which is intrinsically

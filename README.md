@@ -1,7 +1,7 @@
 # learn-go-from-python
 
 Personal Go-learning notes for a Python developer. Conspects with
-runnable examples, targeting Go 1.26.4.
+runnable examples, targeting Go 1.27.1.
 
 **Read it as a site:** <https://oduvan.github.io/learn-go-from-python/>
 

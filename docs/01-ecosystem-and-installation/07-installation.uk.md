@@ -1,10 +1,11 @@
 # Встановлення Go
 
-Ці матеріали розраховані на **Go 1.26.4** (поточний стабільний). Перевіряйте [go.dev/dl](https://go.dev/dl/) для отримання найактуальнішої версії у будь-який момент.
+Ці матеріали розраховані на **Go 1.27.1** (поточний стабільний). Перевіряйте [go.dev/dl](https://go.dev/dl/) для отримання найактуальнішої версії у будь-який момент.
 
 ## macOS
 
-Три розумних варіанти. Оберіть один — не змішуйте їх.
+Go потребує **macOS 13 Ventura або новішої**. Нижче три розумних
+варіанти — оберіть один, не змішуйте їх.
 
 ### Варіант 1 — Homebrew (рекомендовано для щоденної роботи на macOS)
 
@@ -31,10 +32,10 @@ brew install go
 Для повного контролю над місцем встановлення:
 
 ```bash
-# download go1.26.4.darwin-arm64.tar.gz from https://go.dev/dl/
+# download go1.27.1.darwin-arm64.tar.gz from https://go.dev/dl/
 
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf ~/Downloads/go1.26.4.darwin-arm64.tar.gz
+sudo tar -C /usr/local -xzf ~/Downloads/go1.27.1.darwin-arm64.tar.gz
 ```
 
 Додайте `/usr/local/go/bin` до вашого `PATH` у `~/.zshrc` (або `~/.bash_profile`):
@@ -54,7 +55,7 @@ export PATH=$PATH:/usr/local/go/bin
 
 ```bash
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.26.4.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.27.1.linux-amd64.tar.gz
 ```
 
 3. Додайте `/usr/local/go/bin` до вашого `PATH`, дописавши цей рядок у `~/.profile` (або `~/.bashrc`):
@@ -87,7 +88,7 @@ go version
 
 ```bash
 go version
-# example: go version go1.26.4 darwin/arm64
+# example: go version go1.27.1 darwin/arm64
 
 go env GOROOT
 # wherever the toolchain landed (e.g. /usr/local/go)

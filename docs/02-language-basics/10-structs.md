@@ -165,6 +165,66 @@ fmt.Println(c.X)        // output: 1  — promoted from the embedded Point
 fmt.Println(c.Point.Y)  // output: 2  — the explicit path still works
 ```
 
+### Promoted fields as literal keys
+
+A key in a composite literal may be **any valid field selector** for the
+struct type, not just a top-level field name. Promoted fields therefore
+work as keys directly, so you can fill an embedded struct without naming
+it:
+
+```go
+type Base struct{ ID int }
+type Meta struct{ Tag string }
+
+type User struct {
+    Base
+    Meta
+    Name string
+}
+
+u := User{ID: 7, Tag: "admin", Name: "ada"}
+fmt.Printf("%+v\n", u)
+// output: {Base:{ID:7} Meta:{Tag:admin} Name:ada}
+```
+
+Promotion reaches through as many levels as it takes, so a field embedded
+two deep is still a usable key:
+
+```go
+type Inner struct{ Deep int }
+type Mid struct{ Inner }
+type Outer struct {
+    Mid
+    Name string
+}
+
+o := Outer{Deep: 5, Name: "x"}
+fmt.Println(o.Deep)   // output: 5
+```
+
+Two rules keep this unambiguous. You may not set an embedded field *and*
+one of its promoted fields in the same literal — the two would fight over
+the same memory:
+
+```go
+o := Outer{Mid: Mid{}, Deep: 2}
+// compile error: cannot specify promoted field Deep and enclosing embedded field Mid
+```
+
+And a name promoted from two embedded types at the same depth is not a
+valid selector at all, so it is not a valid key either:
+
+```go
+type A struct{ X int }
+type B struct{ X int }
+type C struct {
+    A
+    B
+}
+
+c := C{X: 1}   // compile error: unknown field X in struct literal of type C
+```
+
 Embedding is Go's composition mechanism — it stands in for the data side
 of what other languages do with inheritance. The *method* side of
 embedding (method promotion) is covered in [methods](../03-object-oriented-go/01-methods.md).
@@ -248,3 +308,4 @@ fmt.Println(ok)          // output: true
 - [Struct tags — pkg.go.dev/reflect#StructTag](https://pkg.go.dev/reflect#StructTag)
 - [encoding/json#Marshal — pkg.go.dev/encoding/json#Marshal](https://pkg.go.dev/encoding/json#Marshal)
 - [Effective Go: embedding — go.dev/doc/effective_go#embedding](https://go.dev/doc/effective_go#embedding)
+- [Selectors — go.dev/ref/spec#Selectors](https://go.dev/ref/spec#Selectors)

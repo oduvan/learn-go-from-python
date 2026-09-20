@@ -168,6 +168,66 @@ fmt.Println(c.X)        // output: 1  — підвищене з вбудован
 fmt.Println(c.Point.Y)  // output: 2  — явний шлях теж працює
 ```
 
+### Підвищені поля як ключі літерала
+
+Ключем у складеному літералі може бути **будь-який чинний селектор поля**
+для цього типу структури, а не лише ім'я поля верхнього рівня. Тож
+підвищені поля працюють як ключі напряму, і вбудовану структуру можна
+заповнити, не називаючи її:
+
+```go
+type Base struct{ ID int }
+type Meta struct{ Tag string }
+
+type User struct {
+    Base
+    Meta
+    Name string
+}
+
+u := User{ID: 7, Tag: "admin", Name: "ada"}
+fmt.Printf("%+v\n", u)
+// output: {Base:{ID:7} Meta:{Tag:admin} Name:ada}
+```
+
+Підвищення сягає крізь стільки рівнів, скільки потрібно, тож поле,
+вбудоване на два рівні вглиб, теж придатне як ключ:
+
+```go
+type Inner struct{ Deep int }
+type Mid struct{ Inner }
+type Outer struct {
+    Mid
+    Name string
+}
+
+o := Outer{Deep: 5, Name: "x"}
+fmt.Println(o.Deep)   // output: 5
+```
+
+Два правила бережуть однозначність. Не можна в одному літералі задати і
+вбудоване поле, **і** одне з його підвищених полів — вони змагалися б за
+ту саму пам'ять:
+
+```go
+o := Outer{Mid: Mid{}, Deep: 2}
+// compile error: cannot specify promoted field Deep and enclosing embedded field Mid
+```
+
+А ім'я, підвищене з двох вбудованих типів на однаковій глибині, узагалі
+не є чинним селектором — отже, не є й чинним ключем:
+
+```go
+type A struct{ X int }
+type B struct{ X int }
+type C struct {
+    A
+    B
+}
+
+c := C{X: 1}   // compile error: unknown field X in struct literal of type C
+```
+
 Вбудовування — це механізм композиції в Go; він заступає той бік
 успадкування, що стосується даних, у інших мовах. Бік *методів* у
 вбудовуванні (підвищення методів) розглядається в [методах](../03-object-oriented-go/01-methods.md).
@@ -251,3 +311,4 @@ fmt.Println(ok)          // output: true
 - [Struct tags — pkg.go.dev/reflect#StructTag](https://pkg.go.dev/reflect#StructTag)
 - [encoding/json#Marshal — pkg.go.dev/encoding/json#Marshal](https://pkg.go.dev/encoding/json#Marshal)
 - [Effective Go: embedding — go.dev/doc/effective_go#embedding](https://go.dev/doc/effective_go#embedding)
+- [Selectors — go.dev/ref/spec#Selectors](https://go.dev/ref/spec#Selectors)

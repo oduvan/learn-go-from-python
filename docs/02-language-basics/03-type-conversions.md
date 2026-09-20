@@ -9,11 +9,13 @@ There are **no implicit numeric conversions** in Go. Even between types of the s
 
 ```go
 var i int   = 42
-var f float64 = i               // compile error: cannot use i (int) as float64
+var f float64 = i               // compile error: cannot use i (variable of type int)
+                                //                as float64 value in variable declaration
 var f float64 = float64(i)      // ok
 
 var a int32 = 1
-var b int64 = a                 // compile error: cannot use a (int32) as int64
+var b int64 = a                 // compile error: cannot use a (variable of type int32)
+                                //                as int64 value in variable declaration
 var b int64 = int64(a)          // ok
 ```
 
@@ -125,7 +127,8 @@ only when the context demands one.
 ```go
 var x float64 = 42        // ok — 42 is an untyped int constant, fits float64
 var y int     = 0.0       // ok — 0.0 is representable as int (no fractional part)
-var z int     = 3.14      // compile error: 3.14 (untyped float) truncated to int
+var z int     = 3.14      // compile error: cannot use 3.14 (untyped float constant)
+                          //                as int value ... (truncated)
 ```
 
 The third line is the rule that bit you above with `int(3.9)` — Go
