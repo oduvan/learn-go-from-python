@@ -162,6 +162,11 @@ concepts:
       - 02-language-basics/05-control-flow.md                  # range-over-func, points here
       - 02-language-basics/12-maps.md                          # maps.Keys returns one
 
+  - pattern: 'go:embed'
+    introduces_in: 07-operating-system/03-go-embed.md
+    ok_in:
+      - index.md
+
   - pattern: '\breflect\.'
     introduces_in: 06-text-time-and-data/08-xml-csv-and-reflection.md
     ok_in:

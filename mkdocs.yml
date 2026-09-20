@@ -98,6 +98,47 @@ nav:
       - Encoding JSON: 06-text-time-and-data/07-encoding-json.md
       - XML, CSV and reflection: 06-text-time-and-data/08-xml-csv-and-reflection.md
 
+  - The operating system:
+      - Files and paths: 07-operating-system/01-files-and-paths.md
+      - Readers and writers: 07-operating-system/02-readers-and-writers.md
+      - go:embed: 07-operating-system/03-go-embed.md
+      - Flags and environment: 07-operating-system/04-flags-and-environment.md
+      - Running external commands: 07-operating-system/05-running-external-commands.md
+      - Signals and graceful shutdown: 07-operating-system/06-signals-and-graceful-shutdown.md
+      - Hashing and random values: 07-operating-system/07-hashing-and-random-values.md
+
+  - HTTP with net/http:
+      - An HTTP server: 08-http-with-net-http/01-http-server.md
+      - An HTTP client: 08-http-with-net-http/02-http-client.md
+      - Middleware: 08-http-with-net-http/03-middleware.md
+      - Templates: 08-http-with-net-http/04-templates.md
+      - Server-sent events: 08-http-with-net-http/05-server-sent-events.md
+
+  - Databases with database/sql:
+      - database/sql: 09-database-sql/01-database-sql.md
+      - Custom column types: 09-database-sql/02-custom-column-types.md
+      - Transactions: 09-database-sql/03-transactions.md
+      - The repository pattern: 09-database-sql/04-the-repository-pattern.md
+
+  - Testing:
+      - The testing package: 10-testing/01-the-testing-package.md
+      - Table-driven tests: 10-testing/02-table-driven-tests.md
+      - Helpers, fixtures and golden files: 10-testing/03-helpers-fixtures-and-golden-files.md
+      - Fakes and stubs: 10-testing/04-fakes-and-stubs.md
+      - Testing HTTP: 10-testing/05-testing-http.md
+      - Benchmarks, fuzzing and the race detector: 10-testing/06-benchmarks-fuzzing-and-race.md
+
+  - Architecture and conventions:
+      - Wiring and package structure: 11-architecture-and-conventions/01-wiring-and-package-structure.md
+      - Context as a carrier: 11-architecture-and-conventions/02-context-as-a-carrier.md
+      - Configuration patterns: 11-architecture-and-conventions/03-configuration-patterns.md
+      - Dependency direction: 11-architecture-and-conventions/04-dependency-direction.md
+      - Build, code generation and cgo: 11-architecture-and-conventions/05-build-codegen-and-cgo.md
+      - Project conventions: 11-architecture-and-conventions/06-project-conventions.md
+  - Observability:
+      - Structured logging with slog: 12-observability/01-structured-logging-with-slog.md
+      - Profiling with pprof: 12-observability/02-profiling-with-pprof.md
+
 exclude_docs: |
   01-ecosystem-and-installation/09-demo-project/counter/
   01-ecosystem-and-installation/09-demo-project/internal/
@@ -195,6 +236,42 @@ plugins:
             Iterators: Ітератори
             Encoding JSON: Кодування JSON
             XML, CSV and reflection: XML, CSV та рефлексія
+            The operating system: Операційна система
+            Files and paths: Файли та шляхи
+            Readers and writers: Читачі та письменники
+            go:embed: go:embed
+            Flags and environment: Прапорці та середовище
+            Running external commands: Запуск зовнішніх команд
+            Signals and graceful shutdown: Сигнали та коректна зупинка
+            Hashing and random values: Хешування та випадкові значення
+            HTTP with net/http: HTTP через net/http
+            An HTTP server: HTTP-сервер
+            An HTTP client: HTTP-клієнт
+            Middleware: Проміжні обробники
+            Templates: Шаблони
+            Server-sent events: Події від сервера (SSE)
+            Databases with database/sql: Бази даних через database/sql
+            database/sql: database/sql
+            Custom column types: Власні типи колонок
+            Transactions: Транзакції
+            The repository pattern: Патерн репозиторію
+            Testing: Тестування
+            The testing package: Пакет testing
+            Table-driven tests: Табличні тести
+            Helpers, fixtures and golden files: Хелпери, фікстури та golden-файли
+            Fakes and stubs: Фейки та заглушки
+            Testing HTTP: Тестування HTTP
+            Benchmarks, fuzzing and the race detector: Бенчмарки, фазинг і детектор гонитв
+            Architecture and conventions: Архітектура та домовленості
+            Wiring and package structure: Зв'язування та структура пакетів
+            Context as a carrier: Context як носій значень
+            Configuration patterns: Патерни конфігурації
+            Dependency direction: Напрямок залежностей
+            Build, code generation and cgo: Збірка, кодогенерація та cgo
+            Project conventions: Домовленості проєкту
+            Observability: Спостережуваність
+            Structured logging with slog: Структуроване логування через slog
+            Profiling with pprof: Профілювання через pprof
 
 extra:
   social:

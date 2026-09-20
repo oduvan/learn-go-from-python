@@ -80,6 +80,54 @@ is always obvious.
 - [Encoding JSON](06-text-time-and-data/07-encoding-json.md) — tags, `omitempty`, `RawMessage`, custom marshalling.
 - [XML, CSV and reflection](06-text-time-and-data/08-xml-csv-and-reflection.md) — token streaming, `csv`, struct tags at runtime.
 
+### [The operating system](07-operating-system/01-files-and-paths.md)
+
+- [Files and paths](07-operating-system/01-files-and-paths.md) — `os`, `filepath`, `WalkDir`, testing errors not paths.
+- [Readers and writers](07-operating-system/02-readers-and-writers.md) — `io.Copy`, `bufio.Scanner`, and its 64 KB limit.
+- [`go:embed`](07-operating-system/03-go-embed.md) — files in the binary, `embed.FS`, `all:`, `fs.Sub`.
+- [Flags and environment](07-operating-system/04-flags-and-environment.md) — `flag`, subcommands, `LookupEnv`, exit codes.
+- [Running external commands](07-operating-system/05-running-external-commands.md) — `exec.CommandContext`, `ExitError`, no shell.
+- [Signals and graceful shutdown](07-operating-system/06-signals-and-graceful-shutdown.md) — `NotifyContext`, draining on a budget.
+- [Hashing and random values](07-operating-system/07-hashing-and-random-values.md) — sha256, HMAC, `crypto/rand`, base64, gzip.
+
+### [HTTP with `net/http`](08-http-with-net-http/01-http-server.md)
+
+- [An HTTP server](08-http-with-net-http/01-http-server.md) — handlers, `ServeMux` routing, timeouts, shutdown.
+- [An HTTP client](08-http-with-net-http/02-http-client.md) — why a 404 is not an error, closing bodies, retries.
+- [Middleware](08-http-with-net-http/03-middleware.md) — wrapping handlers, recovery, context values.
+- [Templates](08-http-with-net-http/04-templates.md) — `text/template` vs `html/template` and contextual escaping.
+- [Server-sent events](08-http-with-net-http/05-server-sent-events.md) — streaming, flushing, dropping slow clients.
+
+### [Databases with `database/sql`](09-database-sql/01-database-sql.md)
+
+- [`database/sql`](09-database-sql/01-database-sql.md) — the pool, `Scan`, `ErrNoRows`, NULL, `rows.Err()`.
+- [Custom column types](09-database-sql/02-custom-column-types.md) — `driver.Valuer` and `sql.Scanner`.
+- [Transactions](09-database-sql/03-transactions.md) — the closure wrapper, rollback on panic, nesting.
+- [The repository pattern](09-database-sql/04-the-repository-pattern.md) — a contract package, translating storage errors.
+
+### [Testing](10-testing/01-the-testing-package.md)
+
+- [The `testing` package](10-testing/01-the-testing-package.md) — `TestXxx`, `Errorf` vs `Fatalf`, `go test` flags.
+- [Table-driven tests](10-testing/02-table-driven-tests.md) — the case slice, `t.Run`, `t.Parallel`.
+- [Helpers, fixtures and golden files](10-testing/03-helpers-fixtures-and-golden-files.md) — `t.Helper`, `t.TempDir`, `testdata/`.
+- [Fakes and stubs](10-testing/04-fakes-and-stubs.md) — function-field doubles, faking the clock.
+- [Testing HTTP](10-testing/05-testing-http.md) — `httptest` recorders and servers.
+- [Benchmarks, fuzzing and the race detector](10-testing/06-benchmarks-fuzzing-and-race.md) — `b.Loop`, `f.Fuzz`, `-race`.
+
+### [Architecture and conventions](11-architecture-and-conventions/01-wiring-and-package-structure.md)
+
+- [Wiring and package structure](11-architecture-and-conventions/01-wiring-and-package-structure.md) — `cmd/`, `internal/`, constructor injection.
+- [Context as a carrier](11-architecture-and-conventions/02-context-as-a-carrier.md) — unexported keys, `WithoutCancel`, what not to put in.
+- [Configuration patterns](11-architecture-and-conventions/03-configuration-patterns.md) — one struct, defaults, validation with `errors.Join`.
+- [Dependency direction](11-architecture-and-conventions/04-dependency-direction.md) — which package may import which, and why.
+- [Build, code generation and cgo](11-architecture-and-conventions/05-build-codegen-and-cgo.md) — build tags, `-ldflags`, cross-compiling, cgo's cost.
+- [Project conventions](11-architecture-and-conventions/06-project-conventions.md) — error wrapping, log levels, naming, comments.
+
+### [Observability](12-observability/01-structured-logging-with-slog.md)
+
+- [Structured logging with `slog`](12-observability/01-structured-logging-with-slog.md) — handlers, `With`, `LogValuer`, testing logs.
+- [Profiling with pprof](12-observability/02-profiling-with-pprof.md) — CPU and heap profiles, flat vs cum, flame graphs.
+
 ## Source
 
 - Source repository: <https://github.com/oduvan/learn-go-from-python>.
