@@ -110,9 +110,35 @@ The detached context keeps the user — which is usually what you want,
 since the background job still needs to know who triggered it.
 
 Two cautions. **It copies every value**, including ones whose lifetime
-was tied to the request: a transaction carried in the context survives
-detachment and now points at something already committed. If you detach,
-strip anything request-bound first.
+was tied to the request. That is the trap where the two halves of this
+article meet: a transaction carried in the context survives detachment.
+
+```go
+txCtx := context.WithValue(ctx, txKey{}, tx)
+cancelCtx, cancel := context.WithCancel(txCtx)
+
+detached := context.WithoutCancel(cancelCtx)
+cancel()
+
+fmt.Println(detached.Err())                  // output: <nil>
+fmt.Println(detached.Value(txKey{}) != nil)  // output: true
+```
+
+The background work now resolves a transaction that the request has
+already committed or rolled back. Writes through it either error or
+are silently discarded — and "silently discarded" is the outcome you
+will spend a day finding.
+
+Strip anything request-bound as part of detaching:
+
+```go
+func detach(ctx context.Context) context.Context {
+    return context.WithValue(context.WithoutCancel(ctx), txKey{}, nil)
+}
+```
+
+Better still, make that the only way to detach in your codebase, so
+nobody calls `WithoutCancel` directly and has to remember.
 
 And a detached context has **no deadline at all**. Give it one, or you
 have created work that can run forever:

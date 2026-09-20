@@ -193,6 +193,61 @@ Fiber does not use `net/http`, and that has consequences:
 That last point is the real trade. Fiber is fast partly because it
 recycles buffers, and recycled buffers require discipline.
 
+## Streaming: SSE is fasthttp, not `http.Flusher`
+
+[Server-sent events](../08-http-with-net-http/05-server-sent-events.md)
+teaches the `net/http` mechanism: get an `http.ResponseController` or
+an `http.Flusher` and call `Flush` after each message. Under Fiber that
+interface is simply not there:
+
+```go
+_, isFlusher := any(c.Response().BodyWriter()).(http.Flusher)
+// false
+```
+
+fasthttp streams through a body-stream writer instead. You hand it a
+function that receives a `*bufio.Writer` and flushes that:
+
+```go
+app.Get("/stream", func(c fiber.Ctx) error {
+    c.Set("Content-Type", "text/event-stream")
+    c.Set("Cache-Control", "no-cache")
+
+    c.RequestCtx().SetBodyStreamWriter(fasthttp.StreamWriter(func(w *bufio.Writer) {
+        for i := 1; i <= 3; i++ {
+            fmt.Fprintf(w, "event: tick\ndata: %d\n\n", i)
+            if err := w.Flush(); err != nil {
+                return          // client went away
+            }
+            time.Sleep(10 * time.Millisecond)
+        }
+    }))
+    return nil
+})
+```
+
+```
+ct: text/event-stream
+  "event: tick"
+  "data: 1"
+  "event: tick"
+  "data: 2"
+  "event: tick"
+  "data: 3"
+```
+
+Everything else from the core article still holds: the wire format, the
+blank line terminating each message, keepalive comments, and dropping
+slow subscribers with a non-blocking send.
+
+Three Fiber-specific points. The handler **returns immediately** —
+`SetBodyStreamWriter` registers a callback that runs after you return,
+so anything you need must be captured before then, and a value taken
+from `c` must be copied for the reason above. A failing `w.Flush()` is
+your disconnect signal, since fasthttp's per-connection cancellation
+does not behave like `r.Context()`. And exclude the route from
+compression, or buffering defeats the flush.
+
 ## Should you use it
 
 If you need a `net/http` ecosystem — OpenTelemetry instrumentation,

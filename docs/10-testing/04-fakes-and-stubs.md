@@ -62,6 +62,43 @@ For an interface with several methods, give the unused ones a trivial
 body returning zero values. If that gets tedious, the interface is
 probably too wide for its consumer.
 
+### Embedding the interface, for a deliberately partial fake
+
+The other common idiom embeds the interface instead of listing every
+method:
+
+```go
+type partialUsers struct {
+    UserStore                      // embedded: satisfies the interface
+    ByIDFn func(context.Context, string) (User, error)
+}
+
+func (p partialUsers) ByID(ctx context.Context, id string) (User, error) {
+    return p.ByIDFn(ctx, id)
+}
+```
+
+The embedded interface is nil, so the struct satisfies `UserStore`
+while implementing exactly one method. Calling any other **panics with
+a nil pointer dereference**.
+
+That sounds like a defect and is the point. The test asserts not only
+what the code does call but what it does not: if someone later makes
+the code under test call `Create`, the test fails loudly instead of
+quietly accepting a zero value. It also means a new method on the
+interface does not break every existing double.
+
+The trade against function fields:
+
+| | Function fields | Embedded interface |
+|---|---|---|
+| unimplemented method | returns a zero value | panics |
+| new interface method | must add a stub | nothing to change |
+| reads as | explicit, verbose | terse, implicit |
+
+Use function fields when several methods matter, embedding when the
+test is about one method and you want the rest to be an error.
+
 ## Recording what happened
 
 When the assertion is "it called the thing", have the stub record:

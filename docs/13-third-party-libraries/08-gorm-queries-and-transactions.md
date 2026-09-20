@@ -126,6 +126,60 @@ habit is to leave a one-line comment saying which of those it is, so a
 reviewer can see whether the exception is a sanctioned one or a
 shortcut.
 
+## Clauses: upsert, returning, locking
+
+The chain API cannot express everything SQL can. `gorm.io/gorm/clause`
+fills the gap, and three of its clauses come up constantly.
+
+**Upsert** — insert, or update the existing row on a conflict:
+
+```go
+up := Tag{Name: "go", Hits: 5, Langs: pq.StringArray{"go"}}
+
+err := db.Clauses(clause.OnConflict{
+    Columns:   []clause.Column{{Name: "name"}},
+    DoUpdates: clause.AssignmentColumns([]string{"hits", "langs"}),
+}).Create(&up).Error
+// one row, hits=5 — updated rather than duplicated
+```
+
+`Columns` names the conflict target, `DoUpdates` the columns to
+overwrite. This is one atomic statement, so it is safe against a
+concurrent insert in a way that "select, then insert if missing" is
+not.
+
+`DoNothing` is the ignore-duplicates variant:
+
+```go
+db.Clauses(clause.OnConflict{DoNothing: true}).Create(&Tag{Name: "go"})
+// no error, no new row
+```
+
+**Returning** gets generated values back in the same round trip:
+
+```go
+r := Tag{Name: "rust"}
+db.Clauses(clause.Returning{Columns: []clause.Column{{Name: "id"}}}).Create(&r)
+// r.ID is populated
+```
+
+**Locking** takes a row lock inside a transaction, for read-modify-write
+without a race:
+
+```go
+db.Transaction(func(tx *gorm.DB) error {
+    var locked Tag
+    return tx.Clauses(clause.Locking{Strength: "UPDATE"}).
+        First(&locked, "name = ?", "go").Error
+})
+```
+
+That generates `SELECT ... FOR UPDATE`. Other rows are unaffected;
+another transaction wanting the same row waits.
+
+All three keep their values parameterised, so they stay safe with user
+input.
+
 ## Transactions
 
 ```go
@@ -220,6 +274,30 @@ sql := db.ToSQL(func(tx *gorm.DB) *gorm.DB {
 `ToSQL` builds the statement without running it. Turning the logger to
 `logger.Info` in development shows every query with its timing, which
 is usually how you notice a `Preload` has become N+1.
+
+### `.Scan()` writes argument values into the log
+
+`logger.Config{ParameterizedQueries: true}` normally keeps values out
+of the log, so a query appears as `WHERE name = $1`. **`Scan` is the
+exception**, and it does not matter whether the query came from `Raw`
+or from the chain:
+
+```go
+db.Raw(`SELECT count(*) AS n FROM tags WHERE name = ?`, secret).Scan(&out)
+// the log line contains the secret
+
+db.Model(&Tag{}).Where("name = ?", secret).Scan(&out)
+// so does this one
+
+db.Where("name = ?", secret).Take(&one)    // stays parameterised
+db.Where("name = ?", secret).Find(&many)   // stays parameterised
+```
+
+So a token hash, a session id or an API key passed to a `Scan` query
+ends up in your logs in plain text, while the identical condition on
+`Take` or `Find` does not. If a value is sensitive, either avoid
+`Scan` for that query, or hash it before it reaches the database so
+the logged value is useless.
 
 > **From Python:** the chain API is SQLAlchemy's query builder, and
 > `Raw`/`Exec` are `session.execute(text(...))`. The reusability trap

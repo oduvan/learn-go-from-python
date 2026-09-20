@@ -243,6 +243,41 @@ Refresh tokens are long-lived credentials — store them encrypted, and
 support rotation, where each refresh issues a new one and invalidates
 the old.
 
+## If you are the authorization server
+
+Everything above is the *client* side. Occasionally you are the other
+end — most commonly when something must authenticate to *your* API on
+a user's behalf, which is what an MCP server exposed over HTTP needs.
+
+The pieces then invert:
+
+- **`/.well-known/oauth-authorization-server`** and
+  `/.well-known/oauth-protected-resource` — discovery documents, so a
+  client can find your endpoints without configuration.
+- **`GET /authorize`** — authenticate the user, then redirect back with
+  a short-lived code. Store the code against the client id, the
+  redirect URI and the PKCE challenge.
+- **`POST /token`** — exchange the code. Verify the redirect URI
+  matches **exactly** what was registered, and verify the PKCE
+  verifier: recompute `base64url(sha256(verifier))` and compare in
+  constant time against the stored challenge.
+- **`POST /register`** — dynamic client registration, if clients are
+  not pre-configured.
+
+Three rules carry most of the security. Authorization codes are
+**single use** and short-lived, so redeeming one twice must invalidate
+the session rather than issue a second token. Redirect URIs are matched
+against an **allowlist**, never by prefix — a prefix match lets an
+attacker append a path and receive the code. And refresh tokens should
+**rotate**: each refresh issues a new one and invalidates its
+predecessor, so a stolen token is detectable when the legitimate client
+presents the old one.
+
+Error responses here follow RFC 6749 rather than your usual error
+shape — a JSON body with `error` and `error_description`, and specific
+codes like `invalid_grant`. Clients parse it, so this is one place a
+house error helper is the wrong thing to use.
+
 ## The checklist
 
 - `state` on every flow, compared on callback

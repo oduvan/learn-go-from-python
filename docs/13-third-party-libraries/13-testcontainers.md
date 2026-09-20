@@ -114,11 +114,38 @@ func TestInsertAndRead(t *testing.T) {
 ```
 
 Isolating tests from each other matters more than isolating them from
-the container. Options, cheapest first: truncate the tables you touched;
-run each test in a transaction that always rolls back; or create a
-fresh database per test from a migrated template with
-`CREATE DATABASE x TEMPLATE y`, which is fast and gives full isolation
-including DDL.
+the container. Options, cheapest first: truncate the tables you
+touched; run each test in a transaction that always rolls back; or
+clone a database from a migrated template.
+
+The template clone is the one that scales. Migrate once into a template
+database, then per test binary:
+
+```sql
+CREATE DATABASE test_7 TEMPLATE app_template;
+```
+
+Postgres copies the files, so it is far faster than re-running
+migrations, and each binary gets full isolation including DDL. Between
+tests within a binary, truncating the touched tables is usually enough.
+
+### Let CI reuse a service container
+
+CI often already provides a database, and starting another inside it is
+slow or impossible. Check for an externally-supplied DSN first and only
+fall back to testcontainers:
+
+```go
+func testDSN(t *testing.T) string {
+    if dsn := os.Getenv("TEST_DATABASE_DSN"); dsn != "" {
+        return dsn                      // CI service container
+    }
+    return sharedPostgres(t)            // local Docker
+}
+```
+
+One helper, two environments, no build tags. This is often the
+difference between database tests running in CI and quietly not.
 
 Run your real [migrations](09-goose-migrations.md) against the
 container rather than hand-writing the schema — then the tests also

@@ -203,6 +203,58 @@ things — so a tool that runs caller-supplied SQL should parse and
 restrict it, one that writes should be scoped, and destructive
 operations should not be exposed at all.
 
+## The other direction: calling a model yourself
+
+An MCP server exposes tools *to* a client. Sometimes you are the
+client — your service calls a model and lets it use your tools. The
+primitives are all covered already: an
+[HTTP client](../08-http-with-net-http/02-http-client.md) with
+timeouts and retries, a
+[rate limiter](03-golang-x-sync-and-time.md), and
+[custom JSON marshalling](../06-text-time-and-data/07-encoding-json.md)
+for the tagged-union content blocks these APIs use. Most providers need
+no SDK; `net/http` is enough.
+
+What is new is the shape of the conversation. A tool-use loop:
+
+```go
+for range maxTurns {
+    resp, err := client.Complete(ctx, messages, tools)
+    if err != nil {
+        return err
+    }
+
+    calls := resp.ToolCalls()
+    if len(calls) == 0 {
+        return resp.Text(), nil        // the model is done
+    }
+
+    messages = append(messages, resp.AsMessage())
+    for _, call := range calls {
+        result := dispatch(ctx, call)  // run the tool
+        messages = append(messages, toolResultMessage(call.ID, result))
+    }
+}
+```
+
+The model decides when to stop. Four things to get right:
+
+- **Bound the turns.** Without `maxTurns`, a model that keeps calling
+  tools loops until your budget is gone.
+- **Errors go back as results**, exactly as on the server side. A
+  failed tool call is a message the model can react to, not a Go error
+  that aborts the loop.
+- **Watch the context window.** Every result is appended, so a tool
+  returning large output fills the window in three turns. Truncate,
+  paginate, or return ids.
+- **The context deadline covers the whole loop**, not one call. Budget
+  for several round trips.
+
+Prompts are worth keeping out of the code — in files, or a database
+table — so they can change without a deploy, and rendering them with
+[`text/template`](../08-http-with-net-http/04-templates.md) beats
+string concatenation.
+
 ## Designing tools the model can use
 
 - **Few, broad tools beat many narrow ones.** A model choosing among

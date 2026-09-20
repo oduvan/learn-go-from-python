@@ -80,6 +80,40 @@ A `*string` is a nullable column; a plain `string` is `NOT NULL` with
 [encoding JSON](../06-text-time-and-data/07-encoding-json.md) applies
 here too.
 
+### Postgres array columns need `lib/pq`
+
+GORM running on the pgx driver still does not map a Postgres `text[]`
+to a `[]string` by itself. The type that does is `pq.StringArray`, from
+`github.com/lib/pq`:
+
+```go
+type Tag struct {
+    ID    int64          `gorm:"primaryKey"`
+    Name  string         `gorm:"uniqueIndex"`
+    Langs pq.StringArray `gorm:"type:text[];not null;default:'{}'"`
+}
+```
+
+```go
+t := Tag{Name: "go", Langs: pq.StringArray{"go", "python"}}
+db.Create(&t)
+
+var back Tag
+db.First(&back, "name = ?", "go")
+fmt.Println(back.Langs, len(back.Langs))   // output: [go python] 2
+```
+
+This surprises people, because
+[pgx](06-pgx-and-postgres.md) maps arrays to `[]string` natively — but
+that is pgx's *own* API. Go through GORM and you are back to a
+`driver.Valuer`/`sql.Scanner` type, which is what `pq.StringArray` is.
+There are `pq.Int64Array` and friends for the other element types, and
+`pq.Array(&v)` wraps a slice for a one-off query.
+
+So a codebase can depend on `lib/pq` purely for these types while using
+pgx as the actual driver. That is not a mistake; it is the normal
+arrangement.
+
 ## The `default:` zero-value trap
 
 This is the one to internalise. GORM omits zero-valued fields from the

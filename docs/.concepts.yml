@@ -223,3 +223,4 @@ concepts:
     introduces_in: 13-third-party-libraries/18-mcp-servers-with-mcp-go.md
     ok_in:
       - index.md
+      - 13-third-party-libraries/17-oidc-and-oauth.md          # motivating example for being an auth server

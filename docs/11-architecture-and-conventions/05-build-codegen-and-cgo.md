@@ -219,6 +219,11 @@ Keep `CGO_ENABLED=0` unless something genuinely requires it, and put
 the requirement in the README — a developer whose build suddenly needs
 a C toolchain deserves to know why.
 
+The library's own API is then just a library to learn. What is
+*Go*-specific is everything above: the build flags, the lost
+cross-compilation, and the manual `Close`. Those are the parts that
+will surprise you; the C binding's surface is documentation.
+
 > **From Python:** `go build` replaces the entire packaging stack —
 > there is no wheel, no virtualenv, no interpreter to ship. Build tags
 > are conditional compilation rather than runtime `sys.platform`
