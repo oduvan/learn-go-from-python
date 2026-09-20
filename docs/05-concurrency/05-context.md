@@ -81,18 +81,21 @@ The conventions are firm and worth following exactly:
   blocking loops and returns `ctx.Err()` when it fires.
 
 ```go
-func work(ctx context.Context) error {
-    for {
+func work(ctx context.Context, jobs []int) error {
+    for _, j := range jobs {
         select {
         case <-ctx.Done():
             return ctx.Err()      // stop promptly when cancelled
         default:
-            // ... one unit of work ...
-            return nil
         }
+        process(j)                // one unit of work, then check again
     }
+    return nil
 }
 ```
+
+The empty `default` makes the `select` non-blocking: it checks for
+cancellation between units of work without ever waiting.
 
 ## Request-scoped values (use sparingly)
 

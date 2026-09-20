@@ -106,9 +106,43 @@ loadConfig "missing.toml": open missing.toml: no such file or directory
 Але важливіше те, що підлягаюча помилка залишається **доступною для
 перевірки** через `errors.Is` та `errors.As`.
 
-Використовуйте `%w` рівно один раз на виклик `fmt.Errorf`. Щоб вбудувати
-повідомлення про помилку *без* обгортання (рідко), використовуйте `%s`
-або `%v`.
+Щоб вбудувати повідомлення про помилку *без* обгортання (рідко),
+використовуйте `%s` або `%v` — але обережно: це розриває ланцюжок, і
+`errors.Is` більше не знайде підлягаючу помилку. Два рядки виглядають майже
+однаково:
+
+```go
+wrapped := fmt.Errorf("layer1: %w", ErrBase)
+plain   := fmt.Errorf("layer1: %v", ErrBase)   // різниця в один символ
+
+fmt.Println(errors.Is(wrapped, ErrBase))   // output: true
+fmt.Println(errors.Is(plain, ErrBase))     // output: false
+```
+
+`%w` може з'являтися **більше ніж один раз** в одному `fmt.Errorf`. Тоді
+результат обгортає кілька помилок одразу, і `errors.Is` знаходить їх усі:
+
+```go
+err := fmt.Errorf("load user: %w; and %w", ErrDB, ErrAuth)
+fmt.Println(errors.Is(err, ErrDB), errors.Is(err, ErrAuth))
+// output: true true
+```
+
+Спуститися на одну ланку ланцюжком вручну можна через `errors.Unwrap`, яка
+на дні повертає `nil`:
+
+```go
+fmt.Println(errors.Unwrap(wrapped) == ErrBase)   // output: true
+fmt.Println(errors.Unwrap(ErrBase))              // output: <nil>
+```
+
+### Обгортання — це обіцянка вашим викликачам
+
+`%w` — не автоматично найкраща практика, а рішення щодо API. Обгортання
+публікує підлягаючу помилку як частину контракту вашого пакета: викликачі
+відтепер можуть писати `errors.Is(err, sql.ErrNoRows)`, і ви не зможете
+замінити драйвер бази даних, не зламавши їх. Використовуйте `%v`, коли
+причина — це деталь реалізації, яку ви хочете лишити вільною для змін.
 
 ## Перевірка обгорнутих помилок: `errors.Is` та `errors.As`
 

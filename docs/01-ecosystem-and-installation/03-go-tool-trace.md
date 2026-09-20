@@ -67,11 +67,20 @@ stopping it so it always runs.
 
 ### B. From tests
 
-The simplest path — no code change:
+The simplest path — no code change. Note that `-trace` accepts only **one
+package** at a time:
+
+```bash
+go test -trace=trace.out ./counter   # one package
+```
 
 ```bash
 go test -trace=trace.out ./...
+# cannot use -trace flag with multiple packages
 ```
+
+The file lands in the directory you ran the command from, not in the
+package directory.
 
 ### C. From a running server
 

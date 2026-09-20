@@ -20,7 +20,19 @@ go run ./cmd/server         # run the package at that path
 
 ### `go build`
 
-Compiles to a binary in the current directory (or to the path given by `-o`). Does not run it. The resulting binary is statically linked — no Go runtime to install on the target.
+Compiles to a binary in the current directory (or to the path given by `-o`). Does not run it. The binary bundles the Go runtime, so there is no interpreter to install on the target.
+
+It is **not** automatically fully static, though. With cgo enabled (the default when a C toolchain is present), importing `net` or `os/user` links against the system libc:
+
+```bash
+$ go build -o app . && file app
+app: ELF 64-bit LSB executable, x86-64, ..., dynamically linked, ...
+
+$ CGO_ENABLED=0 go build -o app . && file app
+app: ELF 64-bit LSB executable, x86-64, ..., statically linked, ...
+```
+
+Set `CGO_ENABLED=0` when you need a binary that runs in a `scratch` or distroless container. Add `-trimpath` to keep your absolute source paths out of the binary.
 
 ```bash
 go build                    # produce ./<name>

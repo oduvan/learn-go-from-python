@@ -159,9 +159,49 @@ add(m)
 fmt.Println(m["new"])     // output: 1
 ```
 
-This is unlike structs and arrays (which copy wholesale). There is no
-"copy a map" builtin — to get an independent copy you allocate a new map
-and copy entries in a loop.
+This is unlike structs and arrays (which copy wholesale). To get an
+independent copy, use `maps.Clone` — see the next section.
+
+## The `maps` package (and `clear`)
+
+The standard library's `maps` package covers the operations you'd
+otherwise hand-roll:
+
+```go
+m := map[string]int{"c": 3, "a": 1, "b": 2}
+
+c := maps.Clone(m)            // independent copy
+c["a"] = 99
+fmt.Println(m["a"], c["a"])   // output: 1 99
+
+fmt.Println(maps.Equal(m, map[string]int{"a": 1, "b": 2, "c": 3}))
+// output: true
+
+maps.DeleteFunc(m, func(k string, v int) bool { return v > 1 })
+fmt.Println(m)                // output: map[a:1]
+
+clear(m)                      // builtin: remove every entry
+fmt.Println(len(m))           // output: 0
+```
+
+`maps.Keys` returns an *iterator*, which pairs with `slices.Sorted` to
+collapse the whole sorted-iteration recipe above into one line:
+
+```go
+m := map[string]int{"c": 3, "a": 1, "b": 2}
+for _, k := range slices.Sorted(maps.Keys(m)) {
+    fmt.Println(k, m[k])
+}
+// output:
+// a 1
+// b 2
+// c 3
+```
+
+`maps.Copy(dst, src)` merges one map into another in place.
+
+> **From Python:** `maps.Clone` ≈ `dict.copy()`, `maps.Copy` ≈
+> `dict.update()`, `clear(m)` ≈ `dict.clear()`.
 
 ## A set via `map[T]struct{}`
 

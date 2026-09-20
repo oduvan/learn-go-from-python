@@ -81,18 +81,21 @@ case <-ctx.Done():
   блокувальних циклах і повертає `ctx.Err()`, коли той спрацьовує.
 
 ```go
-func work(ctx context.Context) error {
-    for {
+func work(ctx context.Context, jobs []int) error {
+    for _, j := range jobs {
         select {
         case <-ctx.Done():
             return ctx.Err()      // оперативно зупинитися при скасуванні
         default:
-            // ... одна одиниця роботи ...
-            return nil
         }
+        process(j)                // одна одиниця роботи, потім знову перевірка
     }
+    return nil
 }
 ```
+
+Порожній `default` робить `select` неблокувальним: він перевіряє скасування
+між одиницями роботи, ніколи не чекаючи.
 
 ## Значення в межах запиту (помірно)
 

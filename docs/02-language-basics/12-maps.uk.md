@@ -165,9 +165,50 @@ add(m)
 fmt.Println(m["new"])     // output: 1
 ```
 
-Це не так, як зі структурами й масивами (які копіюються цілком).
-Вбудованого «скопіювати map» немає — щоб отримати незалежну копію, ви
-виділяєте нову map і копіюєте записи в циклі.
+Це не так, як зі структурами й масивами (які копіюються цілком). Щоб
+отримати незалежну копію, використовуйте `maps.Clone` — див. наступний
+розділ.
+
+## Пакет `maps` (та `clear`)
+
+Пакет `maps` зі стандартної бібліотеки покриває операції, які інакше
+довелося б писати вручну:
+
+```go
+m := map[string]int{"c": 3, "a": 1, "b": 2}
+
+c := maps.Clone(m)            // незалежна копія
+c["a"] = 99
+fmt.Println(m["a"], c["a"])   // output: 1 99
+
+fmt.Println(maps.Equal(m, map[string]int{"a": 1, "b": 2, "c": 3}))
+// output: true
+
+maps.DeleteFunc(m, func(k string, v int) bool { return v > 1 })
+fmt.Println(m)                // output: map[a:1]
+
+clear(m)                      // вбудована: прибрати всі записи
+fmt.Println(len(m))           // output: 0
+```
+
+`maps.Keys` повертає *ітератор*, який у парі зі `slices.Sorted` згортає весь
+рецепт відсортованого обходу вище в один рядок:
+
+```go
+m := map[string]int{"c": 3, "a": 1, "b": 2}
+for _, k := range slices.Sorted(maps.Keys(m)) {
+    fmt.Println(k, m[k])
+}
+// output:
+// a 1
+// b 2
+// c 3
+```
+
+`maps.Copy(dst, src)` зливає одну map в іншу на місці.
+
+> **З погляду Python:** `maps.Clone` ≈ `dict.copy()`, `maps.Copy` ≈
+> `dict.update()`, `clear(m)` ≈ `dict.clear()`.
 
 ## Множина через `map[T]struct{}`
 

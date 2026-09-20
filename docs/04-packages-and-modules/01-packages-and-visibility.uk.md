@@ -12,7 +12,8 @@ package store
 Усе інше тримається на двох правилах:
 
 - **Один каталог = один пакет.** Усі файли `.go` в каталозі мають
-  оголошувати однакову назву пакета; разом вони утворюють цей пакет.
+  оголошувати однакову назву пакета; разом вони утворюють цей пакет. (Є
+  рівно один виняток — зовнішній тестовий пакет, див. нижче.)
 - **`package main` особливий** — це точка входу виконуваної програми, і
   він мусить містити `func main()`. Кожен інший пакет — це бібліотека, яку
   імпортують інші.
@@ -81,6 +82,47 @@ func New() *Item { return &Item{price: basePrice} }
 // price.go
 package store
 const basePrice = 100      // видима для item.go без жодного імпорту
+```
+
+## Єдиний виняток: `foo` та `foo_test`
+
+Каталог може містити другий пакет, і лише один: `<name>_test`. Тестові
+файли, що оголошують `package store_test`, живуть поруч із `package store`
+і компілюються окремо — вони можуть користуватися лише **експортованим**
+API, точно як будь-який інший викликач.
+
+```go
+// store/store.go
+package store
+
+func New() *Item { return &Item{price: basePrice} }
+
+// store/internal_test.go — той самий пакет: бачить неекспортовані імена
+package store
+
+func TestBasePrice(t *testing.T) { _ = basePrice }
+
+// store/store_test.go — зовнішній: лише експортований API
+package store_test
+
+import "example.com/shop/store"
+
+func TestNew(t *testing.T) { _ = store.New() }
+```
+
+`go list` показує три групи, які відстежують інструменти:
+
+```bash
+$ go list -f '{{.GoFiles}} {{.TestGoFiles}} {{.XTestGoFiles}}' ./store
+[store.go] [internal_test.go] [store_test.go]
+```
+
+Писати тести в `package foo_test` — це спосіб самому скуштувати власний
+публічний API: якщо тест писати незручно, то й API незручний. Два
+*звичайні* пакети в одному каталозі лишаються помилкою:
+
+```bash
+found packages alpha (x.go) and beta (y.go) in /tmp/a1/bad
 ```
 
 ## Функції `init`

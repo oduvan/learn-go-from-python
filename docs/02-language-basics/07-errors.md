@@ -109,8 +109,42 @@ loadConfig "missing.toml": open missing.toml: no such file or directory
 But more importantly, the underlying error is still **inspectable**
 through `errors.Is` and `errors.As`.
 
-Use `%w` exactly once per `fmt.Errorf` call. To embed an error message
-*without* wrapping (rare), use `%s` or `%v`.
+To embed an error message *without* wrapping (rare), use `%s` or `%v` —
+but be careful: that breaks the chain, and `errors.Is` will no longer find
+the underlying error. The two lines look almost identical:
+
+```go
+wrapped := fmt.Errorf("layer1: %w", ErrBase)
+plain   := fmt.Errorf("layer1: %v", ErrBase)   // one character different
+
+fmt.Println(errors.Is(wrapped, ErrBase))   // output: true
+fmt.Println(errors.Is(plain, ErrBase))     // output: false
+```
+
+`%w` may appear **more than once** in a single `fmt.Errorf`. The result
+then wraps several errors at once, and `errors.Is` finds all of them:
+
+```go
+err := fmt.Errorf("load user: %w; and %w", ErrDB, ErrAuth)
+fmt.Println(errors.Is(err, ErrDB), errors.Is(err, ErrAuth))
+// output: true true
+```
+
+You can also step one link down the chain by hand with `errors.Unwrap`,
+which returns `nil` at the bottom:
+
+```go
+fmt.Println(errors.Unwrap(wrapped) == ErrBase)   // output: true
+fmt.Println(errors.Unwrap(ErrBase))              // output: <nil>
+```
+
+### Wrapping is a promise to your callers
+
+`%w` isn't automatic best practice — it's an API decision. Wrapping
+publishes the underlying error as part of your package's contract:
+callers may now write `errors.Is(err, sql.ErrNoRows)` and you can't swap
+the database driver without breaking them. Use `%v` when the cause is an
+implementation detail you want to keep free to change.
 
 ## Inspecting wrapped errors: `errors.Is` and `errors.As`
 
