@@ -129,6 +129,30 @@ Go. Мета — пояснювати Go **його власними катег�
 - [Структуроване логування через `slog`](12-observability/01-structured-logging-with-slog.md) — хендлери, `With`, `LogValuer`, тестування логів.
 - [Профілювання через pprof](12-observability/02-profiling-with-pprof.md) — профілі CPU та heap, flat проти cum, flame-графи.
 
+### [Сторонні бібліотеки](13-third-party-libraries/01-choosing-and-managing-dependencies.md)
+
+Усе, що потрапляє в `go.mod`. Решта книги — це мова та її стандартна
+бібліотека; цей розділ — набір рішень одного конкретного стека.
+
+- [Вибір та управління залежностями](13-third-party-libraries/01-choosing-and-managing-dependencies.md) — оцінка модуля, `go mod tidy`, `GOPRIVATE`, `govulncheck`.
+- [Налаштування golangci-lint](13-third-party-libraries/02-golangci-lint-configuration.md) — `depguard`, `forbidigo`, контроль архітектури.
+- [`golang.org/x/sync` та `x/time`](13-third-party-libraries/03-golang-x-sync-and-time.md) — `errgroup`, `SetLimit`, обмежувачі частоти.
+- [YAML та TOML](13-third-party-libraries/04-yaml-and-toml.md) — `yaml.v3`, `go-toml`, сувора десеріалізація.
+- [viper](13-third-party-libraries/05-viper.md) — багатошарова конфігурація і чому самого `AutomaticEnv` замало.
+- [pgx та PostgreSQL](13-third-party-libraries/06-pgx-and-postgres.md) — рідні типи, `PgError`, `CollectRows`, UUIDv7.
+- [Основи GORM](13-third-party-libraries/07-gorm-basics.md) — моделі, теги, хуки і пастка нульового значення.
+- [Запити та транзакції в GORM](13-third-party-libraries/08-gorm-queries-and-transactions.md) — ланцюжки, сирий SQL, транзакції в context.
+- [Міграції через goose](13-third-party-libraries/09-goose-migrations.md) — SQL-міграції, вбудовування, безпечні зміни схеми.
+- [Fiber](13-third-party-libraries/10-fiber.md) — обробники v3, біндинг і ціна fasthttp.
+- [templ](13-third-party-libraries/11-templ.md) — скомпільовані HTML-компоненти з перевіркою типів.
+- [testify](13-third-party-libraries/12-testify.md) — `assert` проти `require`, діфи, nil проти порожнього.
+- [testcontainers](13-third-party-libraries/13-testcontainers.md) — справжня база даних на тестовий бінарник.
+- [Prometheus та OpenTelemetry](13-third-party-libraries/14-prometheus-and-opentelemetry.md) — метрики, трейси, кардинальність.
+- [Заплановані задачі](13-third-party-libraries/15-scheduled-jobs.md) — gocron плюс advisory-локи для запуску рівно один раз.
+- [Об'єктне сховище та кешування](13-third-party-libraries/16-object-storage-and-caching.md) — S3, valkey і мʼяка деградація.
+- [OIDC та OAuth](13-third-party-libraries/17-oidc-and-oauth.md) — code flow, PKCE, сесії, API-токени.
+- [MCP-сервери через mcp-go](13-third-party-libraries/18-mcp-servers-with-mcp-go.md) — інструменти, обробники, транспорти.
+
 ## Джерела
 
 - Репозиторій з вихідним кодом: <https://github.com/oduvan/learn-go-from-python>.

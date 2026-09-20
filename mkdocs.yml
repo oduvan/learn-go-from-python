@@ -139,6 +139,26 @@ nav:
       - Structured logging with slog: 12-observability/01-structured-logging-with-slog.md
       - Profiling with pprof: 12-observability/02-profiling-with-pprof.md
 
+  - Third-party libraries:
+      - Choosing and managing dependencies: 13-third-party-libraries/01-choosing-and-managing-dependencies.md
+      - golangci-lint configuration: 13-third-party-libraries/02-golangci-lint-configuration.md
+      - golang.org/x/sync and x/time: 13-third-party-libraries/03-golang-x-sync-and-time.md
+      - YAML and TOML: 13-third-party-libraries/04-yaml-and-toml.md
+      - viper: 13-third-party-libraries/05-viper.md
+      - pgx and PostgreSQL: 13-third-party-libraries/06-pgx-and-postgres.md
+      - GORM basics: 13-third-party-libraries/07-gorm-basics.md
+      - GORM queries and transactions: 13-third-party-libraries/08-gorm-queries-and-transactions.md
+      - goose migrations: 13-third-party-libraries/09-goose-migrations.md
+      - Fiber: 13-third-party-libraries/10-fiber.md
+      - templ: 13-third-party-libraries/11-templ.md
+      - testify: 13-third-party-libraries/12-testify.md
+      - testcontainers: 13-third-party-libraries/13-testcontainers.md
+      - Prometheus and OpenTelemetry: 13-third-party-libraries/14-prometheus-and-opentelemetry.md
+      - Scheduled jobs: 13-third-party-libraries/15-scheduled-jobs.md
+      - Object storage and caching: 13-third-party-libraries/16-object-storage-and-caching.md
+      - OIDC and OAuth: 13-third-party-libraries/17-oidc-and-oauth.md
+      - MCP servers with mcp-go: 13-third-party-libraries/18-mcp-servers-with-mcp-go.md
+
 exclude_docs: |
   01-ecosystem-and-installation/09-demo-project/counter/
   01-ecosystem-and-installation/09-demo-project/internal/
@@ -272,6 +292,25 @@ plugins:
             Observability: Спостережуваність
             Structured logging with slog: Структуроване логування через slog
             Profiling with pprof: Профілювання через pprof
+            Third-party libraries: Сторонні бібліотеки
+            Choosing and managing dependencies: Вибір та управління залежностями
+            golangci-lint configuration: Налаштування golangci-lint
+            golang.org/x/sync and x/time: golang.org/x/sync та x/time
+            YAML and TOML: YAML та TOML
+            viper: viper
+            pgx and PostgreSQL: pgx та PostgreSQL
+            GORM basics: Основи GORM
+            GORM queries and transactions: Запити та транзакції в GORM
+            goose migrations: Міграції через goose
+            Fiber: Fiber
+            templ: templ
+            testify: testify
+            testcontainers: testcontainers
+            Prometheus and OpenTelemetry: Prometheus та OpenTelemetry
+            Scheduled jobs: Заплановані задачі
+            Object storage and caching: Об'єктне сховище та кешування
+            OIDC and OAuth: OIDC та OAuth
+            MCP servers with mcp-go: MCP-сервери через mcp-go
 
 extra:
   social:

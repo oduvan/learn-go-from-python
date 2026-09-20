@@ -128,6 +128,30 @@ is always obvious.
 - [Structured logging with `slog`](12-observability/01-structured-logging-with-slog.md) — handlers, `With`, `LogValuer`, testing logs.
 - [Profiling with pprof](12-observability/02-profiling-with-pprof.md) — CPU and heap profiles, flat vs cum, flame graphs.
 
+### [Third-party libraries](13-third-party-libraries/01-choosing-and-managing-dependencies.md)
+
+Everything that lands in `go.mod`. The rest of the book is the language and
+its standard library; this section is one stack's worth of choices.
+
+- [Choosing and managing dependencies](13-third-party-libraries/01-choosing-and-managing-dependencies.md) — judging a module, `go mod tidy`, `GOPRIVATE`, `govulncheck`.
+- [golangci-lint configuration](13-third-party-libraries/02-golangci-lint-configuration.md) — `depguard`, `forbidigo`, enforcing architecture.
+- [`golang.org/x/sync` and `x/time`](13-third-party-libraries/03-golang-x-sync-and-time.md) — `errgroup`, `SetLimit`, rate limiters.
+- [YAML and TOML](13-third-party-libraries/04-yaml-and-toml.md) — `yaml.v3`, `go-toml`, strict decoding.
+- [viper](13-third-party-libraries/05-viper.md) — layered config, and why `AutomaticEnv` alone is not enough.
+- [pgx and PostgreSQL](13-third-party-libraries/06-pgx-and-postgres.md) — native types, `PgError`, `CollectRows`, UUIDv7.
+- [GORM basics](13-third-party-libraries/07-gorm-basics.md) — models, tags, hooks, and the zero-value trap.
+- [GORM queries and transactions](13-third-party-libraries/08-gorm-queries-and-transactions.md) — chaining, raw SQL, context-carried transactions.
+- [goose migrations](13-third-party-libraries/09-goose-migrations.md) — SQL migrations, embedding, safe schema changes.
+- [Fiber](13-third-party-libraries/10-fiber.md) — v3 handlers, binding, and what fasthttp costs.
+- [templ](13-third-party-libraries/11-templ.md) — compiled, type-checked HTML components.
+- [testify](13-third-party-libraries/12-testify.md) — `assert` vs `require`, diffs, nil vs empty.
+- [testcontainers](13-third-party-libraries/13-testcontainers.md) — a real database per test binary.
+- [Prometheus and OpenTelemetry](13-third-party-libraries/14-prometheus-and-opentelemetry.md) — metrics, traces, cardinality.
+- [Scheduled jobs](13-third-party-libraries/15-scheduled-jobs.md) — gocron plus advisory locks for exactly-once.
+- [Object storage and caching](13-third-party-libraries/16-object-storage-and-caching.md) — S3, valkey, and failing soft.
+- [OIDC and OAuth](13-third-party-libraries/17-oidc-and-oauth.md) — the code flow, PKCE, sessions, API tokens.
+- [MCP servers with mcp-go](13-third-party-libraries/18-mcp-servers-with-mcp-go.md) — tools, handlers, transports.
+
 ## Source
 
 - Source repository: <https://github.com/oduvan/learn-go-from-python>.
