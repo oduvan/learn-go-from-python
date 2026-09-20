@@ -43,7 +43,7 @@ For every fenced `go` (or `bash`) code block in every article:
 
 2. Use a per-article scratch directory under `/tmp/python-review/<articleSlug>/`. `mkdir -p` it; `go mod init scratch` once per dir.
 
-3. The local Go install is at `/opt/homebrew/bin/go` (Go 1.26.4). Use it directly if `go` isn't on `PATH`.
+3. The local Go install is at `/opt/homebrew/bin/go` (Go 1.27.1). Use it directly if `go` isn't on `PATH`.
 
 4. When a snippet uses identifiers it doesn't define (e.g. `data`, `target`, `process(i, v)`, `cond`), stub them so the snippet compiles. Stubs should be **minimal** — don't over-engineer.
 

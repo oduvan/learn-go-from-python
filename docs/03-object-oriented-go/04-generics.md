@@ -38,6 +38,22 @@ fmt.Println(Max(3, 7))         // inferred: T = int
 fmt.Println(Max[float64](3, 7)) // explicit: T = float64 → prints 7
 ```
 
+Inference is not limited to calls. Wherever a generic function is
+**assigned to a variable of a matching function type** — or converted to
+one — the compiler works the type arguments out from that type:
+
+```go
+func Map[T, U any](s []T, f func(T) U) []U { /* ... */ }
+
+var g func([]int, func(int) string) []string = Map   // infers T=int, U=string
+fmt.Println(g([]int{1, 2}, func(i int) string { return fmt.Sprint(i * 10) }))
+// output: [10 20]
+```
+
+That means you can hand a generic function straight to anything expecting
+a concrete function type — a struct field, a callback parameter, a map of
+handlers — without spelling out `Map[int, string]`.
+
 ## Constraints are interfaces
 
 A constraint is just an **interface** used in a type-parameter position.
@@ -147,6 +163,86 @@ s.Add("go")
 fmt.Println(s.Has("go"), s.Has("py"))   // output: true false
 ```
 
+## Generic methods
+
+A method may declare **its own type parameters**, separate from any the
+receiver carries. That matters whenever an operation has to *change* the
+element type: a set of user IDs turned into a set of usernames, a cache
+keyed one way re-keyed another. The receiver's `T` is fixed by the value
+you call it on, so the new type needs a parameter of its own.
+
+```go
+type Set[T comparable] map[T]struct{}
+
+func (s Set[T]) Add(v T)      { s[v] = struct{}{} }
+func (s Set[T]) Has(v T) bool { _, ok := s[v]; return ok }
+
+// MapTo declares U for itself — T comes from the receiver.
+func (s Set[T]) MapTo[U comparable](f func(T) U) Set[U] {
+    out := Set[U]{}
+    for v := range s {
+        out.Add(f(v))
+    }
+    return out
+}
+```
+
+Calling it infers `U` from the function you pass, exactly as for a generic
+function:
+
+```go
+ids := Set[int]{}
+ids.Add(1)
+ids.Add(2)
+
+names := ids.MapTo(func(id int) string { return fmt.Sprintf("user-%d", id) })
+fmt.Println(names.Has("user-1"), names.Has("user-9"))   // output: true false
+```
+
+You can instantiate the method explicitly when inference can't help, which
+also gives you a reusable method value:
+
+```go
+toString := ids.MapTo[string]
+fmt.Println(toString(func(id int) string { return fmt.Sprint(id) }).Has("2"))
+// output: true
+```
+
+The payoff is namespacing. Without a type parameter of its own, a method
+like this has to be a package-level function — `MapSet`, `MapStack`,
+`MapList` — one per container, all competing for names in the package.
+As a method it lives on the type it belongs to.
+
+### Interfaces stay non-generic
+
+The one firm limit: **an interface method may not declare type
+parameters**, and a generic method cannot implement a non-generic one.
+
+```go
+type Doer interface {
+    Do[T any](T) T   // compile error: interface method must have no type parameters
+}
+```
+
+A generic method has no single fixed signature, so it can't satisfy a
+method the interface pins down:
+
+```go
+type Doer interface{ Do(int) int }
+
+type T struct{}
+func (T) Do[U any](u U) U { return u }
+
+var _ Doer = T{}
+// compile error: T does not implement Doer (wrong type for method Do)
+//   have Do[U any](U) U
+//   want Do(int) int
+```
+
+Dynamic dispatch needs one concrete signature per method; a generic method
+is a family of them. Keep interface methods concrete, and put the generic
+work on the implementing type.
+
 ## When not to reach for generics
 
 Generics shine for **containers and algorithms** that are identical across
@@ -170,6 +266,8 @@ of thumb — if the only thing varying is the *type*, use a generic; if the
 | `interface{ ~int \| ~float64 }` | type-set constraint; `~` = underlying type |
 | `type Box[T any] struct{ v T }` | generic type |
 | `func (b Box[T]) Get() T` | method on a generic type |
+| `func (b Box[T]) To[U any](...)` | generic method — its own type parameter |
+| `var f func(int) string = G` | inference from assignment to a function type |
 | `var zero T` | the zero value of a type parameter |
 
 ## Sources
@@ -180,3 +278,5 @@ of thumb — if the only thing varying is the *type*, use a generic; if the
 - [cmp.Ordered — pkg.go.dev/cmp#Ordered](https://pkg.go.dev/cmp#Ordered)
 - [Go blog: an introduction to generics — go.dev/blog/intro-generics](https://go.dev/blog/intro-generics)
 - [Tutorial: getting started with generics — go.dev/doc/tutorial/generics](https://go.dev/doc/tutorial/generics)
+- [Method declarations — go.dev/ref/spec#Method_declarations](https://go.dev/ref/spec#Method_declarations)
+- [Type inference — go.dev/ref/spec#Type_inference](https://go.dev/ref/spec#Type_inference)

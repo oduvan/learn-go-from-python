@@ -4,7 +4,7 @@ A personal, opinionated set of conspect notes for a Python developer
 picking up Go. The goal is to explain Go **on its own terms**, with
 short Python analogies thrown in only when they sharpen the contrast.
 
-All material targets the current stable Go release, **Go 1.26.4**.
+All material targets the current stable Go release, **Go 1.27.1**.
 
 ## How the notes are organised
 

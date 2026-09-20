@@ -70,7 +70,7 @@ var done bool          // false (zero value)
 
 ```go
 var n int = 1
-if n {                  // compile error: non-bool n (type int) used as if condition
+if n {                  // compile error: non-boolean condition in if statement
     fmt.Println("nope")
 }
 

@@ -1,10 +1,11 @@
 # Installing Go
 
-These materials target **Go 1.26.4** (current stable). Check [go.dev/dl](https://go.dev/dl/) for the absolute latest at any moment.
+These materials target **Go 1.27.1** (current stable). Check [go.dev/dl](https://go.dev/dl/) for the absolute latest at any moment.
 
 ## macOS
 
-Three reasonable paths. Pick one — don't mix them.
+Go requires **macOS 13 Ventura or later**. Three reasonable paths
+below — pick one, don't mix them.
 
 ### Option 1 — Homebrew (recommended for daily use on macOS)
 
@@ -31,10 +32,10 @@ brew install go
 For full control over the install location:
 
 ```bash
-# download go1.26.4.darwin-arm64.tar.gz from https://go.dev/dl/
+# download go1.27.1.darwin-arm64.tar.gz from https://go.dev/dl/
 
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf ~/Downloads/go1.26.4.darwin-arm64.tar.gz
+sudo tar -C /usr/local -xzf ~/Downloads/go1.27.1.darwin-arm64.tar.gz
 ```
 
 Add `/usr/local/go/bin` to your `PATH` in `~/.zshrc` (or `~/.bash_profile`):
@@ -54,7 +55,7 @@ The official path is the tarball. Distribution packages (`apt install golang-go`
 
 ```bash
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.26.4.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.27.1.linux-amd64.tar.gz
 ```
 
 3. Add `/usr/local/go/bin` to your `PATH` by appending this line to `~/.profile` (or `~/.bashrc`):
@@ -87,7 +88,7 @@ After installation, run three quick checks:
 
 ```bash
 go version
-# example: go version go1.26.4 darwin/arm64
+# example: go version go1.27.1 darwin/arm64
 
 go env GOROOT
 # wherever the toolchain landed (e.g. /usr/local/go)
