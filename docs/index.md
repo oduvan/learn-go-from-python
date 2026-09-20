@@ -69,6 +69,17 @@ is always obvious.
 - [Bounded concurrency](05-concurrency/07-bounded-concurrency.md) — channel semaphores, collecting results, `sync.Map`.
 - [Long-running goroutines](05-concurrency/08-long-running-goroutines.md) — per-goroutine `recover`, tickers, draining on shutdown.
 
+### [Text, time and data](06-text-time-and-data/01-strings-bytes-and-runes.md)
+
+- [Strings, bytes and runes](06-text-time-and-data/01-strings-bytes-and-runes.md) — `strings`, `bytes`, and why `len` counts bytes.
+- [Formatting with `fmt`](06-text-time-and-data/02-formatting-with-fmt.md) — the verbs, width and precision, `Stringer`, `%w`.
+- [Regular expressions](06-text-time-and-data/03-regular-expressions.md) — `regexp`, named groups, and what RE2 leaves out.
+- [Time](06-text-time-and-data/04-time.md) — the reference layout, durations, zones, `Equal` over `==`.
+- [Sorting](06-text-time-and-data/05-sorting.md) — `slices.SortFunc`, `cmp.Compare`, `cmp.Or`, stability.
+- [Iterators](06-text-time-and-data/06-iterators.md) — writing `iter.Seq`, the `yield` contract, `iter.Pull`.
+- [Encoding JSON](06-text-time-and-data/07-encoding-json.md) — tags, `omitempty`, `RawMessage`, custom marshalling.
+- [XML, CSV and reflection](06-text-time-and-data/08-xml-csv-and-reflection.md) — token streaming, `csv`, struct tags at runtime.
+
 ## Source
 
 - Source repository: <https://github.com/oduvan/learn-go-from-python>.

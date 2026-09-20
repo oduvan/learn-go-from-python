@@ -153,3 +153,19 @@ concepts:
     ok_in:
       - index.md
       - 02-language-basics/09-custom-types.md                  # method preview pointer
+
+  - pattern: '\biterator'
+    introduces_in: 06-text-time-and-data/06-iterators.md
+    ok_in:
+      - index.md
+      - 01-ecosystem-and-installation/06-multiple-go-versions.md  # names it as a version-gated feature
+      - 02-language-basics/05-control-flow.md                  # range-over-func, points here
+      - 02-language-basics/12-maps.md                          # maps.Keys returns one
+
+  - pattern: '\breflect\.'
+    introduces_in: 06-text-time-and-data/08-xml-csv-and-reflection.md
+    ok_in:
+      - index.md
+      - 02-language-basics/04-operators.md                     # reflect.DeepEqual for non-comparables
+      - 02-language-basics/09-custom-types.md                  # reflect.TypeOf().Kind()
+      - 02-language-basics/10-structs.md                       # reading a tag back

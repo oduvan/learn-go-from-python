@@ -88,6 +88,16 @@ nav:
       - Bounded concurrency: 05-concurrency/07-bounded-concurrency.md
       - Long-running goroutines: 05-concurrency/08-long-running-goroutines.md
 
+  - Text, time and data:
+      - Strings, bytes and runes: 06-text-time-and-data/01-strings-bytes-and-runes.md
+      - Formatting with fmt: 06-text-time-and-data/02-formatting-with-fmt.md
+      - Regular expressions: 06-text-time-and-data/03-regular-expressions.md
+      - Time: 06-text-time-and-data/04-time.md
+      - Sorting: 06-text-time-and-data/05-sorting.md
+      - Iterators: 06-text-time-and-data/06-iterators.md
+      - Encoding JSON: 06-text-time-and-data/07-encoding-json.md
+      - XML, CSV and reflection: 06-text-time-and-data/08-xml-csv-and-reflection.md
+
 exclude_docs: |
   01-ecosystem-and-installation/09-demo-project/counter/
   01-ecosystem-and-installation/09-demo-project/internal/
@@ -176,6 +186,15 @@ plugins:
             Concurrency patterns: Патерни конкурентності
             Bounded concurrency: Обмежена конкурентність
             Long-running goroutines: Довгоживучі горутини
+            Text, time and data: Текст, час і дані
+            Strings, bytes and runes: Рядки, байти та руни
+            Formatting with fmt: Форматування через fmt
+            Regular expressions: Регулярні вирази
+            Time: Час
+            Sorting: Сортування
+            Iterators: Ітератори
+            Encoding JSON: Кодування JSON
+            XML, CSV and reflection: XML, CSV та рефлексія
 
 extra:
   social:

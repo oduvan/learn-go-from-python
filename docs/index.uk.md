@@ -70,6 +70,17 @@ Go. Мета — пояснювати Go **його власними катег�
 - [Обмежена конкурентність](05-concurrency/07-bounded-concurrency.md) — семафори на каналах, збирання результатів, `sync.Map`.
 - [Довгоживучі горутини](05-concurrency/08-long-running-goroutines.md) — `recover` у кожній горутині, тікери, дренаж під час зупинки.
 
+### [Текст, час і дані](06-text-time-and-data/01-strings-bytes-and-runes.md)
+
+- [Рядки, байти та руни](06-text-time-and-data/01-strings-bytes-and-runes.md) — `strings`, `bytes` і чому `len` рахує байти.
+- [Форматування через `fmt`](06-text-time-and-data/02-formatting-with-fmt.md) — дієслова, ширина й точність, `Stringer`, `%w`.
+- [Регулярні вирази](06-text-time-and-data/03-regular-expressions.md) — `regexp`, іменовані групи і чого немає в RE2.
+- [Час](06-text-time-and-data/04-time.md) — еталонний макет, тривалості, часові пояси, `Equal` замість `==`.
+- [Сортування](06-text-time-and-data/05-sorting.md) — `slices.SortFunc`, `cmp.Compare`, `cmp.Or`, стабільність.
+- [Ітератори](06-text-time-and-data/06-iterators.md) — написання `iter.Seq`, контракт `yield`, `iter.Pull`.
+- [Кодування JSON](06-text-time-and-data/07-encoding-json.md) — теги, `omitempty`, `RawMessage`, власна серіалізація.
+- [XML, CSV та рефлексія](06-text-time-and-data/08-xml-csv-and-reflection.md) — потік токенів, `csv`, теги структур під час виконання.
+
 ## Джерела
 
 - Репозиторій з вихідним кодом: <https://github.com/oduvan/learn-go-from-python>.
