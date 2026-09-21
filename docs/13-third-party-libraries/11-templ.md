@@ -148,8 +148,28 @@ Contextual, like `html/template`:
 ```
 
 Text is escaped, attributes are escaped, and `templ.URL` sanitises a
-URL in an `href` — rejecting `javascript:` the way the standard library
-does. `templ.Raw` opts out and should only ever see content you
+URL in an `href`. A dangerous scheme is replaced outright:
+
+```go
+templ LinkTo(u string) {
+    <a href={ templ.URL(u) }>link</a>
+}
+```
+
+```
+"/x?q=1&b=2"                    <a href="/x?q=1&amp;b=2">link</a>
+"https://example.com/a"         <a href="https://example.com/a">link</a>
+"mailto:a@b.c"                  <a href="mailto:a@b.c">link</a>
+"javascript:alert(1)"           <a href="about:invalid#TemplFailedSanitizationURL">link</a>
+"data:text/html,<script>1"      <a href="about:invalid#TemplFailedSanitizationURL">link</a>
+```
+
+`about:invalid#TemplFailedSanitizationURL` is templ's equivalent of
+`html/template`'s `ZgotmplZ` marker — finding it in a rendered page
+means unsafe content reached a URL position, and the fix is in the data
+rather than the template.
+
+`templ.Raw` opts out of escaping and should only ever see content you
 produced.
 
 Because escaping happens at generation time in known positions, it is

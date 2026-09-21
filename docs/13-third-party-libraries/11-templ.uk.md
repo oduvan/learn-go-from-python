@@ -149,9 +149,29 @@ func (h Handler) list(w http.ResponseWriter, r *http.Request) {
 ```
 
 Текст екранується, атрибути екрануються, а `templ.URL` санітизує URL в
-`href` — відхиляючи `javascript:` так само, як і стандартна бібліотека.
-`templ.Raw` відмовляється від цього й має бачити лише вміст, який ви
-самі створили.
+`href`. Небезпечну схему заміняють повністю:
+
+```go
+templ LinkTo(u string) {
+    <a href={ templ.URL(u) }>link</a>
+}
+```
+
+```
+"/x?q=1&b=2"                    <a href="/x?q=1&amp;b=2">link</a>
+"https://example.com/a"         <a href="https://example.com/a">link</a>
+"mailto:a@b.c"                  <a href="mailto:a@b.c">link</a>
+"javascript:alert(1)"           <a href="about:invalid#TemplFailedSanitizationURL">link</a>
+"data:text/html,<script>1"      <a href="about:invalid#TemplFailedSanitizationURL">link</a>
+```
+
+`about:invalid#TemplFailedSanitizationURL` — це еквівалент маркера
+`ZgotmplZ` з `html/template`, але для templ: якщо ви бачите його на
+відрендереній сторінці, це означає, що небезпечний вміст потрапив у
+позицію URL, і виправляти треба дані, а не шаблон.
+
+`templ.Raw` відмовляється від екранування й повинен бачити лише той
+вміст, який ви самі створили.
 
 Оскільки екранування відбувається на етапі генерації у відомих
 позиціях, обійти його випадково важче, ніж у шаблоні на основі рядків.
