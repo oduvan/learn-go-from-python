@@ -153,3 +153,74 @@ concepts:
     ok_in:
       - index.md
       - 02-language-basics/09-custom-types.md                  # method preview pointer
+
+  - pattern: '\biterator'
+    introduces_in: 06-text-time-and-data/06-iterators.md
+    ok_in:
+      - index.md
+      - 01-ecosystem-and-installation/06-multiple-go-versions.md  # names it as a version-gated feature
+      - 02-language-basics/05-control-flow.md                  # range-over-func, points here
+      - 02-language-basics/12-maps.md                          # maps.Keys returns one
+
+  - pattern: 'go:embed'
+    introduces_in: 07-operating-system/03-go-embed.md
+    ok_in:
+      - index.md
+
+  - pattern: '\breflect\.'
+    introduces_in: 06-text-time-and-data/08-xml-csv-and-reflection.md
+    ok_in:
+      - index.md
+      - 02-language-basics/04-operators.md                     # reflect.DeepEqual for non-comparables
+      - 02-language-basics/09-custom-types.md                  # reflect.TypeOf().Kind()
+      - 02-language-basics/10-structs.md                       # reading a tag back
+
+  - pattern: '\berrgroup\b'
+    introduces_in: 13-third-party-libraries/03-golang-x-sync-and-time.md
+    ok_in:
+      - index.md
+      - 05-concurrency/07-bounded-concurrency.md               # names it as "covered later"
+
+  - pattern: '\bviper\b'
+    introduces_in: 13-third-party-libraries/05-viper.md
+    ok_in:
+      - index.md
+      - 11-architecture-and-conventions/03-configuration-patterns.md  # "viper itself is topic 13"
+
+  - pattern: '\bGORM\b'
+    introduces_in: 13-third-party-libraries/07-gorm-basics.md
+    ok_in:
+      - index.md
+      - 13-third-party-libraries/06-pgx-and-postgres.md
+
+  - pattern: '\bgoose\b'
+    introduces_in: 13-third-party-libraries/09-goose-migrations.md
+    ok_in:
+      - index.md
+      - 13-third-party-libraries/07-gorm-basics.md             # "use goose in production"
+
+  - pattern: '\bFiber\b'
+    introduces_in: 13-third-party-libraries/10-fiber.md
+    ok_in:
+      - index.md
+      - 08-http-with-net-http/01-http-server.md                # "the Fiber article builds on this"
+      - 13-third-party-libraries/01-choosing-and-managing-dependencies.md
+
+  - pattern: '\btestify\b'
+    introduces_in: 13-third-party-libraries/12-testify.md
+    ok_in:
+      - index.md
+      - 10-testing/01-the-testing-package.md
+      - 13-third-party-libraries/01-choosing-and-managing-dependencies.md
+
+  - pattern: '\btestcontainers\b'
+    introduces_in: 13-third-party-libraries/13-testcontainers.md
+    ok_in:
+      - index.md
+      - 10-testing/04-fakes-and-stubs.md                       # "what testcontainers is for"
+
+  - pattern: '\bMCP\b'
+    introduces_in: 13-third-party-libraries/18-mcp-servers-with-mcp-go.md
+    ok_in:
+      - index.md
+      - 13-third-party-libraries/17-oidc-and-oauth.md          # motivating example for being an auth server

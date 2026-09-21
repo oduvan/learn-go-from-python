@@ -50,6 +50,7 @@ is always obvious.
 - [Type assertions and type switches](03-object-oriented-go/03-type-assertions-and-type-switches.md) — recovering the concrete type at runtime.
 - [Generics](03-object-oriented-go/04-generics.md) — type parameters and constraints.
 - [OOP patterns](03-object-oriented-go/05-oop-patterns.md) — encapsulation, composition over inheritance, polymorphism.
+- [Custom error types](03-object-oriented-go/06-custom-error-types.md) — your own `error` types, `Unwrap`, `errors.As`, custom `Is`.
 
 ### [Packages and modules](04-packages-and-modules/01-packages-and-visibility.md)
 
@@ -65,6 +66,91 @@ is always obvious.
 - [Synchronization](05-concurrency/04-synchronization.md) — `Mutex`, `Once`, atomics, the race detector.
 - [Context](05-concurrency/05-context.md) — cancellation, deadlines, propagation.
 - [Concurrency patterns](05-concurrency/06-concurrency-patterns.md) — worker pools, fan-out/fan-in, pipelines.
+- [Bounded concurrency](05-concurrency/07-bounded-concurrency.md) — channel semaphores, collecting results, `sync.Map`.
+- [Long-running goroutines](05-concurrency/08-long-running-goroutines.md) — per-goroutine `recover`, tickers, draining on shutdown.
+
+### [Text, time and data](06-text-time-and-data/01-strings-bytes-and-runes.md)
+
+- [Strings, bytes and runes](06-text-time-and-data/01-strings-bytes-and-runes.md) — `strings`, `bytes`, and why `len` counts bytes.
+- [Formatting with `fmt`](06-text-time-and-data/02-formatting-with-fmt.md) — the verbs, width and precision, `Stringer`, `%w`.
+- [Regular expressions](06-text-time-and-data/03-regular-expressions.md) — `regexp`, named groups, and what RE2 leaves out.
+- [Time](06-text-time-and-data/04-time.md) — the reference layout, durations, zones, `Equal` over `==`.
+- [Sorting](06-text-time-and-data/05-sorting.md) — `slices.SortFunc`, `cmp.Compare`, `cmp.Or`, stability.
+- [Iterators](06-text-time-and-data/06-iterators.md) — writing `iter.Seq`, the `yield` contract, `iter.Pull`.
+- [Encoding JSON](06-text-time-and-data/07-encoding-json.md) — tags, `omitempty`, `RawMessage`, custom marshalling.
+- [XML, CSV and reflection](06-text-time-and-data/08-xml-csv-and-reflection.md) — token streaming, `csv`, struct tags at runtime.
+
+### [The operating system](07-operating-system/01-files-and-paths.md)
+
+- [Files and paths](07-operating-system/01-files-and-paths.md) — `os`, `filepath`, `WalkDir`, testing errors not paths.
+- [Readers and writers](07-operating-system/02-readers-and-writers.md) — `io.Copy`, `bufio.Scanner`, and its 64 KB limit.
+- [`go:embed`](07-operating-system/03-go-embed.md) — files in the binary, `embed.FS`, `all:`, `fs.Sub`.
+- [Flags and environment](07-operating-system/04-flags-and-environment.md) — `flag`, subcommands, `LookupEnv`, exit codes.
+- [Running external commands](07-operating-system/05-running-external-commands.md) — `exec.CommandContext`, `ExitError`, no shell.
+- [Signals and graceful shutdown](07-operating-system/06-signals-and-graceful-shutdown.md) — `NotifyContext`, draining on a budget.
+- [Hashing and random values](07-operating-system/07-hashing-and-random-values.md) — sha256, HMAC, `crypto/rand`, base64, gzip.
+
+### [HTTP with `net/http`](08-http-with-net-http/01-http-server.md)
+
+- [An HTTP server](08-http-with-net-http/01-http-server.md) — handlers, `ServeMux` routing, timeouts, shutdown.
+- [An HTTP client](08-http-with-net-http/02-http-client.md) — why a 404 is not an error, closing bodies, retries.
+- [Middleware](08-http-with-net-http/03-middleware.md) — wrapping handlers, recovery, context values.
+- [Templates](08-http-with-net-http/04-templates.md) — `text/template` vs `html/template` and contextual escaping.
+- [Server-sent events](08-http-with-net-http/05-server-sent-events.md) — streaming, flushing, dropping slow clients.
+
+### [Databases with `database/sql`](09-database-sql/01-database-sql.md)
+
+- [`database/sql`](09-database-sql/01-database-sql.md) — the pool, `Scan`, `ErrNoRows`, NULL, `rows.Err()`.
+- [Custom column types](09-database-sql/02-custom-column-types.md) — `driver.Valuer` and `sql.Scanner`.
+- [Transactions](09-database-sql/03-transactions.md) — the closure wrapper, rollback on panic, nesting.
+- [The repository pattern](09-database-sql/04-the-repository-pattern.md) — a contract package, translating storage errors.
+
+### [Testing](10-testing/01-the-testing-package.md)
+
+- [The `testing` package](10-testing/01-the-testing-package.md) — `TestXxx`, `Errorf` vs `Fatalf`, `go test` flags.
+- [Table-driven tests](10-testing/02-table-driven-tests.md) — the case slice, `t.Run`, `t.Parallel`.
+- [Helpers, fixtures and golden files](10-testing/03-helpers-fixtures-and-golden-files.md) — `t.Helper`, `t.TempDir`, `testdata/`.
+- [Fakes and stubs](10-testing/04-fakes-and-stubs.md) — function-field doubles, faking the clock.
+- [Testing HTTP](10-testing/05-testing-http.md) — `httptest` recorders and servers.
+- [Benchmarks, fuzzing and the race detector](10-testing/06-benchmarks-fuzzing-and-race.md) — `b.Loop`, `f.Fuzz`, `-race`.
+
+### [Architecture and conventions](11-architecture-and-conventions/01-wiring-and-package-structure.md)
+
+- [Wiring and package structure](11-architecture-and-conventions/01-wiring-and-package-structure.md) — `cmd/`, `internal/`, constructor injection.
+- [Context as a carrier](11-architecture-and-conventions/02-context-as-a-carrier.md) — unexported keys, `WithoutCancel`, what not to put in.
+- [Configuration patterns](11-architecture-and-conventions/03-configuration-patterns.md) — one struct, defaults, validation with `errors.Join`.
+- [Dependency direction](11-architecture-and-conventions/04-dependency-direction.md) — which package may import which, and why.
+- [Build, code generation and cgo](11-architecture-and-conventions/05-build-codegen-and-cgo.md) — build tags, `-ldflags`, cross-compiling, cgo's cost.
+- [Project conventions](11-architecture-and-conventions/06-project-conventions.md) — error wrapping, log levels, naming, comments.
+
+### [Observability](12-observability/01-structured-logging-with-slog.md)
+
+- [Structured logging with `slog`](12-observability/01-structured-logging-with-slog.md) — handlers, `With`, `LogValuer`, testing logs.
+- [Profiling with pprof](12-observability/02-profiling-with-pprof.md) — CPU and heap profiles, flat vs cum, flame graphs.
+
+### [Third-party libraries](13-third-party-libraries/01-choosing-and-managing-dependencies.md)
+
+Everything that lands in `go.mod`. The rest of the book is the language and
+its standard library; this section is one stack's worth of choices.
+
+- [Choosing and managing dependencies](13-third-party-libraries/01-choosing-and-managing-dependencies.md) — judging a module, `go mod tidy`, `GOPRIVATE`, `govulncheck`.
+- [golangci-lint configuration](13-third-party-libraries/02-golangci-lint-configuration.md) — `depguard`, `forbidigo`, enforcing architecture.
+- [`golang.org/x/sync` and `x/time`](13-third-party-libraries/03-golang-x-sync-and-time.md) — `errgroup`, `SetLimit`, rate limiters.
+- [YAML and TOML](13-third-party-libraries/04-yaml-and-toml.md) — `yaml.v3`, `go-toml`, strict decoding.
+- [viper](13-third-party-libraries/05-viper.md) — layered config, and why `AutomaticEnv` alone is not enough.
+- [pgx and PostgreSQL](13-third-party-libraries/06-pgx-and-postgres.md) — native types, `PgError`, `CollectRows`, UUIDv7.
+- [GORM basics](13-third-party-libraries/07-gorm-basics.md) — models, tags, hooks, and the zero-value trap.
+- [GORM queries and transactions](13-third-party-libraries/08-gorm-queries-and-transactions.md) — chaining, raw SQL, context-carried transactions.
+- [goose migrations](13-third-party-libraries/09-goose-migrations.md) — SQL migrations, embedding, safe schema changes.
+- [Fiber](13-third-party-libraries/10-fiber.md) — v3 handlers, binding, and what fasthttp costs.
+- [templ](13-third-party-libraries/11-templ.md) — compiled, type-checked HTML components.
+- [testify](13-third-party-libraries/12-testify.md) — `assert` vs `require`, diffs, nil vs empty.
+- [testcontainers](13-third-party-libraries/13-testcontainers.md) — a real database per test binary.
+- [Prometheus and OpenTelemetry](13-third-party-libraries/14-prometheus-and-opentelemetry.md) — metrics, traces, cardinality.
+- [Scheduled jobs](13-third-party-libraries/15-scheduled-jobs.md) — gocron plus advisory locks for exactly-once.
+- [Object storage and caching](13-third-party-libraries/16-object-storage-and-caching.md) — S3, valkey, and failing soft.
+- [OIDC and OAuth](13-third-party-libraries/17-oidc-and-oauth.md) — the code flow, PKCE, sessions, API tokens.
+- [MCP servers with mcp-go](13-third-party-libraries/18-mcp-servers-with-mcp-go.md) — tools, handlers, transports.
 
 ## Source
 

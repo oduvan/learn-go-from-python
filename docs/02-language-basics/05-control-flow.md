@@ -136,7 +136,8 @@ for line := range strings.Lines(s) {
 // "gamma\n"
 ```
 
-You can also write your own iterator function — covered in a later topic.
+You can also write your own iterator function — see
+[iterators](../06-text-time-and-data/06-iterators.md).
 
 > **From Python:** `for ... range` covers `for x in seq:`, `for i, x in enumerate(seq):`, `for k, v in dict.items():`. The integer form `for i := range 5` matches `for i in range(5):`.
 

@@ -220,6 +220,63 @@ grid[1][2] = 7
 fmt.Println(grid)        // output: [[0 0 0] [0 0 7]]
 ```
 
+## The `slices` package
+
+The standard library's `slices` package covers the operations you would
+otherwise hand-roll, and each one works on a slice of any element type:
+
+```go
+s := []int{3, 1, 2}
+
+slices.Sort(s)
+fmt.Println(s)                                // output: [1 2 3]
+
+fmt.Println(slices.Contains(s, 2))            // output: true
+fmt.Println(slices.Index(s, 3))               // output: 2
+fmt.Println(slices.Max(s), slices.Min(s))     // output: 3 1
+
+fmt.Println(slices.Equal(s, []int{1, 2, 3}))  // output: true
+```
+
+`slices.Index` returns `-1` when the value is absent, so it never fails.
+
+`slices.Clone` gives you the independent copy that plain assignment does
+not — assignment copies only the header, and both names go on sharing one
+backing array:
+
+```go
+s := []int{1, 2, 3}
+c := slices.Clone(s)
+c[0] = 99
+fmt.Println(s[0], c[0])   // output: 1 99
+```
+
+`slices.Insert` and `slices.Delete` replace the `append`-with-a-spread
+idioms shown above. `Delete` takes a half-open range rather than a single
+index:
+
+```go
+s := []int{1, 2, 3}
+s = slices.Insert(s, 1, 10)
+fmt.Println(s)            // output: [1 10 2 3]
+s = slices.Delete(s, 1, 2)
+fmt.Println(s)            // output: [1 2 3]
+```
+
+On a slice that is already sorted, `slices.BinarySearch` returns the
+position and whether the value was really there. When it was not, the
+position is where it would belong:
+
+```go
+t := []int{1, 3, 5, 7}
+fmt.Println(slices.BinarySearch(t, 5))   // output: 2 true
+fmt.Println(slices.BinarySearch(t, 4))   // output: 2 false
+```
+
+> **From Python:** `slices.Sort(s)` ≈ `s.sort()`, `slices.Contains(s, x)`
+> ≈ `x in s`, `slices.Clone(s)` ≈ `s.copy()`, and `slices.Index(s, x)` ≈
+> `s.index(x)` except that it returns `-1` instead of raising.
+
 ## Quick reference
 
 | Operation | Result |
@@ -234,6 +291,12 @@ fmt.Println(grid)        // output: [[0 0 0] [0 0 7]]
 | `s[low:high:max]` | sub-slice with capped capacity |
 | `copy(dst, src)` | copy elements, returns count |
 | `append(s[:i], s[i+1:]...)` | delete index `i` |
+| `slices.Sort(s)` | sort in place |
+| `slices.Contains(s, x)` / `slices.Index(s, x)` | membership / position, `-1` if absent |
+| `slices.Clone(s)` | independent copy |
+| `slices.Equal(a, b)` | element-wise comparison |
+| `slices.Insert(s, i, v...)` / `slices.Delete(s, i, j)` | insert at `i` / delete `[i:j)` |
+| `slices.BinarySearch(s, x)` | position and found-flag, sorted input |
 
 ## Sources
 
@@ -243,3 +306,4 @@ fmt.Println(grid)        // output: [[0 0 0] [0 0 7]]
 - [Slice expressions — go.dev/ref/spec#Slice_expressions](https://go.dev/ref/spec#Slice_expressions)
 - [Go blog: slices intro — go.dev/blog/slices-intro](https://go.dev/blog/slices-intro)
 - [Go blog: arrays and slices usage — go.dev/blog/slices](https://go.dev/blog/slices)
+- [`slices` package reference — pkg.go.dev/slices](https://pkg.go.dev/slices)

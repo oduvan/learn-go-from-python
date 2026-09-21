@@ -1,0 +1,44 @@
+package templdemo
+
+import "fmt"
+
+type Item struct {
+	Name  string
+	Price float64
+	Tags  []string
+}
+
+templ layout(title string) {
+	<html>
+		<head><title>{ title }</title></head>
+		<body>
+			{ children... }
+		</body>
+	</html>
+}
+
+templ itemRow(i Item) {
+	<li class="row">
+		<span>{ i.Name }</span>
+		<span>{ fmt.Sprintf("$%.2f", i.Price) }</span>
+		if len(i.Tags) > 0 {
+			<em>{ fmt.Sprint(len(i.Tags)) } tags</em>
+		} else {
+			<em>untagged</em>
+		}
+	</li>
+}
+
+templ ItemList(title string, items []Item) {
+	@layout(title) {
+		<ul>
+			for _, i := range items {
+				@itemRow(i)
+			}
+		</ul>
+	}
+}
+
+templ LinkTo(u string) {
+	<a href={ templ.URL(u) }>link</a>
+}

@@ -221,6 +221,65 @@ grid[1][2] = 7
 fmt.Println(grid)        // output: [[0 0 0] [0 0 7]]
 ```
 
+## Пакет `slices`
+
+Пакет `slices` стандартної бібліотеки покриває операції, які інакше
+довелося б писати вручну, і кожна з них працює на зрізі будь-якого типу
+елементів:
+
+```go
+s := []int{3, 1, 2}
+
+slices.Sort(s)
+fmt.Println(s)                                // output: [1 2 3]
+
+fmt.Println(slices.Contains(s, 2))            // output: true
+fmt.Println(slices.Index(s, 3))               // output: 2
+fmt.Println(slices.Max(s), slices.Min(s))     // output: 3 1
+
+fmt.Println(slices.Equal(s, []int{1, 2, 3}))  // output: true
+```
+
+`slices.Index` повертає `-1`, коли значення відсутнє, тож вона ніколи не
+зазнає невдачі.
+
+`slices.Clone` дає незалежну копію, яку не дає звичайне присвоєння —
+присвоєння копіює лише заголовок, і обидва імені продовжують ділити один
+масив-основу:
+
+```go
+s := []int{1, 2, 3}
+c := slices.Clone(s)
+c[0] = 99
+fmt.Println(s[0], c[0])   // output: 1 99
+```
+
+`slices.Insert` та `slices.Delete` заміняють ідіоми з `append` і
+розгортанням, показані вище. `Delete` бере напіввідкритий діапазон, а не
+один індекс:
+
+```go
+s := []int{1, 2, 3}
+s = slices.Insert(s, 1, 10)
+fmt.Println(s)            // output: [1 10 2 3]
+s = slices.Delete(s, 1, 2)
+fmt.Println(s)            // output: [1 2 3]
+```
+
+На вже відсортованому зрізі `slices.BinarySearch` повертає позицію та
+ознаку, чи значення справді там було. Коли ні — позиція вказує, де воно
+мало б бути:
+
+```go
+t := []int{1, 3, 5, 7}
+fmt.Println(slices.BinarySearch(t, 5))   // output: 2 true
+fmt.Println(slices.BinarySearch(t, 4))   // output: 2 false
+```
+
+> **З погляду Python:** `slices.Sort(s)` ≈ `s.sort()`, `slices.Contains(s, x)`
+> ≈ `x in s`, `slices.Clone(s)` ≈ `s.copy()`, а `slices.Index(s, x)` ≈
+> `s.index(x)`, окрім того, що вона повертає `-1` замість винятку.
+
 ## Швидка довідка
 
 | Операція | Результат |
@@ -235,6 +294,12 @@ fmt.Println(grid)        // output: [[0 0 0] [0 0 7]]
 | `s[low:high:max]` | підзріз з обмеженою місткістю |
 | `copy(dst, src)` | копіює елементи, повертає кількість |
 | `append(s[:i], s[i+1:]...)` | видалення індексу `i` |
+| `slices.Sort(s)` | сортування на місці |
+| `slices.Contains(s, x)` / `slices.Index(s, x)` | належність / позиція, `-1` якщо відсутнє |
+| `slices.Clone(s)` | незалежна копія |
+| `slices.Equal(a, b)` | поелементне порівняння |
+| `slices.Insert(s, i, v...)` / `slices.Delete(s, i, j)` | вставити в `i` / видалити `[i:j)` |
+| `slices.BinarySearch(s, x)` | позиція та ознака знайденості, для відсортованих даних |
 
 ## Джерела
 
@@ -244,3 +309,4 @@ fmt.Println(grid)        // output: [[0 0 0] [0 0 7]]
 - [Slice expressions — go.dev/ref/spec#Slice_expressions](https://go.dev/ref/spec#Slice_expressions)
 - [Go blog: slices intro — go.dev/blog/slices-intro](https://go.dev/blog/slices-intro)
 - [Go blog: arrays and slices usage — go.dev/blog/slices](https://go.dev/blog/slices)
+- [`slices` package reference — pkg.go.dev/slices](https://pkg.go.dev/slices)

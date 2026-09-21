@@ -111,6 +111,45 @@ a.Add()
 Rule of thumb: if any method needs a pointer receiver, pass the pointer
 when you want the value to satisfy an interface.
 
+## Asserting satisfaction at compile time
+
+Implicit satisfaction has one cost: nothing in the type's own file says
+what it is meant to implement, so a mistake like the pointer-receiver one
+above surfaces at the *call site*, possibly in another package. The fix is
+a one-line declaration that asserts it where the type lives:
+
+```go
+var _ Adder = (*Counter)(nil)
+```
+
+Read it right to left: `(*Counter)(nil)` is a nil pointer *of a known
+type*, it gets assigned to an `Adder`, and the result is thrown away with
+`_`. Nothing runs and nothing is allocated — the only job is to make the
+compiler check the method set. The parentheses around `*Counter` are
+needed because `*Counter(nil)` would parse as `*(Counter(nil))`.
+
+Get it wrong and the build stops here, on the line that states the
+intent, rather than wherever someone first tried to use the type:
+
+```go
+var _ Adder = Counter{}
+// compile error: cannot use Counter{} (value of struct type Counter) as Adder
+// value in variable declaration: Counter does not implement Adder
+// (method Add has pointer receiver)
+```
+
+Both forms are worth knowing. For `Circle`, whose `Area` has a value
+receiver, either one compiles:
+
+```go
+var _ Shape = Circle{}         // ok
+var _ Shape = (*Circle)(nil)   // also ok — *Circle's method set includes Area
+```
+
+Assert the form callers will actually use. Use it for types whose whole
+reason to exist is to satisfy an interface: it costs a line and turns a
+confusing error somewhere else into an obvious one right here.
+
 ## The empty interface and `any`
 
 An interface with no methods is satisfied by **every** type. Its modern
@@ -187,6 +226,7 @@ the specific struct so callers keep full information.
 | satisfy it | just define the methods — no keyword |
 | empty interface | `any` (= `interface{}`), holds any value |
 | nil interface | both type and value nil |
+| assert satisfaction at compile time | `var _ Adder = (*Counter)(nil)` |
 
 Extracting the concrete value back out of an interface is covered next, in
 [type assertions and type switches](03-type-assertions-and-type-switches.md).

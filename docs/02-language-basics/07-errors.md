@@ -35,7 +35,7 @@ type error interface {
 
 Anything with an `Error() string` method satisfies it. You don't need
 to know how to define one yet — that comes after methods and
-interfaces.
+interfaces, in [custom error types](../03-object-oriented-go/06-custom-error-types.md).
 
 The zero value of `error` is `nil`, which means "no error." That's
 why `if err != nil { ... }` is the standard check.

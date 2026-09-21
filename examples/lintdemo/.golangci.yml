@@ -1,0 +1,19 @@
+version: "2"
+
+linters:
+  enable:
+    - depguard
+
+  settings:
+    depguard:
+      rules:
+        # Scoped by exclusion, so a new package is covered the day it is
+        # created rather than when someone remembers to add it.
+        upper-layers:
+          files:
+            - "$all"
+            - "!$test"
+            - "!**/internal/storage/**"
+          deny:
+            - pkg: database/sql
+              desc: "only internal/storage may hold a database handle"

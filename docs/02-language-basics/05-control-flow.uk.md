@@ -136,7 +136,8 @@ for line := range strings.Lines(s) {
 // "gamma\n"
 ```
 
-Власні функції-ітератори ви можете писати самостійно — це розглядається в наступних темах.
+Власні функції-ітератори ви можете писати самостійно — дивіться
+[ітератори](../06-text-time-and-data/06-iterators.md).
 
 > **З досвіду Python:** `for ... range` охоплює `for x in seq:`, `for i, x in enumerate(seq):`, `for k, v in dict.items():`. Цілочисельна форма `for i := range 5` відповідає `for i in range(5):`.
 
