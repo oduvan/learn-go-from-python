@@ -1,0 +1,71 @@
+name: Examples
+
+# The runnable checks behind docs/13-third-party-libraries/.
+#
+# examples/README.md promises that "the book cannot quietly go stale" —
+# that a library changing behaviour breaks a test. That promise is only
+# real if something runs the tests, so this workflow does.
+#
+# It runs separately from the Pages deploy: these tests need containers
+# and take minutes, while the docs build takes seconds. Make this a
+# required check in branch protection to gate merges on it.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: examples-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: examples/go.mod
+          cache-dependency-path: examples/go.sum
+
+      # Pinned, as docs/13-third-party-libraries/02-golangci-lint-configuration.md
+      # itself advises. Built from source rather than downloaded as a release
+      # binary on purpose: a golangci-lint built with an older Go refuses the
+      # fixture outright ("the Go language version used to build golangci-lint
+      # is lower than the targeted Go version"), because examples/lintdemo
+      # targets a newer one. Building it here guarantees a matching toolchain.
+      - name: Install pinned tools
+        run: |
+          go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
+          go install github.com/a-h/templ/cmd/templ@v0.3.1020
+
+      # docker-compose.yml is the single source of truth for the service
+      # versions and ports the tests expect, so use it rather than restating
+      # them as job services.
+      - name: Start PostgreSQL and Valkey
+        run: docker compose -f examples/docker-compose.yml up -d --wait
+
+      # The committed page_templ.go must match what templ produces, or the
+      # claims 11-templ.md makes about the generated code describe a stale file.
+      - name: Check generated templ code is current
+        run: |
+          templ generate ./...
+          git diff --exit-code -- . \
+            || { echo "::error::templ generate changed committed files; commit the result"; exit 1; }
+        working-directory: examples
+
+      # EXAMPLES_REQUIRE_INFRA=1 turns a missing service into a failure instead
+      # of a skip. Without it a third of these tests pass by not running.
+      - name: Run the example tests
+        run: make ci
+        working-directory: examples
+
+      - name: Stop services
+        if: always()
+        run: docker compose -f examples/docker-compose.yml down -v

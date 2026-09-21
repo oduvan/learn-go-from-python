@@ -99,13 +99,28 @@ err := t.Execute(os.Stdout, Item{})
 //      can't evaluate field Nope in type main.Item
 ```
 
-Відсутній **ключ мапи** — ні: він рендериться як `<no value>`:
+Відсутній **ключ мапи** помилкою не є, і саме тут два пакети
+розходяться. `text/template` рендерить його як `<no value>`:
 
 ```go
+// text/template
 t := template.Must(template.New("t").Parse("[{{.missing}}]\n"))
 t.Execute(os.Stdout, map[string]string{})
 // output: [<no value>]
 ```
+
+`html/template` рендерить той самий відсутній ключ як цілковиту
+порожнечу:
+
+```go
+// html/template
+h := template.Must(template.New("h").Parse("[{{.missing}}]\n"))
+h.Execute(os.Stdout, map[string]string{})
+// output: []
+```
+
+Жоден із них не повідомляє, що ключа не було, — саме тому нижче й дано
+пораду.
 
 Для даних шаблону надавайте перевагу структурам. Тоді одруківку буде
 виявлено, а обробка через `Option`

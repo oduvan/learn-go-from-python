@@ -168,7 +168,7 @@ fmt.Println(email == nil)   // output: true
 ```go
 var ns sql.NullString
 // ... Scan(&ns)
-fmt.Println(ns.Valid, ns.String)   // output: false ""
+fmt.Printf("%v %q\n", ns.Valid, ns.String)   // output: false ""
 ```
 
 Для кожного базового типу є свій `sql.Null*`, а ще є узагальнений

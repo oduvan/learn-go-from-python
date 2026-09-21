@@ -163,7 +163,7 @@ Or `sql.NullString`, which carries the flag explicitly:
 ```go
 var ns sql.NullString
 // ... Scan(&ns)
-fmt.Println(ns.Valid, ns.String)   // output: false ""
+fmt.Printf("%v %q\n", ns.Valid, ns.String)   // output: false ""
 ```
 
 There is a `sql.Null*` for each basic type, plus the generic

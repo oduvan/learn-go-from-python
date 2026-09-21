@@ -98,13 +98,27 @@ err := t.Execute(os.Stdout, Item{})
 //      can't evaluate field Nope in type main.Item
 ```
 
-A missing **map key** is not — it renders as `<no value>`:
+A missing **map key** is not an error, and here the two packages part
+company. `text/template` renders it as `<no value>`:
 
 ```go
+// text/template
 t := template.Must(template.New("t").Parse("[{{.missing}}]\n"))
 t.Execute(os.Stdout, map[string]string{})
 // output: [<no value>]
 ```
+
+`html/template` renders the same missing key as nothing at all:
+
+```go
+// html/template
+h := template.Must(template.New("h").Parse("[{{.missing}}]\n"))
+h.Execute(os.Stdout, map[string]string{})
+// output: []
+```
+
+Neither tells you the key was absent, which is the point of the advice
+below.
 
 Prefer structs for template data. You get the typo caught, and `Option`
 handling (`template.Option("missingkey=error")`) is not needed.
