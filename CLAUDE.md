@@ -20,6 +20,10 @@ learn-go-from-python/
 ├── README.md                        ← short repo intro, points at the site
 ├── mkdocs.yml                       ← MkDocs Material config
 ├── .github/workflows/pages.yml      ← builds + deploys to GitHub Pages
+├── scripts/                         ← CI checks: concept order, the
+│                                      core/third-party split, examples coverage
+├── examples/                        ← a runnable test per third-party
+│                                      article; `make verify` runs them all
 └── docs/                            ← MkDocs docs_dir; everything below
     │                                  is what becomes the published site
     ├── index.md                     ← home page
@@ -69,7 +73,9 @@ learn-go-from-python/
      new article's path, and shrink the concept's `ok_in` list so
      earlier articles no longer act as a baseline grandfather. Run
      `cd scripts && go run .` locally to confirm the linter is still
-     green before pushing — CI runs it before the MkDocs build.
+     green before pushing — CI runs it before the MkDocs build. That one
+     command now runs three checks: concept ordering, the
+     core/third-party split, and examples/ coverage.
 
 4. **Every English change is followed by a Ukrainian change.** This
    project ships bilingual (English default, Ukrainian via
@@ -121,6 +127,54 @@ own tag namespace. The checker catches imports; this one is on you.
 
 Genuine exceptions go in `stdlibOnlyExceptions` in that script, each with
 a written reason, so the seam stays visible.
+
+## Runnable examples for third-party articles
+
+`examples/` holds a test package for every article in
+`docs/13-third-party-libraries/` that contains Go code. The tests assert
+what the articles claim, so a library changing behaviour breaks a test
+instead of quietly making the book wrong.
+
+**Whenever you add or change a third-party article, change the matching
+test in the same commit.** Specifically:
+
+- **New third-party article** → add a package under `examples/`. Its
+  test file must start with a header comment naming the article:
+
+  ```go
+  // Verifies docs/13-third-party-libraries/05-viper.md
+  ```
+
+  `scripts/check_examples.go` fails the build without it.
+
+- **New or changed snippet in an existing article** → update that
+  article's test so the assertion matches the new claim. The test code
+  is not a copy of the snippet — it is the same API calls and the same
+  expected values, wrapped in assertions. Keep the values in step.
+
+- **An article with no runnable Go** → add it to `examplesExemptions`
+  in `scripts/check_examples.go` with a written reason.
+
+- **Renaming an article** → update the `// Verifies` comment too, or
+  the check reports a dangling reference.
+
+Run them with:
+
+```bash
+cd examples && make verify
+```
+
+That starts PostgreSQL and Valkey via `docker-compose.yml`, runs every
+package plus the golangci-lint fixture, and tears the services down.
+Tests skip when a service is missing; `EXAMPLES_REQUIRE_INFRA=1` turns
+absence into a failure, which is what CI uses.
+
+Where a test exists to pin down a *library bug or surprise* the article
+describes — viper's `AutomaticEnv` not feeding `Unmarshal`, go-toml
+refusing a duration, GORM's `Select` not fixing the zero-value trap —
+say so in a comment on the test, and make the failure message name the
+article to update. Those tests are meant to fail the day the library
+changes.
 
 ## Style of explanations and conspects
 
