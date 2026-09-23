@@ -75,12 +75,15 @@ func recoverMW(next http.Handler) http.Handler {
 }
 ```
 
+З `chain(mux, logging, recoverMW)` та обробником, що панікує з
+`"kaboom"`, запит на `/boom` виводить на сервері таке:
+
 ```
 -> GET /boom
-recovered: kaboom
-<- 500
-   => 500 "internal error"
+2026/09/23 10:15:02 ERROR panic err=kaboom stack="goroutine 38 [running]:\n..."
 ```
+
+Клієнт отримує `500` із тілом `internal error`.
 
 Два обмеження. Це покриває лише паніки у *власній горутині запиту* —
 усе, що обробник породжує сам, потребує власного `recover`, як

@@ -181,10 +181,14 @@ Fiber не використовує `net/http`, і це має наслідки:
 - **`httptest` не працює.** Використовуйте `app.Test(req)`, що бере
   `*http.Request` і повертає `*http.Response` — зручно, і саме це
   використовують приклади тут.
-- **`c.Context()` — це `fasthttp.RequestCtx`**, не `context.Context`.
-  Для скасовуваного контексту використовуйте `c.RequestCtx()` або
-  accessor контексту, який дає ваша версія, і читайте документацію
-  замість того, щоб припускати.
+- **Жоден контекст не завершується, коли клієнт відключається.**
+  `c.Context()` повертає `context.Context`, який ви зберегли через
+  `c.SetContext`, або порожній `context.Background()`, якщо ви нічого
+  не зберігали. `c.RequestCtx()` повертає власний об'єкт fasthttp —
+  `*fasthttp.RequestCtx`. Він теж задовольняє `context.Context`, але
+  його канал `Done` закривається лише тоді, коли сервер завершує
+  роботу. У `net/http` `r.Context()` завершується разом із запитом;
+  у Fiber додавайте власний дедлайн через `context.WithTimeout`.
 - **Значення запиту й відповіді повторно використовуються між запитами.**
   `[]byte` або рядок з `c.Params` чи `c.Body` дійсні лише під час
   обробника. Зберегти щось за межами повернення — у горутині, кеші,
@@ -208,8 +212,11 @@ _, isFlusher := any(c.Response().BodyWriter()).(http.Flusher)
 // false
 ```
 
-fasthttp натомість стрімить через body-stream writer. Ви передаєте
-йому функцію, що отримує `*bufio.Writer` і скидає його:
+fasthttp натомість стрімить через body-stream writer. `c.RequestCtx()`
+дає вам об'єкт запиту fasthttp, і його метод `SetBodyStreamWriter`
+бере `fasthttp.StreamWriter`: функцію, що отримує `*bufio.Writer` і
+скидає його. Обидві назви належать fasthttp, а не Fiber, тож
+документацію варто шукати саме в fasthttp:
 
 ```go
 app.Get("/stream", func(c fiber.Ctx) error {

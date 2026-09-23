@@ -48,6 +48,8 @@ var m map[string]int  // m == nil — reading is fine, writing panics
 var p *int            // p == nil
 ```
 
+A `nil` map is the one surprise here: reading from it gives the zero value, but writing to it stops the program with a runtime error. [Maps](12-maps.md) shows how to create a map you can write to.
+
 ## `:=` — short declaration
 
 Inside a function, `:=` declares and assigns in one go. The type is always inferred.
@@ -90,6 +92,8 @@ fmt.Println(n)
 
 _, err = io.Copy(dst, src)   // ignore the byte count, keep the error
 ```
+
+Go reports failure by returning an `error` as the last value, not by raising an exception. `if err != nil` checks it. [Errors](07-errors.md) covers the pattern in full.
 
 `_` is the **blank identifier** — a write-only slot that lets you discard a value you don't need.
 

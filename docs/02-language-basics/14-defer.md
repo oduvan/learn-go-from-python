@@ -19,7 +19,7 @@ The `defer f.Close()` line guarantees `f.Close()` runs regardless of how `read` 
 
 > **From Python:** `defer` does roughly what `try`/`finally` or a `with` statement does — it ties cleanup to the surrounding scope's exit. Difference: `defer` is per-*function*, not per-block.
 
-## Three semantic rules
+## Four semantic rules
 
 ### 1. LIFO order
 

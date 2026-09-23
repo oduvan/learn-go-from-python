@@ -58,7 +58,7 @@ and an open file all work:
 ```go
 body, _ := json.Marshal(User{Name: "Bo"})
 req, _ := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(body))
-// server sees: POST|t0k|{"name":"Bo","age":0}
+// the server receives a POST with the body {"name":"Bo","age":0}
 ```
 
 ## A 404 is not an error

@@ -70,12 +70,15 @@ func recoverMW(next http.Handler) http.Handler {
 }
 ```
 
+With `chain(mux, logging, recoverMW)` and a handler that panics with
+`"kaboom"`, a request to `/boom` prints this on the server:
+
 ```
 -> GET /boom
-recovered: kaboom
-<- 500
-   => 500 "internal error"
+2026/09/23 10:15:02 ERROR panic err=kaboom stack="goroutine 38 [running]:\n..."
 ```
+
+The client gets a `500` with the body `internal error`.
 
 Two limits. This only covers panics in the *request's own goroutine* —
 anything the handler spawns needs its own `recover`, as

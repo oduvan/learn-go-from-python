@@ -178,10 +178,13 @@ Fiber does not use `net/http`, and that has consequences:
 - **`httptest` does not work.** Use `app.Test(req)`, which takes an
   `*http.Request` and returns an `*http.Response` — convenient, and
   what the examples here use.
-- **`c.Context()` is a `fasthttp.RequestCtx`**, not a
-  `context.Context`. For a cancellable context use `c.RequestCtx()` or
-  the context accessor your version provides, and read the docs rather
-  than assuming.
+- **No context ends when the client hangs up.** `c.Context()` returns
+  the `context.Context` you stored with `c.SetContext`, or an empty
+  `context.Background()` if you stored none. `c.RequestCtx()` returns
+  fasthttp's own `*fasthttp.RequestCtx`. It also satisfies
+  `context.Context`, but its `Done` channel closes only when the server
+  shuts down. Under `net/http`, `r.Context()` ends with the request;
+  under Fiber, add your own deadline with `context.WithTimeout`.
 - **Request and response values are reused between requests.** A
   `[]byte` or string from `c.Params` or `c.Body` is only valid during
   the handler. Keeping one past the return — in a goroutine, a cache, a
@@ -205,8 +208,11 @@ _, isFlusher := any(c.Response().BodyWriter()).(http.Flusher)
 // false
 ```
 
-fasthttp streams through a body-stream writer instead. You hand it a
-function that receives a `*bufio.Writer` and flushes that:
+fasthttp streams through a body-stream writer instead. `c.RequestCtx()`
+gives you fasthttp's request object, and its `SetBodyStreamWriter`
+method takes a `fasthttp.StreamWriter`: a function that receives a
+`*bufio.Writer` and flushes it. Both names belong to fasthttp, not
+Fiber, so fasthttp's own documentation is the reference for them:
 
 ```go
 app.Get("/stream", func(c fiber.Ctx) error {

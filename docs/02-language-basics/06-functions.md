@@ -189,6 +189,18 @@ Go doesn't have keyword arguments, optional positional arguments, or
 default values. If you want any of those ergonomics, there are three
 idiomatic patterns — each shown below.
 
+The examples use three things that the next few articles cover
+properly. For now, this is enough to read them:
+
+- `type Reader struct { ... }` declares a record type with named
+  fields. [Structs](10-structs.md) covers it.
+- `*Reader` is a pointer to a `Reader`, and `&Reader{...}` creates a
+  `Reader` and gives back a pointer to it. [Pointers](08-pointers.md)
+  covers both.
+- `type Option func(*Server)` gives a function type a name: an `Option`
+  is any function that takes a `*Server`. [Custom
+  types](09-custom-types.md) covers named types.
+
 **1. Multiple constructors with descriptive names.** When there are just a
 couple of variants, write a function per variant. The name documents the
 difference.

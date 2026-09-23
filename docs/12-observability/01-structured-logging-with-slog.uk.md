@@ -173,10 +173,40 @@ cl.InfoContext(ctx, "handled")
 // {"level":"INFO","msg":"handled","request_id":"req-42"}
 ```
 
-Вбудовування `slog.Handler` означає, що ви успадковуєте `Enabled`,
-`WithAttrs` і `WithGroup` та перевизначаєте лише `Handle` — той самий
-трюк із вбудовуванням, що й рекордер статусу з
-[middleware](../08-http-with-net-http/03-middleware.md).
+`slog.Handler` — це інтерфейс із чотирма методами:
+
+```go
+type Handler interface {
+    Enabled(context.Context, Level) bool
+    Handle(context.Context, Record) error
+    WithAttrs(attrs []Attr) Handler
+    WithGroup(name string) Handler
+}
+```
+
+Вбудовування `slog.Handler` означає, що ви успадковуєте всі чотири й
+перевизначаєте лише те, що потрібно — той самий трюк із вбудовуванням,
+що й рекордер статусу з
+[middleware](../08-http-with-net-http/03-middleware.md). Є одна пастка.
+Успадковані `WithAttrs` і `WithGroup` повертають *внутрішній* обробник,
+тож `cl.With("user", "ada")` дає вам логер без вашої обгортки, і
+`request_id` тихо зникає. Перевизначте і ці два методи, щоб вони знову
+обгортали свій результат:
+
+```go
+func (h ctxHandler) WithAttrs(as []slog.Attr) slog.Handler {
+    return ctxHandler{h.Handler.WithAttrs(as)}
+}
+
+func (h ctxHandler) WithGroup(name string) slog.Handler {
+    return ctxHandler{h.Handler.WithGroup(name)}
+}
+```
+
+```go
+cl.With("user", "ada").InfoContext(ctx, "handled")
+// {"level":"INFO","msg":"handled","user":"ada","request_id":"req-42"}
+```
 
 Саме так id трейсу автоматично потрапляє в кожен рядок логу.
 Використовуйте варіанти з `Context` за замовчуванням; вони нічого не
@@ -193,7 +223,7 @@ slog.SetDefault(slog.New(slog.NewTextHandler(&buf, nil)))
 defer slog.SetDefault(old)
 
 slog.Warn("careful", "n", 1)
-// level=WARN msg=careful n=1
+// time=2026-09-23T10:15:02.000+02:00 level=WARN msg=careful n=1
 ```
 
 З JSON-обробником ви можете декодувати кожен рядок і перевіряти поля,
@@ -201,8 +231,25 @@ slog.Warn("careful", "n", 1)
 `t.Cleanup` тут доречне місце — інакше ви залишите буфер витікати в
 кожен наступний тест.
 
-`HandlerOptions.ReplaceAttr` — це те, що робить вивід детермінованим:
-приберіть атрибут `time`, і рядки стають порівнюваними.
+`HandlerOptions.ReplaceAttr` — це те, що робить вивід детермінованим.
+Обробник викликає його для кожного атрибута перед записом, і якщо
+повернути порожній `slog.Attr`, цей атрибут зникає. Приберіть час, і
+рядки стають порівнюваними:
+
+```go
+opts := &slog.HandlerOptions{
+    ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+        if a.Key == slog.TimeKey && len(groups) == 0 {
+            return slog.Attr{} // прибрати атрибут часу
+        }
+        return a
+    },
+}
+slog.SetDefault(slog.New(slog.NewTextHandler(&buf, opts)))
+
+slog.Warn("careful", "n", 1)
+// level=WARN msg=careful n=1
+```
 
 ## Старіший пакет `log`
 

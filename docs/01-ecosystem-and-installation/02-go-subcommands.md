@@ -22,7 +22,7 @@ go run ./cmd/server         # run the package at that path
 
 Compiles to a binary in the current directory (or to the path given by `-o`). Does not run it. The binary bundles the Go runtime, so there is no interpreter to install on the target.
 
-It is **not** automatically fully static, though. With cgo enabled (the default when a C toolchain is present), importing `net` or `os/user` links against the system libc:
+It is **not** automatically fully static, though. **cgo** is the part of Go that lets Go code call C code, and it is on by default when a C toolchain is present. With cgo on, importing `net` or `os/user` links against the system libc:
 
 ```bash
 $ go build -o app . && file app

@@ -44,14 +44,21 @@ Single and double dashes are equivalent, and `=` is optional:
 
 ## Flags stop at the first non-flag argument
 
-This is the rule that catches everyone:
+This is the rule that catches everyone. To show it on fixed argument
+lists, `parse` below builds a fresh `flag.FlagSet` each time — a private
+set of flags, covered under "Subcommands" below — with one bool flag,
+`-f`:
 
 ```go
-fs.Parse([]string{"-f", "a", "b"})
-fmt.Println(*f, fs.Args())   // output: true [a b]
+func parse(args ...string) (bool, []string) {
+    fs := flag.NewFlagSet("demo", flag.ContinueOnError)
+    f := fs.Bool("f", false, "force")
+    fs.Parse(args)
+    return *f, fs.Args()
+}
 
-fs.Parse([]string{"a", "-f", "b"})
-fmt.Println(*f, fs.Args())   // output: false [a -f b]
+fmt.Println(parse("-f", "a", "b"))   // output: true [a b]
+fmt.Println(parse("a", "-f", "b"))   // output: false [a -f b]
 ```
 
 In the second case `-f` was never parsed — it is just another positional
@@ -62,9 +69,13 @@ positional arguments**. Whatever remains is `flag.Args()`, with
 ## Boolean flags need `=`
 
 A bool flag is set by its presence, so it never consumes the next
-argument. To pass `false` explicitly you must use `=`:
+argument. To pass `false` explicitly you must use `=`. Here `-d` is a
+bool flag whose default is `true`:
 
 ```go
+fs := flag.NewFlagSet("demo", flag.ContinueOnError)
+d := fs.Bool("d", true, "dry run")
+
 fs.Parse([]string{"-d=false"})
 fmt.Println(*d)   // output: false
 ```

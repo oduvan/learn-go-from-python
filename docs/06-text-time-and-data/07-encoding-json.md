@@ -280,8 +280,11 @@ for {
 // output: A B
 ```
 
-Breaking on any error conflates "end of input" with "bad input"; real
-code compares against `io.EOF`. Decoders also support strict mode:
+Breaking on any error treats "end of input" and "bad input" the same.
+Real code compares the error against `io.EOF`, a value from the `io`
+package that means "no more input".
+[Readers and writers](../07-operating-system/02-readers-and-writers.md)
+covers it. Decoders also support strict mode:
 
 ```go
 dec := json.NewDecoder(strings.NewReader(`{"nope":1}`))

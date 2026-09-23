@@ -33,7 +33,9 @@ fmt.Println(err)
 // output: error parsing regexp: missing closing ]: `[a-`
 ```
 
-Note the **backquoted** string. In a regular `"..."` literal you would
+Note the **backquoted** string: a
+[raw string literal](../02-language-basics/02-basic-types.md), where a
+backslash is just a backslash. In a regular `"..."` literal you would
 have to write `\\d` for every `\d`, so raw strings are all but mandatory
 for patterns.
 

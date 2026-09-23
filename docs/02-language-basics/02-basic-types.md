@@ -104,7 +104,7 @@ fmt.Println(len(s))                       // 6 (bytes)
 fmt.Println(utf8.RuneCountInString(s))    // 2 (runes)
 ```
 
-To iterate by rune, use `range`:
+To iterate by rune, use a `for ... range` loop. [Control flow](05-control-flow.md) covers loops properly; here each pass gives the byte index `i` and the rune `r`:
 
 ```go
 for i, r := range "hi世" {
@@ -117,6 +117,17 @@ for i, r := range "hi世" {
 ```
 
 > **From Python:** Python 3 strings are sequences of Unicode code points; `s[0]` of `"世"` gives you `"世"`. Go strings are byte sequences interpreted as UTF-8; `s[0]` of `"世"` gives you the first byte, not the first character.
+
+Go has a second way to write a string. A **raw string literal** goes between backticks. Nothing inside it is an escape sequence, so a backslash is just a backslash, and the string may span several lines:
+
+```go
+fmt.Println("C:\\temp\\new")   // output: C:\temp\new
+fmt.Println(`C:\temp\new`)     // output: C:\temp\new
+```
+
+Raw strings suit file paths, regular expressions and multi-line text. The one thing a raw string cannot contain is a backtick.
+
+> **From Python:** a raw string is like Python's `r"""..."""`: no escapes, and it may span lines.
 
 ## Untyped constants — a gentle introduction
 

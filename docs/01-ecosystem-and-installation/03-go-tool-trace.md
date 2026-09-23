@@ -11,6 +11,8 @@ The tracer is **not** a profiler. From the official diagnostics page:
 - **`pprof`** answers *"where is my program spending CPU or allocating memory?"* via statistical sampling.
 - **`go tool trace`** answers *"how are my goroutines interacting over time?"* — scheduling, blocking, GC pauses, syscalls, contention, parallelism. It's the timeline view.
 
+Two words on this page come before the book explains them. A **goroutine** is a function that runs concurrently with the rest of the program; the Go runtime schedules goroutines onto OS threads for you. The [Concurrency](../05-concurrency/01-goroutines.md) topic covers them. **GC** is Go's garbage collector, and a *GC pause* is a short stop while the collector does part of its work.
+
 ## What the tracer records
 
 Per the `runtime/trace` package documentation:

@@ -61,7 +61,7 @@ resp, err := client.Do(req)
 ```go
 body, _ := json.Marshal(User{Name: "Bo"})
 req, _ := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(body))
-// сервер бачить: POST|t0k|{"name":"Bo","age":0}
+// сервер отримує POST із тілом {"name":"Bo","age":0}
 ```
 
 ## 404 — це не помилка

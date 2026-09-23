@@ -3,6 +3,7 @@ package fiberdemo
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -178,5 +179,25 @@ func TestSSEStreaming(t *testing.T) {
 		if !strings.Contains(body, want) {
 			t.Errorf("stream missing %q; got:\n%s", want, body)
 		}
+	}
+}
+
+// Pins a surprise the article describes under "What fasthttp costs you":
+// no context ends with the request. c.Context() is an empty
+// context.Background() unless SetContext was called, and c.RequestCtx() is
+// fasthttp's own type. If Fiber starts cancelling c.Context() per request,
+// this fails and the article needs updating.
+func TestContextAccessors(t *testing.T) {
+	a := fiber.New()
+	a.Get("/ctx", func(c fiber.Ctx) error {
+		var _ context.Context = c.Context()
+		var _ *fasthttp.RequestCtx = c.RequestCtx()
+		if c.Context().Done() != nil {
+			return c.SendString("c.Context() can be cancelled")
+		}
+		return c.SendString("never cancelled")
+	})
+	if code, body, _ := do(t, a, "GET", "/ctx", ""); code != 200 || body != "never cancelled" {
+		t.Errorf("%d %s — update docs/13-third-party-libraries/10-fiber.md", code, body)
 	}
 }

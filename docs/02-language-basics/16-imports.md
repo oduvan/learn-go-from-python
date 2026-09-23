@@ -70,7 +70,7 @@ func main() {
 
 Two non-obvious rules:
 
-1. **The base name comes from the package's own `package` declaration**, not from the import path. They are *usually* the same, but not always — `package "yaml.v3"` declares itself as `package yaml`, so you reference it as `yaml.Marshal`, not `v3.Marshal`.
+1. **The base name comes from the package's own `package` declaration**, not from the import path. They are *usually* the same, but not always. The import path `math/rand/v2` holds a package that declares itself `package rand`, so you write `rand.IntN`, not `v2.IntN`.
 2. **Only exported names are visible.** Capitalized identifiers cross package boundaries; lowercase ones don't. (See [file types](../01-ecosystem-and-installation/04-go-file-types.md) for the capitalization rule.)
 
 ```go

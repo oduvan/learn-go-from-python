@@ -101,6 +101,15 @@ func bindEnvs(v *viper.Viper, cfg any) {
 }
 ```
 
+Call it with a value of the struct, not a pointer:
+
+```go
+bindEnvs(v, Config{})
+```
+
+`reflect.TypeOf` on a pointer gives the pointer type, which has no
+fields, so `NumField` would panic.
+
 Now adding a field to the struct is all it takes.
 
 ## Defaults and files

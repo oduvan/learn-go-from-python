@@ -45,14 +45,21 @@ fmt.Println(*verbose, *port, *name, *timeout)
 
 ## Прапорці зупиняються на першому аргументі, що не є прапорцем
 
-Це правило, на якому спотикаються всі:
+Це правило, на якому спотикаються всі. Щоб показати його на
+фіксованих списках аргументів, `parse` нижче щоразу будує новий
+`flag.FlagSet` — приватний набір прапорців, про який розповідає розділ
+«Підкоманди» нижче — з одним булевим прапорцем `-f`:
 
 ```go
-fs.Parse([]string{"-f", "a", "b"})
-fmt.Println(*f, fs.Args())   // output: true [a b]
+func parse(args ...string) (bool, []string) {
+    fs := flag.NewFlagSet("demo", flag.ContinueOnError)
+    f := fs.Bool("f", false, "force")
+    fs.Parse(args)
+    return *f, fs.Args()
+}
 
-fs.Parse([]string{"a", "-f", "b"})
-fmt.Println(*f, fs.Args())   // output: false [a -f b]
+fmt.Println(parse("-f", "a", "b"))   // output: true [a b]
+fmt.Println(parse("a", "-f", "b"))   // output: false [a -f b]
 ```
 
 У другому випадку `-f` взагалі не розібрано — це просто ще один
@@ -65,9 +72,13 @@ fmt.Println(*f, fs.Args())   // output: false [a -f b]
 
 Булевий прапорець встановлюється своєю присутністю, тож ніколи не
 споживає наступний аргумент. Щоб явно передати `false`, треба
-використати `=`:
+використати `=`. Тут `-d` — булевий прапорець, типове значення якого —
+`true`:
 
 ```go
+fs := flag.NewFlagSet("demo", flag.ContinueOnError)
+d := fs.Bool("d", true, "dry run")
+
 fs.Parse([]string{"-d=false"})
 fmt.Println(*d)   // output: false
 ```

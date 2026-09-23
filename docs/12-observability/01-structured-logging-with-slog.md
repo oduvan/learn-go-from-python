@@ -173,10 +173,39 @@ cl.InfoContext(ctx, "handled")
 // {"level":"INFO","msg":"handled","request_id":"req-42"}
 ```
 
-Embedding `slog.Handler` means you inherit `Enabled`, `WithAttrs` and
-`WithGroup` and override only `Handle` — the same embedding trick as
-the [middleware](../08-http-with-net-http/03-middleware.md) status
-recorder.
+`slog.Handler` is an interface with four methods:
+
+```go
+type Handler interface {
+    Enabled(context.Context, Level) bool
+    Handle(context.Context, Record) error
+    WithAttrs(attrs []Attr) Handler
+    WithGroup(name string) Handler
+}
+```
+
+Embedding `slog.Handler` means you inherit all four and override only
+what you need — the same embedding trick as the
+[middleware](../08-http-with-net-http/03-middleware.md) status
+recorder. There is one trap. The inherited `WithAttrs` and `WithGroup`
+return the *inner* handler, so `cl.With("user", "ada")` gives you a
+logger without your wrapper, and `request_id` quietly disappears.
+Override those two as well, so they wrap their result again:
+
+```go
+func (h ctxHandler) WithAttrs(as []slog.Attr) slog.Handler {
+    return ctxHandler{h.Handler.WithAttrs(as)}
+}
+
+func (h ctxHandler) WithGroup(name string) slog.Handler {
+    return ctxHandler{h.Handler.WithGroup(name)}
+}
+```
+
+```go
+cl.With("user", "ada").InfoContext(ctx, "handled")
+// {"level":"INFO","msg":"handled","user":"ada","request_id":"req-42"}
+```
 
 This is how a trace id gets onto every log line automatically. Use the
 `Context` variants by default; they cost nothing and enable this later.
@@ -192,15 +221,32 @@ slog.SetDefault(slog.New(slog.NewTextHandler(&buf, nil)))
 defer slog.SetDefault(old)
 
 slog.Warn("careful", "n", 1)
-// level=WARN msg=careful n=1
+// time=2026-09-23T10:15:02.000+02:00 level=WARN msg=careful n=1
 ```
 
 With a JSON handler you can decode each line and assert on fields
 rather than matching text. Restore the previous default — `t.Cleanup` is
 the right place — or you leak the buffer into every later test.
 
-`HandlerOptions.ReplaceAttr` is what makes output deterministic: drop
-the `time` attribute and the lines become comparable.
+`HandlerOptions.ReplaceAttr` is what makes output deterministic. The
+handler calls it for every attribute before writing it, and returning
+an empty `slog.Attr` drops that attribute. Drop the time, and the lines
+become comparable:
+
+```go
+opts := &slog.HandlerOptions{
+    ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+        if a.Key == slog.TimeKey && len(groups) == 0 {
+            return slog.Attr{} // drop the time attribute
+        }
+        return a
+    },
+}
+slog.SetDefault(slog.New(slog.NewTextHandler(&buf, opts)))
+
+slog.Warn("careful", "n", 1)
+// level=WARN msg=careful n=1
+```
 
 ## The older `log` package
 
