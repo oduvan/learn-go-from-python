@@ -77,7 +77,7 @@ s.Area()   // panic: runtime error: invalid memory address or nil pointer derefe
 ```
 
 Once it holds a value, the interface remembers that value's **dynamic
-type** — you can see it with `%T`:
+type** — you can see it with `%T`, the verb that prints a value's type:
 
 ```go
 var s Shape = Circle{2}

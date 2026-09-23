@@ -146,7 +146,26 @@ toml.Unmarshal([]byte("[server]\nport = \"nope\"\n"), &d)
 А маршалінг тривалості видає сире ціле число наносекунд замість `5s`.
 Якщо структура спільна для YAML і TOML, або оголосіть поле як `string`
 і парсіть самостійно через `time.ParseDuration`, або дайте типу власні
-`UnmarshalText`/`MarshalText`.
+`UnmarshalText`/`MarshalText`. Обидві бібліотеки викликають ці методи,
+якщо тип їх має, тож другий варіант виглядає так:
+
+```go
+type Duration struct{ time.Duration }
+
+func (d *Duration) UnmarshalText(b []byte) error {
+    v, err := time.ParseDuration(string(b))
+    d.Duration = v
+    return err
+}
+
+func (d Duration) MarshalText() ([]byte, error) {
+    return []byte(d.String()), nil
+}
+```
+
+Якщо в структурі є поле `Timeout Duration`, то `timeout = "5s"`
+декодується в TOML, а `timeout: 5s` — у YAML, і маршалінг записує назад
+`5s` замість наносекунд.
 
 У TOML є власні дати й час, тоді як YAML лише наближено це підтримує.
 

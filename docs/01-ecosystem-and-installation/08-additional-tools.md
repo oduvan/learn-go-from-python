@@ -148,7 +148,7 @@ Then `go generate ./...` regenerates the `_string.go` file.
 
 ### `mockgen` — generate mocks for interfaces
 
-From the [Uber `gomock` fork](https://github.com/uber-go/mock), now the canonical version.
+From the [Uber `gomock` fork](https://github.com/uber-go/mock), now the canonical version. Interfaces are Go's way to describe a set of methods ([Interfaces](../03-object-oriented-go/02-interfaces.md) covers them). `mockgen` reads one and writes a fake type that has those methods.
 
 ```bash
 go install go.uber.org/mock/mockgen@latest

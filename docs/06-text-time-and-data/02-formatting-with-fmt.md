@@ -5,6 +5,11 @@ is a small formatting language, and two of its verbs — `%+v` for
 debugging and `%w` for wrapping errors — come up constantly.
 
 ```go
+type Point struct {
+    X, Y int
+    name string
+}
+
 p := Point{X: 1, Y: 2, name: "origin"}
 
 fmt.Printf("%v\n", p)    // output: {1 2 origin}

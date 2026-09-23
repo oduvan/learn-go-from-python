@@ -189,8 +189,9 @@ Fiber does not use `net/http`, and that has consequences:
   `[]byte` or string from `c.Params` or `c.Body` is only valid during
   the handler. Keeping one past the return — in a goroutine, a cache, a
   struct field — gives you data from an unrelated request later.
-  Copy it: `string(append([]byte(nil), b...))`, or just `c.Params`'s
-  string if your version already copies. This is the bug that is
+  Copy it: `string(append([]byte(nil), b...))`. The `append` onto a
+  `nil` slice builds a new array that shares nothing with fasthttp's
+  buffer. Or just use `c.Params`'s string if your version already copies. This is the bug that is
   hardest to find, because it only appears under concurrency.
 
 That last point is the real trade. Fiber is fast partly because it

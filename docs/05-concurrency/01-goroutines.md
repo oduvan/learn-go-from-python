@@ -10,7 +10,8 @@ go doWork()        // starts doWork concurrently; returns immediately
 ```
 
 Goroutines are not OS threads. The Go runtime multiplexes many goroutines
-onto a small pool of threads (an *M:N scheduler*), so they're extremely
+onto a small pool of threads (an *M:N scheduler*: M goroutines share N
+OS threads), so they're extremely
 cheap — a few kilobytes of stack each, and you can have hundreds of
 thousands. Creating one is closer in cost to a function call than to
 spawning a thread.

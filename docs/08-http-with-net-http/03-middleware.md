@@ -54,7 +54,8 @@ Order is a correctness question, not a preference:
 
 A panic in a handler would otherwise kill the process. `net/http` has
 its own recovery, but it closes the connection without a response —
-your own gives the client a proper `500`:
+your own gives the client a proper `500`, and logs the panic with
+[`slog`](../12-observability/01-structured-logging-with-slog.md):
 
 ```go
 func recoverMW(next http.Handler) http.Handler {
@@ -122,7 +123,9 @@ Three details. A request is immutable, so you attach the new context
 with `r.WithContext(ctx)` and pass *that* on. Rejecting means writing a
 response and returning **without calling `next`**. And `Value` returns
 `any`, so reading it is a type assertion — use the comma-ok form, since
-a missing value gives `nil`.
+a missing value gives `nil`. The two-value form is what prevents the
+crash: with no user in the context, `u` is just `""`, even though `me`
+throws `ok` away.
 
 Keep context values to request-scoped facts: the caller's identity, a
 request ID, a trace span. Real dependencies should be fields on the

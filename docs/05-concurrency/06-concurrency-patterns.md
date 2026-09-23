@@ -70,8 +70,9 @@ func merge(cs ...<-chan int) <-chan int {
 }
 ```
 
-Driving it — two sources merged into one stream (results arrive in any
-order, so sort before printing for a stable result):
+Driving it — two sources merged into one stream. `gen`, defined under
+"Pipeline" below, sends its arguments into a new channel. Results arrive
+in any order, so sort before printing for a stable result:
 
 ```go
 var got []int

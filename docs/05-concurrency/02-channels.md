@@ -29,7 +29,7 @@ fmt.Println(<-total)    // output: 15
 ## Unbuffered channels synchronise
 
 The channel above is **unbuffered**: a send blocks until another goroutine
-is ready to receive, and vice versa. The exchange is a *rendezvous* — both
+is ready to receive, and vice versa. The exchange is a *handoff* — both
 sides meet at the same instant. That makes an unbuffered channel a
 synchronisation tool, not just a pipe: the receive can't complete before
 the send happens.
@@ -148,7 +148,7 @@ a bug.
 
 | Operation | Meaning |
 |---|---|
-| `make(chan T)` | unbuffered — send/receive rendezvous |
+| `make(chan T)` | unbuffered — send/receive handoff |
 | `make(chan T, n)` | buffered — blocks only when full/empty |
 | `ch <- v` / `v := <-ch` | send / receive |
 | `v, ok := <-ch` | `ok` is false once closed and drained |

@@ -106,7 +106,7 @@ Don't alias just to shorten — `fmt.Println` is already short.
 
 ## Blank import — `_` for side effects only
 
-A blank import compiles and links the package but doesn't bind any name in your file. You can't reference anything from it. The point is to run the package's `init()` function for its side effects:
+A blank import compiles and links the package but doesn't bind any name in your file. You can't reference anything from it. The point is to run the package's `init()` function for its side effects. (`init()` is a function Go calls automatically when the program starts, before `main`; [Packages and visibility](../04-packages-and-modules/01-packages-and-visibility.md) covers it.) A database driver, for example, registers itself that way:
 
 ```go
 import (

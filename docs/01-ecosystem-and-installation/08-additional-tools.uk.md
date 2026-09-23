@@ -148,7 +148,7 @@ const (
 
 ### `mockgen` — генерує моки для інтерфейсів
 
-З [форку Uber `gomock`](https://github.com/uber-go/mock), що є тепер канонічною версією.
+З [форку Uber `gomock`](https://github.com/uber-go/mock), що є тепер канонічною версією. Інтерфейси — це спосіб Go описати набір методів (стаття [Інтерфейси](../03-object-oriented-go/02-interfaces.md) розглядає їх). `mockgen` читає інтерфейс і записує фейковий тип, що має ці методи.
 
 ```bash
 go install go.uber.org/mock/mockgen@latest

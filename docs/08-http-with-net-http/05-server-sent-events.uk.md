@@ -173,7 +173,8 @@ rc.SetWriteDeadline(time.Time{})   // без дедлайну для цієї в
 його годує, — а якщо один виробник розсилає дані багатьом клієнтам,
 один повільний читач зупиняє всіх.
 
-Надсилайте без блокування й змиріться з утратою:
+Надсилайте без блокування й змиріться з утратою, логуючи її через
+[`slog`](../12-observability/01-structured-logging-with-slog.md):
 
 ```go
 select {
@@ -183,7 +184,18 @@ default:
 }
 ```
 
+Обгорнуто у функцію, яка повідомляє, чи вдалося надіслати повідомлення:
+
 ```go
+func dropSlow(ch chan string, msg string) bool {
+    select {
+    case ch <- msg:
+        return true
+    default:
+        return false
+    }
+}
+
 full := make(chan string, 1)
 fmt.Println(dropSlow(full, "a"), dropSlow(full, "b"))
 // output: true false

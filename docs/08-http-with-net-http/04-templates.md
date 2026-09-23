@@ -59,6 +59,11 @@ reference to the original top-level value. `range` takes an `{{else}}`
 for the empty case, which is neater than a separate `if`. `with` skips
 its block entirely when the value is empty.
 
+For example, with the first data set above,
+`{{range .Tags}}[{{$.Name}}:{{.}}]{{end}}` prints `[Bo:x][Bo:y]`.
+Inside `range`, `.` is each tag, and `$.Name` still reaches the
+top-level name.
+
 Comparisons are functions, not operators: `eq`, `ne`, `lt`, `le`, `gt`,
 `ge`, plus `and`, `or`, `not`. There is no arithmetic — compute in Go
 and pass the result in.
@@ -183,7 +188,21 @@ omit it and the nested template gets `nil`. With several templates
 defined, use `ExecuteTemplate` to pick one by name.
 
 `block` defines a default that a later template can override, which
-gives you a base layout with replaceable sections.
+gives you a base layout with replaceable sections. `Clone` copies the
+base, so each page can replace the section without touching it:
+
+```go
+base := template.Must(template.New("base").Parse(
+    `<main>{{block "content" .}}default{{end}}</main>`))
+page := template.Must(template.Must(base.Clone()).Parse(
+    `{{define "content"}}hello{{end}}`))
+
+base.Execute(os.Stdout, nil)   // output: <main>default</main>
+page.Execute(os.Stdout, nil)   // output: <main>hello</main>
+```
+
+Call `Clone` before the first `Execute`: `html/template` refuses to
+clone a template that has already run.
 
 > **From Python:** this is Jinja with far less in it — no arithmetic, no
 > filters with `|` (functions are prefix), no template inheritance

@@ -78,7 +78,7 @@ s.Area()   // panic: runtime error: invalid memory address or nil pointer derefe
 ```
 
 Щойно інтерфейс тримає значення, він пам'ятає **динамічний тип** цього
-значення — його видно через `%T`:
+значення — його видно через `%T`, дієслово, яке друкує тип значення:
 
 ```go
 var s Shape = Circle{2}

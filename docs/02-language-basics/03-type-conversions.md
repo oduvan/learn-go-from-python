@@ -56,6 +56,8 @@ These three conversions are common enough to memorize.
 
 ### `string ↔ []byte` — raw UTF-8 bytes
 
+`[]byte` is a *slice* of bytes — Go's growable list. [Arrays and slices](11-arrays-and-slices.md) covers slices; here it is just the type you convert to.
+
 ```go
 s := "hello"
 b := []byte(s)              // [104 101 108 108 111]

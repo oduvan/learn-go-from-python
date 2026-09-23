@@ -161,7 +161,7 @@ on `int`, `string`, `time.Duration`, or any other foreign type.
 From the spec, paraphrased into a process:
 
 1. Predeclared types (`int`, `string`, `bool`, `float64`, ...) — their underlying type is themselves.
-2. Type literals (`[]int`, `map[string]int`, `struct{...}`, `func(...) ...`) — their underlying type is themselves.
+2. Type literals — types written out in full, with no name attached (`[]int`, `map[string]int`, `struct{...}`, `func(...) ...`) — their underlying type is themselves.
 3. Any other type — follow the chain of definitions until you reach one of the above.
 
 ```go
@@ -176,7 +176,7 @@ type literal, so when you write `type D func(int) int` the underlying
 type stops right there — there's no chain to walk. The same holds
 for `type T []int`, `type T map[string]int`, and so on.
 
-You can check at runtime with `reflect.TypeOf(x).Kind()` — it returns the underlying kind, not the named type.
+You can check at runtime with `reflect.TypeOf(x).Kind()` — it returns the underlying kind, not the named type. (The `reflect` package, which inspects types while the program runs, is covered in [XML, CSV and reflection](../06-text-time-and-data/08-xml-csv-and-reflection.md).)
 
 ## Type identity in one paragraph
 

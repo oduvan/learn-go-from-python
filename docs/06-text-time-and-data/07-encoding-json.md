@@ -1,6 +1,9 @@
 # Encoding JSON
 
-`encoding/json` maps Go values to JSON using struct tags and reflection.
+`encoding/json` maps Go values to JSON using struct tags and reflection:
+inspecting a value's type and fields while the program runs.
+([XML, CSV and reflection](08-xml-csv-and-reflection.md) covers
+reflection itself.)
 The [structs](../02-language-basics/10-structs.md) article introduced the
 tag syntax; this one is about the behaviour, which has a handful of sharp
 edges worth meeting deliberately.

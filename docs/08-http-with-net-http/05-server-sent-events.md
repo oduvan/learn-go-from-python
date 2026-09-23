@@ -169,7 +169,8 @@ client stops reading, a blocking send stalls the goroutine feeding it —
 and if a single producer fans out to many clients, one slow reader
 stalls everyone.
 
-Send without blocking and accept the loss:
+Send without blocking and accept the loss, logging the drop with
+[`slog`](../12-observability/01-structured-logging-with-slog.md):
 
 ```go
 select {
@@ -179,7 +180,18 @@ default:
 }
 ```
 
+Wrapped in a function that reports whether the message went out:
+
 ```go
+func dropSlow(ch chan string, msg string) bool {
+    select {
+    case ch <- msg:
+        return true
+    default:
+        return false
+    }
+}
+
 full := make(chan string, 1)
 fmt.Println(dropSlow(full, "a"), dropSlow(full, "b"))
 // output: true false

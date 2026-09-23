@@ -208,7 +208,9 @@ if err := br.Close(); err != nil {
 
 `Close` reports the first error, and **must** be called. For bulk
 loading, `pool.CopyFrom` implements the Postgres `COPY` protocol and is
-much faster again — thousands of rows rather than dozens.
+much faster again — thousands of rows rather than dozens. `COPY` is
+Postgres's bulk-load command: instead of one `INSERT` per row, the
+client streams all the rows to the server in a single operation.
 
 ## Transactions and listen/notify
 

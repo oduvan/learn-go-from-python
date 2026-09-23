@@ -136,6 +136,8 @@ for line := range strings.Lines(s) {
 // "gamma\n"
 ```
 
+`%q` prints a string in double quotes, with escapes like `\n` shown instead of applied. [Formatting with fmt](../06-text-time-and-data/02-formatting-with-fmt.md) covers all the verbs.
+
 You can also write your own iterator function — see
 [iterators](../06-text-time-and-data/06-iterators.md).
 
@@ -254,6 +256,8 @@ func describe(x any) {
     }
 }
 ```
+
+`%T` prints the type of a value.
 
 ## `goto`
 

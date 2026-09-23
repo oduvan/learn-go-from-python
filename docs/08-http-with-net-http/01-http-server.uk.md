@@ -196,7 +196,10 @@ if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClos
 
 `Shutdown` припиняє приймати з'єднання й чекає на запити, що вже
 виконуються, у межах контексту — той самий підхід, що й у статті про
-[сигнали та коректну зупинку](../07-operating-system/06-signals-and-graceful-shutdown.md):
+[сигнали та коректну зупинку](../07-operating-system/06-signals-and-graceful-shutdown.md).
+Код записує помилки через `slog` — стандартний структурований логер Go,
+про який пізніше розповідає стаття
+[Структуроване логування через slog](../12-observability/01-structured-logging-with-slog.md):
 
 ```go
 ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)

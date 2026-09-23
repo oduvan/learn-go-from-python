@@ -110,7 +110,9 @@ import "example.com/shop/store"
 func TestNew(t *testing.T) { _ = store.New() }
 ```
 
-`go list` показує три групи, які відстежують інструменти:
+`go list` показує три групи, які відстежують інструменти. Прапорець
+`-f` приймає шаблон у тому самому синтаксисі `{{ }}`, що й пакет
+`text/template` Go: `{{.GoFiles}}` друкує поле `GoFiles` кожного пакета.
 
 ```bash
 $ go list -f '{{.GoFiles}} {{.TestGoFiles}} {{.XTestGoFiles}}' ./store

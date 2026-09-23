@@ -191,7 +191,10 @@ package can register on. Make your own `ServeMux`.
 
 `Shutdown` stops accepting connections and waits for in-flight requests,
 bounded by the context — the pattern from
-[signals and graceful shutdown](../07-operating-system/06-signals-and-graceful-shutdown.md):
+[signals and graceful shutdown](../07-operating-system/06-signals-and-graceful-shutdown.md).
+The code logs errors with `slog`, Go's standard structured logger, which
+[Structured logging with slog](../12-observability/01-structured-logging-with-slog.md)
+covers later:
 
 ```go
 ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)

@@ -188,6 +188,7 @@ fmt.Println(l.Allow(), l.Allow())   // output: true false
 швидкістю конкурентно:
 
 ```go
+// ctx приходить ззовні — наприклад, це контекст вхідного запиту
 g, ctx := errgroup.WithContext(ctx)
 g.SetLimit(8)                                   // 8 in flight
 lim := rate.NewLimiter(rate.Limit(20), 5)       // 20/s, burst 5

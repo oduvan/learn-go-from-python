@@ -46,7 +46,7 @@ Anything inside `testdata/` is invisible to the build: Go won't try to compile i
 
 | Folder | Meaning |
 |---|---|
-| `cmd/<name>/` | Each subdirectory holds a `main` package producing one binary (`cmd/server`, `cmd/cli`). Standard layout when a repository contains multiple executables. |
+| `cmd/<name>/` | Each subdirectory holds one runnable program: a package named `main`, which Go builds into one binary (`cmd/server`, `cmd/cli`). Standard layout when a repository contains multiple executables. |
 | `pkg/` | Older convention for library packages. Modern Go doesn't need it — put packages at the module root. Don't add it just because you saw it elsewhere. |
 | `vendor/` | If present, `go build` uses it instead of `$GOMODCACHE`. Created by `go mod vendor`. For air-gapped or fully reproducible builds. |
 | `api/`, `web/`, `configs/`, etc. | From the unofficial "golang-standards/project-layout" repo. **Not endorsed by the Go team.** Treat as one team's opinion. |

@@ -111,7 +111,9 @@ import "example.com/shop/store"
 func TestNew(t *testing.T) { _ = store.New() }
 ```
 
-`go list` shows the three groups the toolchain tracks:
+`go list` shows the three groups the toolchain tracks. Its `-f` flag
+takes a template in the same `{{ }}` syntax as Go's `text/template`
+package: `{{.GoFiles}}` prints the `GoFiles` field of each package.
 
 ```bash
 $ go list -f '{{.GoFiles}} {{.TestGoFiles}} {{.XTestGoFiles}}' ./store

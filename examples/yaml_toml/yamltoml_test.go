@@ -111,6 +111,46 @@ func TestTOMLRejectsDurationString(t *testing.T) {
 	}
 }
 
+// The article's second fix for durations: a type with its own
+// UnmarshalText/MarshalText. Both libraries call these, so one struct works
+// in both formats. If this fails, update the "TOML does not parse a
+// duration" section of docs/13-third-party-libraries/04-yaml-and-toml.md.
+type Duration struct{ time.Duration }
+
+func (d *Duration) UnmarshalText(b []byte) error {
+	v, err := time.ParseDuration(string(b))
+	d.Duration = v
+	return err
+}
+
+func (d Duration) MarshalText() ([]byte, error) {
+	return []byte(d.String()), nil
+}
+
+type textServer struct {
+	Timeout Duration `yaml:"timeout" toml:"timeout"`
+}
+
+func TestTextMarshalerFixesDurations(t *testing.T) {
+	var fromTOML, fromYAML textServer
+	if err := toml.Unmarshal([]byte("timeout = \"5s\"\n"), &fromTOML); err != nil {
+		t.Fatalf("toml: %v — update docs/13-third-party-libraries/04-yaml-and-toml.md", err)
+	}
+	if err := yaml.Unmarshal([]byte("timeout: 5s\n"), &fromYAML); err != nil {
+		t.Fatalf("yaml: %v — update docs/13-third-party-libraries/04-yaml-and-toml.md", err)
+	}
+	if fromTOML.Timeout.Duration != 5*time.Second || fromYAML.Timeout.Duration != 5*time.Second {
+		t.Errorf("toml=%v yaml=%v, want 5s from both", fromTOML.Timeout, fromYAML.Timeout)
+	}
+	out, err := toml.Marshal(textServer{Timeout: Duration{5 * time.Second}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(out), "5s") {
+		t.Errorf("toml.Marshal = %q, want the string 5s, not nanoseconds", out)
+	}
+}
+
 func TestTOMLTypeErrorNamesTheField(t *testing.T) {
 	var d Doc
 	err := toml.Unmarshal([]byte("[server]\nport = \"nope\"\n"), &d)

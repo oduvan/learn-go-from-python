@@ -145,7 +145,26 @@ And marshalling a duration produces a raw integer of nanoseconds rather
 than `5s`. If a struct is shared between YAML and TOML, either declare
 the field as a `string` and parse it yourself with
 `time.ParseDuration`, or give the type its own
-`UnmarshalText`/`MarshalText`.
+`UnmarshalText`/`MarshalText`. Both libraries call those methods when a
+type has them, so the second option looks like this:
+
+```go
+type Duration struct{ time.Duration }
+
+func (d *Duration) UnmarshalText(b []byte) error {
+    v, err := time.ParseDuration(string(b))
+    d.Duration = v
+    return err
+}
+
+func (d Duration) MarshalText() ([]byte, error) {
+    return []byte(d.String()), nil
+}
+```
+
+With `Timeout Duration` in the struct, `timeout = "5s"` decodes in TOML
+and `timeout: 5s` in YAML, and marshalling writes `5s` back instead of
+nanoseconds.
 
 TOML does have native dates and times, which YAML only approximates.
 

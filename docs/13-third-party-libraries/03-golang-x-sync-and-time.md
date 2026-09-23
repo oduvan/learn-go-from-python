@@ -183,6 +183,7 @@ The two compose into the shape you want when calling a rate-limited API
 concurrently:
 
 ```go
+// ctx comes from the caller, for example the incoming request's context
 g, ctx := errgroup.WithContext(ctx)
 g.SetLimit(8)                                   // 8 in flight
 lim := rate.NewLimiter(rate.Limit(20), 5)       // 20/s, burst 5

@@ -44,7 +44,7 @@ Common flags:
 
 - `-o <path>` — output file path.
 - `-race` — enable the data race detector (adds ~5–10× memory overhead at runtime).
-- `-tags <tag>` — enable build tags.
+- `-tags <tag>` — enable build tags: labels that switch whole files in or out of the build. [File types](04-go-file-types.md) shows how a file opts in.
 - `-ldflags '...'` — flags to the linker; commonly used to inject version strings, e.g. `-ldflags "-X main.Version=$(git rev-parse HEAD)"`.
 
 > **From Python:** no direct analog. Closest is `pyinstaller`/`shiv`/`pex` — but Go builds are first-class and produce a single static binary with the runtime included.

@@ -11,6 +11,8 @@ s := "  Name: Ada Lovelace  "
 fmt.Printf("%q\n", strings.TrimSpace(s))   // output: "Name: Ada Lovelace"
 ```
 
+`%q` друкує рядок у лапках, тож легко побачити, що пробіли зникли.
+
 ## Пошук
 
 ```go

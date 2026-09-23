@@ -76,7 +76,9 @@ creates it**. List the allowed packages instead and every new one is
 unprotected until somebody remembers to add it — which is precisely
 when the rule stops working.
 
-`$all` and `$test` are built-in selectors; `!` excludes.
+`$all` and `$test` are built-in selectors: `$all` matches every Go file,
+and `$test` matches only `_test.go` files. A leading `!` excludes, so
+`"!$test"` leaves tests out.
 
 Always write `desc`. It becomes the error message, and a rule that
 explains itself gets followed instead of worked around.
@@ -158,6 +160,11 @@ linters:
 EDIT.` marker from
 [build and codegen](../11-architecture-and-conventions/05-build-codegen-and-cgo.md).
 There is no point reporting style issues in output nobody edits.
+
+`paths` excludes files by name instead of by marker. Each entry is a
+regular expression matched against the file path; matching files are
+still analysed, but their issues are not reported. Here it names
+templ's `_templ.go` output.
 
 ## Formatting
 

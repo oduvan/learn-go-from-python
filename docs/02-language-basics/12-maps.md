@@ -184,8 +184,11 @@ clear(m)                      // builtin: remove every entry
 fmt.Println(len(m))           // output: 0
 ```
 
-`maps.Keys` returns an *iterator*, which pairs with `slices.Sorted` to
-collapse the whole sorted-iteration recipe above into one line:
+`maps.Keys` returns an *iterator*: a value you can loop over with
+`range`, one key at a time, without building a slice first.
+([Iterators](../06-text-time-and-data/06-iterators.md) covers them.)
+`slices.Sorted` collects an iterator into a new sorted slice, which
+collapses the whole sorted-iteration recipe above into one line:
 
 ```go
 m := map[string]int{"c": 3, "a": 1, "b": 2}

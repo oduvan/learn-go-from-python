@@ -5,6 +5,11 @@
 `%w` для обгортання помилок — трапляються постійно.
 
 ```go
+type Point struct {
+    X, Y int
+    name string
+}
+
 p := Point{X: 1, Y: 2, name: "origin"}
 
 fmt.Printf("%v\n", p)    // output: {1 2 origin}

@@ -14,7 +14,7 @@ From the official toolchain documentation:
 
 What this actually does:
 
-1. **Controls language features.** A `go 1.23.0` module can use language features added through Go 1.23 (e.g. range-over-func iterators introduced in 1.23). Earlier toolchains will refuse to build it.
+1. **Controls language features.** A `go 1.23.0` module can use language features added through Go 1.23 (e.g. range-over-func iterators, introduced in 1.23 and covered in [Iterators](../06-text-time-and-data/06-iterators.md)). Earlier toolchains will refuse to build it.
 2. **Acts as a refusal floor.** "Go 1.21.2 will refuse to load a module or workspace with a `go 1.21.3` or `go 1.22` line" (verbatim).
 3. **Imposes a transitive lower bound.** Your `go` line must be ≥ the highest `go` line among your dependencies.
 

@@ -146,7 +146,7 @@ If `limit` were declared as `const limit int = 10`, the second line would fail t
 
 ## `iota` — auto-incrementing constants
 
-`iota` is a predeclared identifier that resets to 0 at the start of each `const` block and increments by 1 with each `ConstSpec`.
+`iota` is a predeclared identifier that resets to 0 at the start of each `const` block and goes up by 1 on each line of the block.
 
 ```go
 const (

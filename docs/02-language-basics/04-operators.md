@@ -169,7 +169,7 @@ for _, w := range words {
 result := b.String()
 ```
 
-Concatenating with `+` in a tight loop is O(n²) — each `+` copies the whole prefix. `strings.Builder` is O(n).
+Concatenating with `+` in a tight loop is O(n²) — each `+` copies the whole prefix. `strings.Builder` is O(n): it collects the pieces and copies them once, when you call `String()`. (The `for ... range` loop and the `words` slice come later, in [Control flow](05-control-flow.md) and [Arrays and slices](11-arrays-and-slices.md).)
 
 > **From Python:** ≈ the `+` vs `''.join(...)` discussion. Same advice: use the builder for loops.
 
@@ -208,6 +208,8 @@ When in doubt, **parenthesize**. Code-reviewers prefer explicit parens over rely
   fmt.Println(a == b)   // compile error
   ```
 - **Structs** are comparable if all their fields are comparable. So a struct of ints/strings is fine; a struct containing a slice is not.
+
+Slices, maps and structs each get their own article in this topic. For now, just note which of them `==` works on.
 
 ## Sources
 

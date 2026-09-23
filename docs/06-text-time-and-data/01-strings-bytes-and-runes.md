@@ -11,6 +11,8 @@ s := "  Name: Ada Lovelace  "
 fmt.Printf("%q\n", strings.TrimSpace(s))   // output: "Name: Ada Lovelace"
 ```
 
+`%q` prints the string in quotes, so it is easy to see that the spaces are gone.
+
 ## Searching
 
 ```go
